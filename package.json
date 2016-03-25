@@ -6,6 +6,7 @@
     "tsc": "tsc",
     "tsc:w": "tsc -w",
     "lite": "lite-server",
+    "lite-test": "lite-server -c test-config.json",
     "typings": "typings",
     "postinstall": "typings install"
   },
@@ -20,8 +21,9 @@
   },
   "devDependencies": {
     "concurrently": "^2.0.0",
+    "jasmine-core": "2.4.1",
     "lite-server": "^2.1.0",
     "typescript": "^1.8.9",
-    "typings":"^0.7.9"
+    "typings": "^0.7.9"
   }
 }

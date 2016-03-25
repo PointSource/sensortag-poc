@@ -1,0 +1,7 @@
+{
+	"port": "8080",
+  	"server": { 
+  		"baseDir": "."
+	},
+    "startPath": "www/unit-tests.html" 
+}
