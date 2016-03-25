@@ -113,4 +113,28 @@ describe('Appcomponent', () => {
 
 
 	});
+
+
+
+	describe('on keypress', () => {
+
+		beforeEach(() => {
+
+		})
+
+		it('should update keypressData', () => {
+			let appComponent = new AppComponent(evothings, ngZone);
+			appComponent.keypressHandler("12345");
+			expect(appComponent.keypressData).toBe("raw: 0x" + "01");
+		});
+
+		it('should set currentKey to match which key was pressed', () => {
+			let appComponent = new AppComponent(evothings, ngZone);
+			appComponent.keypressHandler("12345");
+			expect(appComponent.currentKey).toBe("1");
+		});
+
+
+
+	});
 });

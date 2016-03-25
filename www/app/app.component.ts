@@ -11,7 +11,11 @@ export class AppComponent {
   	status: string;
 	firmwareData: string;
 	deviceModel: string;
-	needsUpgrade: boolean;
+	needsUpgrade: string;
+
+	// sensor data
+	keypressData: string;
+	currentKey: number;
 
   	constructor(
 		@Inject('Evothings') private _evothings: Evothings,
@@ -120,6 +124,13 @@ export class AppComponent {
         }
     }
 
+    keypressHandler(data) {
+
+		this.currentKey = data[0];
+
+		this.keypressData = "raw: 0x" + this.bufferToHexStr(data, 0, 1)
+    }
+
     resetSensorDisplayValues() {
         // Clear current values.
         var blank = '[Waiting for value]'
@@ -137,6 +148,32 @@ export class AppComponent {
 
         // Reset screen color.
         // setBackgroundColor('white')
+    }
+
+    /**
+     * Convert byte buffer to hex string.
+     * @param buffer - an Uint8Array
+     * @param offset - byte offset
+     * @param numBytes - number of bytes to read
+     * @return string with hex representation of bytes
+     */
+    bufferToHexStr(buffer, offset, numBytes) {
+		var hex = ''
+		for (var i = 0; i < numBytes; ++i) {
+			hex += this.byteToHexStr(buffer[offset + i])
+		}
+		return hex
+	}
+
+
+	byteToHexStr(d) {
+        if (d < 0) { d = 0xFF + d + 1 }
+        var hex = Number(d).toString(16)
+        var padding = 2
+        while (hex.length < padding) {
+            hex = '0' + hex
+        }
+        return hex
     }
 }
 
