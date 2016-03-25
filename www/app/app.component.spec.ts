@@ -166,5 +166,26 @@ describe('Appcomponent', () => {
 
 	});
 
+	describe('on humidity callback', () => {
+		let appComponent;
+
+		beforeEach(() => {
+			appComponent = new AppComponent(evothings, ngZone);
+			sensortag.getHumidityValues = function() {
+				return {
+					humidityTemperature: 75,
+					relativeHumidity: 90
+				}
+			}
+
+		})
+
+		it('should update humidityData', () => {
+			appComponent.humidityHandler(null);
+			expect(appComponent.humidityData).toBe("+75.00&deg; C (+167.00&deg; F)<br/>+90.00% RH<br/>");
+		});
+
+	});
+
 
 });
