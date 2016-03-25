@@ -9,6 +9,9 @@ export class AppComponent {
   	public title: string;
   	sensortag: any;
   	status: string;
+	firmwareData: string;
+	deviceModel: string;
+	needsUpgrade: boolean;
 
   	constructor(
 		@Inject('Evothings') private _evothings: Evothings,
@@ -62,8 +65,7 @@ export class AppComponent {
     }
 
     connect() {
-    	this.title = "connect";
-
+    	this.status = "connect";
         this.sensortag.connectToNearestDevice();
     }
 
@@ -80,20 +82,19 @@ export class AppComponent {
             // upgraded if the connected device is a SensorTag CC2541
             // with firmware revision less than 1.5, since this the
             // SensorTag library does not support these versions.
-            var upgradeNotice = document.getElementById('upgradeNotice')
             if ('CC2541' == this.sensortag.getDeviceModel() &&
                 parseFloat(this.sensortag.getFirmwareString()) < 1.5)
             {
-                upgradeNotice.classList.remove('hidden')
+                this.needsUpgrade = true;
             }
             else
             {
-                upgradeNotice.classList.add('hidden')
+                this.needsUpgrade = false;
             }
 
             // Show device model and firmware version.
-            // displayValue('DeviceModel', this.sensortag.getDeviceModel())
-            // displayValue('FirmwareData', this.sensortag.getFirmwareString())
+            this.deviceModel = this.sensortag.getDeviceModel();
+            this.firmwareData = this.sensortag.getFirmwareString();
 
             // Show which sensors are not supported by the connected SensorTag.
             if (!this.sensortag.isLuxometerAvailable())
@@ -102,7 +103,7 @@ export class AppComponent {
             }
         }
 
-        this.title = status;
+        this.status = status;
     }
 
     errorHandler(error)
@@ -111,14 +112,31 @@ export class AppComponent {
 
         if (this._evothings.easyble.error.DISCONNECTED == error)
         {
-            resetSensorDisplayValues()
+            this.resetSensorDisplayValues()
         }
         else
         {
-	        this.title = 'Error: ' + error;
-	        alert('Error: ' + error)
-            // displayValue('StatusData', 'Error: ' + error)
+	        this.status = 'Error: ' + error;
         }
+    }
+
+    resetSensorDisplayValues() {
+        // Clear current values.
+        var blank = '[Waiting for value]'
+        this.status = 'Press Connect to find a SensorTag';
+        this.deviceModel = '?';
+        this.firmwareData = '?';
+        // displayValue('KeypressData', blank)
+        // displayValue('TemperatureData', blank)
+        // displayValue('AccelerometerData', blank)
+        // displayValue('HumidityData', blank)
+        // displayValue('MagnetometerData', blank)
+        // displayValue('BarometerData', blank)
+        // displayValue('GyroscopeData', blank)
+        // displayValue('LuxometerData', blank)
+
+        // Reset screen color.
+        // setBackgroundColor('white')
     }
 }
 

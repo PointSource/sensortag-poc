@@ -3,16 +3,21 @@ import {AppComponent} from "./app.component"
 
 var sensortag;
 var tisensortag;
+var evothings;
 
 beforeEach(() => {
 	sensortag = {
-		statusCallback: function() { return this },
-		errorCallback: function() { },
+		statusCallback: () => sensortag,
+		errorCallback: () => {},
+		connectToNearestDevice: () => {},
+		isLuxometerAvailable: () => true
 	};
 
-	tisensortag = {
-		createInstance: function() {
-			return sensortag
+	evothings = {
+		tisensortag: {
+			createInstance: function() {
+				return sensortag
+			}
 		}
 	}
 })
@@ -20,25 +25,92 @@ beforeEach(() => {
 
 describe('Appcomponent', () => {
 	let ngZone: NgZone;
-	
-	it('initializes sensor tag', () => {
-		spyOn(tisensortag, "createInstance").and.returnValue(sensortag);
-		let appComponent = new AppComponent({
-			tisensortag: tisensortag
-		}, ngZone);
-		expect(tisensortag.createInstance).toHaveBeenCalled();
+
+
+	describe('on create', () => {
+
+		it('initializes sensor tag', () => {
+			spyOn(evothings.tisensortag, "createInstance").and.returnValue(sensortag);
+			let appComponent = new AppComponent(evothings, ngZone);
+			expect(evothings.tisensortag.createInstance).toHaveBeenCalled();
+		});
+
+
+		it('initializes callbacks on the sensor tag', () => {
+			spyOn(sensortag, "statusCallback").and.returnValue(sensortag);
+			spyOn(sensortag, "errorCallback").and.returnValue(sensortag);
+			let appComponent = new AppComponent(evothings, ngZone);
+			expect(appComponent.sensortag.statusCallback).toHaveBeenCalled();
+			expect(appComponent.sensortag.errorCallback).toHaveBeenCalled();
+		});
 	});
 
 
-	it('initializes callbacks on the sensor tag', () => {
-		spyOn(sensortag, "statusCallback").and.returnValue(sensortag);
-		spyOn(sensortag, "errorCallback").and.returnValue(sensortag);
-		let appComponent = new AppComponent({
-			tisensortag: tisensortag
-		}, ngZone);
-		expect(sensortag.statusCallback).toHaveBeenCalled();
-		expect(sensortag.errorCallback).toHaveBeenCalled();
+	describe('on click connect', () => {
+
+		it('calls connectToNearestDevice', () => {
+			spyOn(sensortag, "connectToNearestDevice");
+			let appComponent = new AppComponent(evothings, ngZone);
+			appComponent.connect();
+			expect(appComponent.sensortag.connectToNearestDevice).toHaveBeenCalled();
+		});
+
 	});
 
 
+	describe('on status update', () => {
+
+		it('should update status display to match', () => {
+			let appComponent = new AppComponent(evothings, ngZone);
+			appComponent.statusHandler("SCANNING");
+			expect(appComponent.status).toBe("SCANNING");
+		});
+
+
+		it('if status is DEVICE_INFO_AVAILABLE update firmware and device model information', () => {
+			sensortag.getDeviceModel = function () {
+				return "TI Something"
+			}
+			sensortag.getFirmwareString = function() {
+				return "Firmware 123"
+			}
+			sensortag.isLuxometerAvailable = function() {
+				return true;
+			}
+
+
+			let appComponent = new AppComponent(evothings, ngZone);
+			appComponent.statusHandler("DEVICE_INFO_AVAILABLE");
+			expect(appComponent.deviceModel).toBe("TI Something");
+			expect(appComponent.firmwareData).toBe("Firmware 123");
+		});
+
+	});
+
+
+	describe('on error connecting', () => {
+
+		beforeEach(() => {
+			evothings.easyble = {
+				error: {
+					DISCONNECTED: "EASYBLE_ERROR_DISCONNECTED"
+				}
+			}
+		})
+
+		it('should update status to display error', () => {
+			let appComponent = new AppComponent(evothings, ngZone);
+			appComponent.errorHandler("OOPS");
+			expect(appComponent.status).toBe("Error: " + "OOPS");
+		});
+
+		it('if device is disconnected, clear the display values', () => {
+			let appComponent = new AppComponent(evothings, ngZone);
+			spyOn(appComponent, "resetSensorDisplayValues");
+			appComponent.errorHandler("EASYBLE_ERROR_DISCONNECTED");
+			expect(appComponent.resetSensorDisplayValues).toHaveBeenCalled();
+		});
+
+
+	});
 });

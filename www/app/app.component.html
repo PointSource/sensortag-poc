@@ -3,7 +3,12 @@
 
 
     <h1>TI SensorTag CC2650 &amp; CC2541 Sensors</h1>
-
+    
+    <h2>Device info:</h2>
+    <p>
+        SensorTag device model: <span id="DeviceModel">{{deviceModel}}</span><br />
+        Firmware version: <span id="FirmwareData">{{firmwareData}}</span>
+    </p>
 
     <p id="upgradeNotice" class="hidden">
         <span class="color_softred">Please upgrade the firmware of your SensorTag.</span>
@@ -18,8 +23,10 @@
     </button>
 
     <p>
-        <strong>Status:</strong> <span id="StatusData">Press Connect to find the nearest SensorTag</span>
+        <strong>Status:</strong> <span id="StatusData">{{status}}</span>
     </p>
+
+
 
     <p>
         <button onclick="toggleSensors()" class="charcoal">Toggle sensors</button>
@@ -67,8 +74,3 @@
         </p>
     </div>
 
-    <h2>Device info:</h2>
-    <p>
-        SensorTag device model: <span id="DeviceModel">?</span><br />
-        Firmware version: <span id="FirmwareData">?</span>
-    </p>
