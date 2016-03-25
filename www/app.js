@@ -1,3 +1,4 @@
+
     // SensorTag object.
     var sensortag
 
@@ -351,8 +352,3 @@
         }
         return hex
     }
-
-    document.addEventListener(
-        'deviceready',
-        function() { evothings.scriptsLoaded(initialiseSensorTag) },
-        false)

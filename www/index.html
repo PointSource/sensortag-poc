@@ -25,6 +25,7 @@
     <script src="libs/evothings/evothings.js"></script>
     <script src="libs/evothings/ui/ui.js"></script>
     <script src="libs/evothings/tisensortag/tisensortag.js"></script>
+    <script src="app.js"></script>
 </head>
 
 <body>
@@ -114,7 +115,13 @@
         Firmware version: <span id="FirmwareData">?</span>
     </p>
 
-    <script src="app.js"></script>
+
+    <script>
+        document.addEventListener(
+            'deviceready',
+            function() { evothings.scriptsLoaded(initialiseSensorTag) },
+            false)
+    </script>
 
 </body>
 
