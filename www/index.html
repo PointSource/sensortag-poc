@@ -25,7 +25,16 @@
     <script src="libs/evothings/evothings.js"></script>
     <script src="libs/evothings/ui/ui.js"></script>
     <script src="libs/evothings/tisensortag/tisensortag.js"></script>
-    <script src="app.js"></script>
+
+
+    <script src="libs/es6-shim.min.js"></script>
+    <script src="libs/system-polyfills.js"></script>
+    <script src="libs/angular2-polyfills.js"></script>
+    <script src="libs/system.src.js"></script>
+    <script src="libs/Rx.js"></script>
+    <script src="libs/angular2.dev.js"></script>
+
+    <!-- <script src="app.js"></script> -->
 </head>
 
 <body>
@@ -38,89 +47,31 @@
         <!--<button class="menu" onclick=""><img src="ui/images/menu.svg" /></button>-->
     </header>
 
-    <h1>TI SensorTag CC2650 &amp; CC2541 Sensors</h1>
-
-    <img src="TISensorTagCC2650.png"
-        style="float:right;width:120px;height:auto;"/>
-
-    <p>
-        This example works with the <strong>TI SensorTag CC2650</strong>. It also works with the TI SensorTag CC2541 if you modify file index.html. Activate the SensorTag and press Connect to begin.
-    </p>
-
-    <p id="upgradeNotice" class="hidden">
-        <span class="color_softred">Please upgrade the firmware of your SensorTag.</span>
-    </p>
-
-    <button onclick="connect()" class="green">
-        Connect
-    </button>
-
-    <button onclick="disconnect()" class="charcoal">
-        Disconnect
-    </button>
-
-    <p>
-        <strong>Status:</strong> <span id="StatusData">Press Connect to find the nearest SensorTag</span>
-    </p>
-
-    <p>
-        <button onclick="toggleSensors()" class="charcoal">Toggle sensors</button>
-    </p>
-
-    <h2>Keypress:</h2>
-    <p>
-        <span id="KeypressData">[Waiting for value]</span>
-    </p>
-
-    <h2>Temperature:</h2>
-    <p>
-        <span id="TemperatureData">[Waiting for value]</span>
-    </p>
-
-    <h2>Accelerometer:</h2>
-    <p>
-        <span id="AccelerometerData">[Waiting for value]</span>
-    </p>
-
-    <h2>Humidity:</h2>
-    <p>
-        <span id="HumidityData">[Waiting for value]</span>
-    </p>
-
-    <h2>Magnetometer:</h2>
-    <p>
-        <span id="MagnetometerData">[Waiting for value]</span>
-    </p>
-
-    <h2>Barometer:</h2>
-    <p>
-        <span id="BarometerData">[Waiting for value]</span>
-    </p>
-
-    <h2>Gyroscope:</h2>
-    <p>
-        <span id="GyroscopeData">[Waiting for value]</span>
-    </p>
-
-    <div id="Luxometer">
-        <h2>Luxometer:</h2>
-        <p>
-            <span id="LuxometerData">[Waiting for value]</span>
-        </p>
-    </div>
-
-    <h2>Device info:</h2>
-    <p>
-        SensorTag device model: <span id="DeviceModel">?</span><br />
-        Firmware version: <span id="FirmwareData">?</span>
-    </p>
+    <my-app>Loading...</my-app>
 
 
     <script>
         document.addEventListener(
             'deviceready',
-            function() { evothings.scriptsLoaded(initialiseSensorTag) },
-            false)
+            function() { 
+                evothings.scriptsLoaded(function() {
+
+                  System.config({
+                    packages: {        
+                      app: {
+                        format: 'register',
+                        defaultExtension: 'js'
+                      }
+                    },
+                      map: {
+                        'evothings': 'libs/evothings/evothings.js'
+                      }
+                  });
+                  System.import('app/main')
+                        .then(null, console.error.bind(console));
+                }) 
+            },
+        false)
     </script>
 
 </body>

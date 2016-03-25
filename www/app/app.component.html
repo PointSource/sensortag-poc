@@ -1,0 +1,74 @@
+<h1>{{title}}</h1> 
+<h2>My First Angular 2 App</h2>
+
+
+    <h1>TI SensorTag CC2650 &amp; CC2541 Sensors</h1>
+
+
+    <p id="upgradeNotice" class="hidden">
+        <span class="color_softred">Please upgrade the firmware of your SensorTag.</span>
+    </p>
+
+    <button (click)="connect()" class="green">
+        Connect
+    </button>
+
+    <button (click)="disconnect()" class="charcoal">
+        Disconnect
+    </button>
+
+    <p>
+        <strong>Status:</strong> <span id="StatusData">Press Connect to find the nearest SensorTag</span>
+    </p>
+
+    <p>
+        <button onclick="toggleSensors()" class="charcoal">Toggle sensors</button>
+    </p>
+
+    <h2>Keypress:</h2>
+    <p>
+        <span id="KeypressData">[Waiting for value]</span>
+    </p>
+
+    <h2>Temperature:</h2>
+    <p>
+        <span id="TemperatureData">[Waiting for value]</span>
+    </p>
+
+    <h2>Accelerometer:</h2>
+    <p>
+        <span id="AccelerometerData">[Waiting for value]</span>
+    </p>
+
+    <h2>Humidity:</h2>
+    <p>
+        <span id="HumidityData">[Waiting for value]</span>
+    </p>
+
+    <h2>Magnetometer:</h2>
+    <p>
+        <span id="MagnetometerData">[Waiting for value]</span>
+    </p>
+
+    <h2>Barometer:</h2>
+    <p>
+        <span id="BarometerData">[Waiting for value]</span>
+    </p>
+
+    <h2>Gyroscope:</h2>
+    <p>
+        <span id="GyroscopeData">[Waiting for value]</span>
+    </p>
+
+    <div id="Luxometer">
+        <h2>Luxometer:</h2>
+        <p>
+            <span id="LuxometerData">[Waiting for value]</span>
+        </p>
+    </div>
+
+    <h2>Device info:</h2>
+    <p>
+        SensorTag device model: <span id="DeviceModel">?</span><br />
+        Firmware version: <span id="FirmwareData">?</span>
+    </p>
