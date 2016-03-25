@@ -1,6 +1,5 @@
-import {Component, NgZone} from 'angular2/core';
+import {Component, Inject, NgZone} from 'angular2/core';
 
-declare var evothings: any;
 
 @Component({
     selector: 'my-app',
@@ -11,7 +10,10 @@ export class AppComponent {
   	sensortag: any;
   	status: string;
 
-  	constructor(private _ngZone: NgZone) {
+  	constructor(
+		@Inject('Evothings') private _evothings: Evothings,
+  		private _ngZone: NgZone
+  	) {
   		this.initialiseSensorTag();
   		this.title = "Sensor Tag fun";
   		this.status = "";
@@ -22,9 +24,8 @@ export class AppComponent {
     	var self = this;
 
         // Create SensorTag CC2650 instance.
-        this.sensortag = evothings.tisensortag.createInstance(
-            evothings.tisensortag.CC2650_BLUETOOTH_SMART)
-
+        this.sensortag = this._evothings.tisensortag.createInstance(
+            this._evothings.tisensortag.CC2650_BLUETOOTH_SMART)
 
 	        
 	        //
@@ -40,10 +41,14 @@ export class AppComponent {
         this.sensortag
             .statusCallback(function(status) {
             	self._ngZone.run(function() {
-            		self.statusHandler(status)
+            		self.statusHandler(status);
             	});
             })
-            .errorCallback(this.errorHandler)
+            .errorCallback(function(status) {
+            	self._ngZone.run(function() {
+            		self.errorHandler(status);
+            	});
+            })
             // .keypressCallback(keypressHandler)
             // .temperatureCallback(temperatureHandler, 1000)
             // .humidityCallback(humidityHandler, 1000)
@@ -104,7 +109,7 @@ export class AppComponent {
     {
         console.log('Error: ' + error)
 
-        if (evothings.easyble.error.DISCONNECTED == error)
+        if (this._evothings.easyble.error.DISCONNECTED == error)
         {
             resetSensorDisplayValues()
         }
