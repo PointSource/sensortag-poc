@@ -16,6 +16,7 @@ export class AppComponent {
 	// sensor data
 	keypressData: string;
 	currentKey: number;
+	temperatureData: string;
 
   	constructor(
 		@Inject('Evothings') private _evothings: Evothings,
@@ -141,6 +142,24 @@ export class AppComponent {
 		this.currentKey = data[0];
 
 		this.keypressData = "raw: 0x" + this.bufferToHexStr(data, 0, 1)
+    }
+
+    temperatureHandler(data) {
+        var values = this.sensortag.getTemperatureValues(data)
+        var ac = values.ambientTemperature
+        var af = this.sensortag.celsiusToFahrenheit(ac)
+        var tc = values.targetTemperature
+        var tf = this.sensortag.celsiusToFahrenheit(tc)
+
+        var temperatureString =
+            (tc >= 0 ? '+' : '') + tc.toFixed(2) + '&deg; C ' +
+            '(' + (tf >= 0 ? '+' : '') + tf.toFixed(2) + '&deg; F)' + '<br/>' +
+            (ac >= 0 ? '+' : '') + ac.toFixed(2) + '&deg; C ' +
+            '(' + (af >= 0 ? '+' : '') + af.toFixed(2) + '&deg; F) [amb]' +
+            '<br/>'
+
+
+		this.temperatureData = temperatureString;
     }
 
     resetSensorDisplayValues() {

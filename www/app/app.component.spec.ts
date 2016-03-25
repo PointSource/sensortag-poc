@@ -13,7 +13,10 @@ beforeEach(() => {
 		temperatureCallback: () => sensortag,
 		humidityCallback: () => sensortag,
 		connectToNearestDevice: () => {},
-		isLuxometerAvailable: () => true
+		isLuxometerAvailable: () => true,
+		celsiusToFahrenheit: (celsius) => {
+			return (celsius * 9 / 5) + 32
+		}
 	};
 
 	evothings = {
@@ -141,6 +144,26 @@ describe('Appcomponent', () => {
 			appComponent.keypressHandler("12345");
 			expect(appComponent.currentKey).toBe("1");
 		});
+	});
+
+	describe('on temperature callback', () => {
+		let appComponent;
+
+		beforeEach(() => {
+			appComponent = new AppComponent(evothings, ngZone);
+			sensortag.getTemperatureValues = function() {
+				return {
+					ambientTemperature: 75,
+					targetTemperature: 90
+				}
+			}
+		})
+
+		it('should update temperatureData', () => {
+			appComponent.temperatureHandler(null);
+			expect(appComponent.temperatureData).toBe("+90.00&deg; C (+194.00&deg; F)<br/>+75.00&deg; C (+167.00&deg; F) [amb]<br/>");
+		});
+
 	});
 
 
