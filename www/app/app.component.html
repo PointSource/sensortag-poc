@@ -1,9 +1,9 @@
 <h1>{{title}}</h1> 
-<h2>My First Angular 2 App</h2>
 
+    <p>
+        <strong>Status:</strong> <span id="StatusData">{{status}}</span>
+    </p>
 
-    <h1>TI SensorTag CC2650 &amp; CC2541 Sensors</h1>
-    
     <h2>Device info:</h2>
     <p>
         SensorTag device model: <span id="DeviceModel">{{deviceModel}}</span><br />
@@ -22,24 +22,21 @@
         Disconnect
     </button>
 
-    <p>
-        <strong>Status:</strong> <span id="StatusData">{{status}}</span>
-    </p>
-
-
 
     <p>
         <button onclick="toggleSensors()" class="charcoal">Toggle sensors</button>
     </p>
 
-    <h2>Keypress:</h2>
-    <p>
-        <span id="KeypressData">[Waiting for value]</span>
-    </p>
+    <div [ngClass]="{white: (currentKey === 0), {red: (currentKey === 1), blue: (currentKey === 2), purple: (currentKey === 3)}">
+        <h2>Keypress:</h2>
+        <p>
+            <span id="KeypressData">{{keypressData}}</span>
+        </p>
+    </div>
 
     <h2>Temperature:</h2>
     <p>
-        <span id="TemperatureData">[Waiting for value]</span>
+        <span id="TemperatureData">{{temperatureData}}</span>
     </p>
 
     <h2>Accelerometer:</h2>
@@ -49,7 +46,7 @@
 
     <h2>Humidity:</h2>
     <p>
-        <span id="HumidityData">[Waiting for value]</span>
+        <span id="HumidityData">{{temperatureData}}</span>
     </p>
 
     <h2>Magnetometer:</h2>

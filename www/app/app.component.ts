@@ -3,7 +3,8 @@ import {Component, Inject, NgZone} from 'angular2/core';
 
 @Component({
     selector: 'my-app',
-    templateUrl: 'app/app.component.html'
+    templateUrl: 'app/app.component.html',
+	styleUrls: ['app/app.component.css']
 })
 export class AppComponent {
   	public title: string;
@@ -11,7 +12,7 @@ export class AppComponent {
   	status: string;
 	firmwareData: string;
 	deviceModel: string;
-	needsUpgrade: string;
+	needsUpgrade: boolean;
 
 	// sensor data
 	keypressData: string;
@@ -23,7 +24,7 @@ export class AppComponent {
   		private _ngZone: NgZone
   	) {
   		this.initialiseSensorTag();
-  		this.title = "Sensor Tag fun";
+  		this.title = "TI SensorTag CC2650";
   		this.status = "";
   	}
 
