@@ -35,30 +35,42 @@ export class AppComponent {
             this._evothings.tisensortag.CC2650_BLUETOOTH_SMART)
 
 	        
-	        //
-	        // Here sensors are set up.
-	        //
-	        // If you wish to use only one or a few sensors, just set up
-	        // the ones you wish to use.
-	        //
-	        // First parameter to sensor function is the callback function.
-	        // Several of the sensors take a millisecond update interval
-	        // as the second parameter.
-	        //
+        //
+        // Here sensors are set up.
+        //
+        // If you wish to use only one or a few sensors, just set up
+        // the ones you wish to use.
+        //
+        // First parameter to sensor function is the callback function.
+        // Several of the sensors take a millisecond update interval
+        // as the second parameter.
+        //
         this.sensortag
             .statusCallback(function(status) {
             	self._ngZone.run(function() {
             		self.statusHandler(status);
             	});
             })
-            .errorCallback(function(status) {
+            .errorCallback(function(error) {
             	self._ngZone.run(function() {
-            		self.errorHandler(status);
+            		self.errorHandler(error);
             	});
             })
-            // .keypressCallback(keypressHandler)
-            // .temperatureCallback(temperatureHandler, 1000)
-            // .humidityCallback(humidityHandler, 1000)
+            .keypressCallback(function(error) {
+				self._ngZone.run(function() {
+					self.keypressHandler(error);
+				});
+            })
+			.temperatureCallback(function(data) {
+				self._ngZone.run(function() {
+					self.temperatureHandler(data);
+				});
+			}, 1000)
+			.humidityCallback(function(data) {
+				self._ngZone.run(function() {
+					self.humidityHandler(data);
+				});
+			}, 1000)
             // .barometerCallback(barometerHandler, 1000)
             // .accelerometerCallback(accelerometerHandler, 1000)
             // .magnetometerCallback(magnetometerHandler, 1000)

@@ -8,7 +8,10 @@ var evothings;
 beforeEach(() => {
 	sensortag = {
 		statusCallback: () => sensortag,
-		errorCallback: () => {},
+		errorCallback: () => sensortag,
+		keypressCallback: () => sensortag,
+		temperatureCallback: () => sensortag,
+		humidityCallback: () => sensortag,
 		connectToNearestDevice: () => {},
 		isLuxometerAvailable: () => true
 	};
@@ -39,9 +42,15 @@ describe('Appcomponent', () => {
 		it('initializes callbacks on the sensor tag', () => {
 			spyOn(sensortag, "statusCallback").and.returnValue(sensortag);
 			spyOn(sensortag, "errorCallback").and.returnValue(sensortag);
+			spyOn(sensortag, "keypressCallback").and.returnValue(sensortag);
+			spyOn(sensortag, "temperatureCallback").and.returnValue(sensortag);
+			spyOn(sensortag, "humidityCallback").and.returnValue(sensortag);
 			let appComponent = new AppComponent(evothings, ngZone);
 			expect(appComponent.sensortag.statusCallback).toHaveBeenCalled();
 			expect(appComponent.sensortag.errorCallback).toHaveBeenCalled();
+			expect(appComponent.sensortag.keypressCallback).toHaveBeenCalled();
+			expect(appComponent.sensortag.temperatureCallback).toHaveBeenCalled();
+			expect(appComponent.sensortag.humidityCallback).toHaveBeenCalled();
 		});
 	});
 
@@ -117,24 +126,22 @@ describe('Appcomponent', () => {
 
 
 	describe('on keypress', () => {
+		let appComponent;
 
 		beforeEach(() => {
-
+			appComponent = new AppComponent(evothings, ngZone);
 		})
 
 		it('should update keypressData', () => {
-			let appComponent = new AppComponent(evothings, ngZone);
 			appComponent.keypressHandler("12345");
 			expect(appComponent.keypressData).toBe("raw: 0x" + "01");
 		});
 
 		it('should set currentKey to match which key was pressed', () => {
-			let appComponent = new AppComponent(evothings, ngZone);
 			appComponent.keypressHandler("12345");
 			expect(appComponent.currentKey).toBe("1");
 		});
-
-
-
 	});
+
+
 });
