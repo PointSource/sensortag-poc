@@ -1,188 +1,105 @@
 <!DOCTYPE html>
+<!--
+    Description:
+
+    BLE example application that demonstrates how to read values
+    from the TI SensorTag.
+
+    Requirements:
+
+    See text in the app user interface.
+-->
 <html>
 
 <head>
+
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, user-scalable=no
-        initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
-    <title>Cordova BLE Demo</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no,
+        shrink-to-fit=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+
+    <title>TI SensorTag CC2650 Demo</title>
+
+    <style>
+        @import 'ui/css/evothings-app.css';
+    </style>
 
     <script>
-    // Redirect console.log when running from Evothings Workbench.
+    // Redirect console.log to Evothings Workbench.
     if (window.hyper && window.hyper.log) { console.log = hyper.log }
     </script>
 
-    <style>
-    body
-    {
-        font-family: sans-serif;
-    }
+    <script src="cordova.js"></script>
+    <script src="libs/jquery/jquery.js"></script>
+    <script src="libs/evothings/evothings.js"></script>
+    <script src="libs/evothings/ui/ui.js"></script>
+    <script src="libs/evothings/easyble/easyble.js"></script>
+    <script src="app.js"></script>
 
-    h1
-    {
-        margin-right:110px;
-    }
-
-    .evo-image
-    {
-        position:fixed;
-        right:5px;
-        top:5px;
-        width:100px;
-        height:auto;
-        background:white;
-    }
-    </style>
 </head>
 
-<body>
+<body ontouchstart=""><!-- ontouchstart="" enables low-delay CSS transitions. -->
 
-    <img class="evo-image" src="https://evomedia.evothings.com/2013/11/evothings_logo_large_white1.png" />
+    <header>
+        <button class="back" onclick="history.back()">
+            <img src="ui/images/arrow-left.svg" />
+        </button>
 
-    <h1>Cordova BLE Demo</h1>
+        <img class="logotype" src="ui/images/logo.svg" alt="Evothings" />
 
-    <p id="message">Preparing...</p>
+        <button id="menu-button" tabindex="0" onclick="this.focus()">
+            <img src="ui/images/menu.svg" />
+        </button>
 
-    <div id="found-devices"></div>
+        <menu>
+            <menuitem>
+                <a href="#">Demo</a>
+            </menuitem>
 
-    <!--
-    Including cordova.js will automatically include the JavaScript library
-    for the Cordova BLE plugin.
-    -->
-    <script src="cordova.js"></script>
+            <menuitem>
+                <a href="#information">Info</a>
+            </menuitem>
+        </menu>
+    </header>
 
-    <script>
-    // Application code starts here. The code is wrapped in a
-    // function closure to prevent overwriting global objects.
-    ;(function()
-    {
-        // Dictionary of devices.
-        var devices = {};
+    <h1>TI SensorTag CC2650 Demo</h1>
 
-        // Timer that displays list of devices.
-        var timer = null;
+    <p id="info">Not Connected</p>
 
-        function onDeviceReady()
-        {
-            // Start tracking devices!
-            setTimeout(startScan, 500);
+    <button onclick="app.onStartButton()" class="green">START</button>
+    <button onclick="app.onStopButton()" class="red">STOP</button>
 
-            // Timer that refreshes the display.
-            timer = setInterval(updateDeviceList, 500);
-        }
+    <canvas id="canvas" width="300" height="150"></canvas>
 
-        function onBackButtonDown()
-        {
-            evothings.ble.stopScan();
-            navigator.app.exitApp();
-        }
+    <section id='information'>
 
-        function startScan()
-        {
-            showMessage('Scan in progress.');
-            evothings.ble.startScan(
-                // Eddystone Service UUID used as an example.
-                // Remove or set this parameter to null to scan for all
-                // devices regardless of advertised services.
-                null,
-                function(device)
-                {
-                    console.log('got device ' + device.name + ' ' + device.address);
-                    // Update device data.
-                    device.timeStamp = Date.now();
-                    devices[device.address] = device;
-                },
-                function(error)
-                {
-                    showMessage('BLE scan error: ' + error);
-                });
-        }
+        <h2>Info</h2>
 
-        // Map the RSSI value to a value between 1 and 100.
-        function mapDeviceRSSI(rssi)
-        {
-            if (rssi >= 0) return 1; // Unknown RSSI maps to 1.
-            if (rssi < -100) return 100; // Max RSSI
-            return 100 + rssi;
-        }
+        <p>
+            This app charts accelerometer data from the Texas Instruments SensorTag
+            CC2650. Note that you must run this app in the Evothings Client app, or
+            build a Cordova app with the plugin com.evothings.ble. A device with
+            support for Bluetooth 4.0 and Android 4.3+ or iOS 7+ is required.
+        </p>
 
-        function getSortedDeviceList(devices)
-        {
-            var deviceList = [];
-            for (var key in devices)
-            {
-                deviceList.push(devices[key]);
-            }
-            deviceList.sort(function(device1, device2)
-            {
-                return mapDeviceRSSI(device1.rssi) < mapDeviceRSSI(device2.rssi);
-            });
-            return deviceList;
-        }
+        <h2>How to use</h2>
 
-        function updateDeviceList()
-        {
-            removeOldDevices();
-            displayDevices();
-        }
+        <p>
+            Activate the SensorTag and tap the Connect button. If everything works
+            the tag is discovered and accelerometer data is plotted to the canvas.
+            Shake your SensorTag to see the plot change.
+        </p>
 
-        function removeOldDevices()
-        {
-            var timeNow = Date.now();
-            for (var key in devices)
-            {
-                // Only show devices updated during the last 60 seconds.
-                var device = devices[key];
-                if (device.timeStamp + 60000 < timeNow)
-                {
-                    delete devices[key];
-                }
-            }
-        }
+        <h2>Troubleshooting</h2>
 
-        function displayDevices()
-        {
-            var html = '';
-            var sortedList = getSortedDeviceList(devices);
-            for (var i = 0; i < sortedList.length; ++i)
-            {
-                var device = sortedList[i];
-                var htmlDevice =
-                    '<p>'
-                    +   htmlDeviceName(device)
-                    +   htmlDeviceRSSI(device)
-                    + '</p>';
-                html += htmlDevice
-            }
-            document.querySelector('#found-devices').innerHTML = html;
-        }
+        <p>
+            On Android, there are sometimes problems with that BLE stops working when
+            switching between apps or doing multiple reloads. In this case restart
+            the Evothings Client app. Additionally, you can use the Evothings
+            Workbench Tools to see any error messages that may help in your
+            investigation.
+        </p>
 
-        function htmlDeviceName(device)
-        {
-            var name = device.name || 'no name';
-            return '<strong>' + name + '</strong><br/>';
-        }
-
-        function htmlDeviceRSSI(device)
-        {
-            return device.rssi ?
-                'RSSI: ' + device.rssi + '<br/>' :  '';
-        }
-
-        function showMessage(text)
-        {
-            document.querySelector('#message').innerHTML = text;
-            console.log(text);
-        }
-
-        // This calls onDeviceReady when Cordova has loaded everything.
-        document.addEventListener('deviceready', onDeviceReady, false);
-
-        // Add back button listener (for Android).
-        document.addEventListener('backbutton', onBackButtonDown, false);
-
-    })(); // End of closure.
-    </script>
+    </section>
 
 </body>
 

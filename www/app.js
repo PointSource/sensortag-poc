@@ -5,6 +5,7 @@
  */
 var app = {};
 
+
 /**
  * Data that is plotted on the canvas.
  */
@@ -106,6 +107,7 @@ app.stopConnectTimer = function()
 
 app.startScan = function()
 {
+
     evothings.easyble.startScan(
         function(device)
         {
