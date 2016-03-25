@@ -122,10 +122,7 @@ describe('Appcomponent', () => {
 			appComponent.errorHandler("EASYBLE_ERROR_DISCONNECTED");
 			expect(appComponent.resetSensorDisplayValues).toHaveBeenCalled();
 		});
-
-
 	});
-
 
 
 	describe('on keypress', () => {
@@ -161,7 +158,7 @@ describe('Appcomponent', () => {
 
 		it('should update temperatureData', () => {
 			appComponent.temperatureHandler(null);
-			expect(appComponent.temperatureData).toBe("+90.00&deg; C (+194.00&deg; F)<br/>+75.00&deg; C (+167.00&deg; F) [amb]<br/>");
+			expect(appComponent.temperatureData).toBe("+90.00 C (+194.00 F) +75.00 C (+167.00 F) [amb]");
 		});
 
 	});
@@ -182,7 +179,7 @@ describe('Appcomponent', () => {
 
 		it('should update humidityData', () => {
 			appComponent.humidityHandler(null);
-			expect(appComponent.humidityData).toBe("+75.00&deg; C (+167.00&deg; F)<br/>+90.00% RH<br/>");
+			expect(appComponent.humidityData).toBe("+75.00 C (+167.00 F) +90.00% RH");
 		});
 
 	});

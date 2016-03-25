@@ -181,10 +181,9 @@
             //'raw: <span style="font-family: monospace;">0x' +
             //  bufferToHexStr(data, 0, 4) + '</span><br/>' +
             (tc >= 0 ? '+' : '') + tc.toFixed(2) + '&deg; C ' +
-            '(' + (tf >= 0 ? '+' : '') + tf.toFixed(2) + '&deg; F)' + '<br/>' +
+            '(' + (tf >= 0 ? '+' : '') + tf.toFixed(2) + '&deg; F)' +
             (ac >= 0 ? '+' : '') + ac.toFixed(2) + '&deg; C ' +
             '(' + (af >= 0 ? '+' : '') + af.toFixed(2) + '&deg; F) [amb]' +
-            '<br/>'
 
         // Update the value displayed.
         displayValue('TemperatureData', string)
@@ -230,8 +229,8 @@
             //'raw: <span style="font-family: monospace;">0x' +
             //  bufferToHexStr(data, 0, 4) + '</span><br/>'
             (tc >= 0 ? '+' : '') + tc.toFixed(2) + '&deg; C ' +
-            '(' + (tf >= 0 ? '+' : '') + tf.toFixed(2) + '&deg; F)' + '<br/>' +
-            (h >= 0 ? '+' : '') + h.toFixed(2) + '% RH' + '<br/>'
+            '(' + (tf >= 0 ? '+' : '') + tf.toFixed(2) + '&deg; F) ' +
+            (h >= 0 ? '+' : '') + h.toFixed(2) + '% RH'
 
         // Update the value displayed.
         displayValue('HumidityData', string)
