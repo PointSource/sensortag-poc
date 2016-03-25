@@ -1,4 +1,4 @@
-import {Component, Inject, NgZone} from 'angular2/core';
+import {Component, OnInit, Inject, NgZone} from 'angular2/core';
 
 
 @Component({
@@ -6,13 +6,15 @@ import {Component, Inject, NgZone} from 'angular2/core';
     templateUrl: 'app/app.component.html',
 	styleUrls: ['app/app.component.css']
 })
-export class AppComponent {
-  	public title: string;
+export class AppComponent implements OnInit {
+	public title: string = "TI SensorTag CC2650";
   	sensortag: any;
   	status: string;
 	firmwareData: string;
 	deviceModel: string;
 	needsUpgrade: boolean;
+
+	availableSensorTags: [any];
 
 	// sensor data
 	keypressData: string;
@@ -23,14 +25,9 @@ export class AppComponent {
   	constructor(
 		@Inject('Evothings') private _evothings: Evothings,
   		private _ngZone: NgZone
-  	) {
-  		this.initialiseSensorTag();
-  		this.title = "TI SensorTag CC2650";
-  		this.status = "";
-  	}
+  	) { }
 
-  	initialiseSensorTag()
-    {
+  	ngOnInit() {
     	var self = this;
 
         // Create SensorTag CC2650 instance.
@@ -74,13 +71,13 @@ export class AppComponent {
 					self.humidityHandler(data);
 				});
 			}, 1000)
-            // .barometerCallback(barometerHandler, 1000)
-            // .accelerometerCallback(accelerometerHandler, 1000)
-            // .magnetometerCallback(magnetometerHandler, 1000)
-            // .gyroscopeCallback(gyroscopeHandler, 1000)
-            // .luxometerCallback(luxometerHandler, 1000)
+    }
 
-
+    scan() {
+		this.sensortag.startScanningForDevices((foundDevice) => {
+			alert('found device');
+		})
+    	this.availableSensorTags = [1, 2]
     }
 
     connect() {
@@ -127,8 +124,6 @@ export class AppComponent {
 
     errorHandler(error)
     {
-        console.log('Error: ' + error)
-
         if (this._evothings.easyble.error.DISCONNECTED == error)
         {
             this.resetSensorDisplayValues()
@@ -193,17 +188,10 @@ export class AppComponent {
         this.status = 'Press Connect to find a SensorTag';
         this.deviceModel = '?';
         this.firmwareData = '?';
-        // displayValue('KeypressData', blank)
-        // displayValue('TemperatureData', blank)
-        // displayValue('AccelerometerData', blank)
-        // displayValue('HumidityData', blank)
-        // displayValue('MagnetometerData', blank)
-        // displayValue('BarometerData', blank)
-        // displayValue('GyroscopeData', blank)
-        // displayValue('LuxometerData', blank)
-
-        // Reset screen color.
-        // setBackgroundColor('white')
+        this.keypressData = blank;
+        this.temperatureData = blank;
+        this.humidityData = blank;
+        this.currentKey = 0;
     }
 
     /**

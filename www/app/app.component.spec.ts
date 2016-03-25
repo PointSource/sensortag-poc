@@ -32,23 +32,47 @@ beforeEach(() => {
 describe('Appcomponent', () => {
 	let ngZone: NgZone;
 
+	describe('on scan', () => {
+		let appComponent;
+
+		beforeEach(() => {
+			sensortag.startScanningForDevices = () => { };
+			appComponent = new AppComponent(evothings, ngZone);
+			appComponent.ngOnInit();
+		});
+
+		it('calls startScanningForDevices', () => {
+			spyOn(sensortag, "startScanningForDevices");
+			appComponent.scan();
+			expect(sensortag.startScanningForDevices).toHaveBeenCalled();
+		});
+
+		it('lists all the nearby sensor tags', () => {
+			appComponent.scan();
+			expect(appComponent.availableSensorTags.length).toEqual(2);
+		})
+
+	})
+
 
 	describe('on create', () => {
 
 		it('initializes sensor tag', () => {
 			spyOn(evothings.tisensortag, "createInstance").and.returnValue(sensortag);
 			let appComponent = new AppComponent(evothings, ngZone);
+			appComponent.ngOnInit();
 			expect(evothings.tisensortag.createInstance).toHaveBeenCalled();
 		});
 
 
 		it('initializes callbacks on the sensor tag', () => {
+			let appComponent = new AppComponent(evothings, ngZone);
 			spyOn(sensortag, "statusCallback").and.returnValue(sensortag);
 			spyOn(sensortag, "errorCallback").and.returnValue(sensortag);
 			spyOn(sensortag, "keypressCallback").and.returnValue(sensortag);
 			spyOn(sensortag, "temperatureCallback").and.returnValue(sensortag);
 			spyOn(sensortag, "humidityCallback").and.returnValue(sensortag);
-			let appComponent = new AppComponent(evothings, ngZone);
+			appComponent.ngOnInit();
 			expect(appComponent.sensortag.statusCallback).toHaveBeenCalled();
 			expect(appComponent.sensortag.errorCallback).toHaveBeenCalled();
 			expect(appComponent.sensortag.keypressCallback).toHaveBeenCalled();
@@ -61,8 +85,9 @@ describe('Appcomponent', () => {
 	describe('on click connect', () => {
 
 		it('calls connectToNearestDevice', () => {
-			spyOn(sensortag, "connectToNearestDevice");
 			let appComponent = new AppComponent(evothings, ngZone);
+			spyOn(sensortag, "connectToNearestDevice");
+			appComponent.ngOnInit();
 			appComponent.connect();
 			expect(appComponent.sensortag.connectToNearestDevice).toHaveBeenCalled();
 		});
@@ -74,6 +99,7 @@ describe('Appcomponent', () => {
 
 		it('should update status display to match', () => {
 			let appComponent = new AppComponent(evothings, ngZone);
+			appComponent.ngOnInit();
 			appComponent.statusHandler("SCANNING");
 			expect(appComponent.status).toBe("SCANNING");
 		});
@@ -92,6 +118,7 @@ describe('Appcomponent', () => {
 
 
 			let appComponent = new AppComponent(evothings, ngZone);
+			appComponent.ngOnInit();
 			appComponent.statusHandler("DEVICE_INFO_AVAILABLE");
 			expect(appComponent.deviceModel).toBe("TI Something");
 			expect(appComponent.firmwareData).toBe("Firmware 123");
@@ -148,6 +175,7 @@ describe('Appcomponent', () => {
 
 		beforeEach(() => {
 			appComponent = new AppComponent(evothings, ngZone);
+			appComponent.ngOnInit();
 			sensortag.getTemperatureValues = function() {
 				return {
 					ambientTemperature: 75,
@@ -168,6 +196,7 @@ describe('Appcomponent', () => {
 
 		beforeEach(() => {
 			appComponent = new AppComponent(evothings, ngZone);
+			appComponent.ngOnInit();
 			sensortag.getHumidityValues = function() {
 				return {
 					humidityTemperature: 75,
