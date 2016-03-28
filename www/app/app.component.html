@@ -14,6 +14,18 @@
         <span class="color_softred">Please upgrade the firmware of your SensorTag.</span>
     </p>
 
+    <button (click)="scan()" class="charcoal">
+        Scan
+    </button>
+
+    <button (click)="stopScanning()" class="charcoal">
+        Stop Scanning
+    </button>
+
+    <div *ngFor="#device of availableSensorTags">
+        <div>Found Device {{device.address}}</div>
+    </div>
+
     <button (click)="connect()" class="green">
         Connect
     </button>

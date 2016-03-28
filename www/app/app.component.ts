@@ -14,7 +14,8 @@ export class AppComponent implements OnInit {
 	deviceModel: string;
 	needsUpgrade: boolean;
 
-	availableSensorTags: [any];
+	availableSensorTags;
+	sensorTagAddresses;
 
 	// sensor data
 	keypressData: string;
@@ -29,6 +30,9 @@ export class AppComponent implements OnInit {
 
   	ngOnInit() {
     	var self = this;
+
+		this.availableSensorTags = [];
+		this.sensorTagAddresses = [];
 
         // Create SensorTag CC2650 instance.
         this.sensortag = this._evothings.tisensortag.createInstance(
@@ -75,9 +79,25 @@ export class AppComponent implements OnInit {
 
     scan() {
 		this.sensortag.startScanningForDevices((foundDevice) => {
-			alert('found device');
+			this.onFoundDevice(foundDevice);
 		})
-    	this.availableSensorTags = [1, 2]
+    }
+
+
+    stopScanning() {
+		this.sensortag.stopScanningForDevices((foundDevice) => {
+			this.onFoundDevice(foundDevice);
+		})
+    }
+
+    onFoundDevice(device) {
+		console.log('found something');
+    	if (this.sensortag.deviceIsSensorTag(device)) {
+    		if (this.sensorTagAddresses.indexOf(device.address) === -1) {
+				this.sensorTagAddresses.push(device.address);
+				this.availableSensorTags.push(device);
+    		}
+    	}
     }
 
     connect() {

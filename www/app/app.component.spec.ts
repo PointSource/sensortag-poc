@@ -13,7 +13,6 @@ beforeEach(() => {
 		temperatureCallback: () => sensortag,
 		humidityCallback: () => sensortag,
 		connectToNearestDevice: () => {},
-		isLuxometerAvailable: () => true,
 		celsiusToFahrenheit: (celsius) => {
 			return (celsius * 9 / 5) + 32
 		}
@@ -47,12 +46,82 @@ describe('Appcomponent', () => {
 			expect(sensortag.startScanningForDevices).toHaveBeenCalled();
 		});
 
-		it('lists all the nearby sensor tags', () => {
-			appComponent.scan();
-			expect(appComponent.availableSensorTags.length).toEqual(2);
+		describe("when foundSensorTag fires", () => {
+			beforeEach(() => {
+				expect(appComponent.availableSensorTags.length).toEqual(0);
+				sensortag.deviceIsSensorTag = (device) => {
+					return device.model === "CC2650"
+				}
+			})
+
+			it('if this is NOT a sensortag, should NOT add device to list', () => {
+				appComponent.onFoundDevice({
+					type: "SensorTag",
+					model: "Wrong Model",
+					address: "address123"
+				});
+				expect(appComponent.availableSensorTags.length).toEqual(0);
+			});
+
+			it('if this is a sensortag, should add device to list', () => {
+				appComponent.onFoundDevice({
+					type: "SensorTag",
+					model: "CC2650",
+					address: "address123"
+				});
+				expect(appComponent.availableSensorTags.length).toEqual(1);
+			});
+
+
+			it('if it finds the same device twice, it should NOT add it over again', () => {
+				appComponent.onFoundDevice({
+					type: "SensorTag",
+					model: "CC2650",
+					address: "address123"
+				}); 
+				appComponent.onFoundDevice({
+					type: "SensorTag",
+					model: "CC2650",
+					address: "address123"
+				});
+				expect(appComponent.availableSensorTags.length).toEqual(1);
+			});
+
+			it('if it finds the two different devices, it should add both', () => {
+				appComponent.onFoundDevice({
+					type: "SensorTag",
+					model: "CC2650",
+					address: "address123"
+				});
+				appComponent.onFoundDevice({
+					type: "SensorTag",
+					model: "CC2650",
+					address: "address456"
+				});
+				expect(appComponent.availableSensorTags.length).toEqual(2);
+			});
 		})
 
 	})
+
+
+	describe('on stop scan', () => {
+		let appComponent;
+
+		beforeEach(() => {
+			sensortag.stopScanningForDevices = () => { };
+			appComponent = new AppComponent(evothings, ngZone);
+			appComponent.ngOnInit();
+		});
+
+
+		it('calls stopScanningForDevices', () => {
+			spyOn(sensortag, "stopScanningForDevices");
+			appComponent.stopScanning();
+			expect(sensortag.stopScanningForDevices).toHaveBeenCalled();
+		});
+
+	});
 
 
 	describe('on create', () => {
