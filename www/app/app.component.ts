@@ -14,14 +14,15 @@ export class AppComponent implements OnInit {
 	deviceModel: string;
 	needsUpgrade: boolean;
 
-	availableSensorTags;
-	sensorTagAddresses;
+	availableDevices;
+	deviceAddresses;
+	connectedSensorTags;
+	connectedSensorData;
 
 	// sensor data
 	keypressData: string;
 	currentKey: number;
 	temperatureData: string;
-	humidityData: string;
 
   	constructor(
 		@Inject('Evothings') private _evothings: Evothings,
@@ -29,16 +30,34 @@ export class AppComponent implements OnInit {
   	) { }
 
   	ngOnInit() {
-    	var self = this;
+		var self = this;
 
-		this.availableSensorTags = [];
-		this.sensorTagAddresses = [];
+		this.resetDeviceLists();
 
         // Create SensorTag CC2650 instance.
         this.sensortag = this._evothings.tisensortag.createInstance(
             this._evothings.tisensortag.CC2650_BLUETOOTH_SMART)
 
-	        
+		this.sensortag
+            .statusCallback(function(status) {
+				self._ngZone.run(function() {
+					self.statusHandler(status);
+				});
+            })
+            .errorCallback(function(error) {
+				self._ngZone.run(function() {
+					self.errorHandler(error);
+				});
+            })
+    }
+
+    createSensorTag(device) {
+		var self = this;
+
+        // Create SensorTag CC2650 instance.
+        var sensortag = this._evothings.tisensortag.createInstance(
+            this._evothings.tisensortag.CC2650_BLUETOOTH_SMART)
+
         //
         // Here sensors are set up.
         //
@@ -49,37 +68,38 @@ export class AppComponent implements OnInit {
         // Several of the sensors take a millisecond update interval
         // as the second parameter.
         //
-        this.sensortag
+        sensortag
             .statusCallback(function(status) {
-            	self._ngZone.run(function() {
-            		self.statusHandler(status);
-            	});
+				self._ngZone.run(function() {
+					self.statusHandler(status);
+				});
             })
             .errorCallback(function(error) {
-            	self._ngZone.run(function() {
-            		self.errorHandler(error);
-            	});
-            })
-            .keypressCallback(function(error) {
 				self._ngZone.run(function() {
-					self.keypressHandler(error);
+					self.errorHandler(error);
 				});
             })
-			.temperatureCallback(function(data) {
-				self._ngZone.run(function() {
-					self.temperatureHandler(data);
-				});
-			}, 1000)
+   //          .keypressCallback(function(error) {
+			// 	self._ngZone.run(function() {
+			// 		self.keypressHandler(error);
+			// 	});
+   //          })
+			// .temperatureCallback(function(data) {
+			// 	self._ngZone.run(function() {
+			// 		self.temperatureHandler(data);
+			// 	});
+			// }, 1000)
 			.humidityCallback(function(data) {
 				self._ngZone.run(function() {
-					self.humidityHandler(data);
+					self.humidityHandler(device, data);
 				});
 			}, 1000)
+
+		return sensortag;
     }
 
     scan() {
-		this.sensorTagAddresses = [];
-		this.availableSensorTags = [];
+		this.resetDeviceLists();
 		this.sensortag.startScanningForDevices((foundDevice) => {
 			this.onFoundDevice(foundDevice);
 		});
@@ -87,6 +107,13 @@ export class AppComponent implements OnInit {
 		setTimeout(() => { this.stopScanning() }, 1000);
     }
 
+    resetDeviceLists() {
+
+		this.availableDevices = [];
+		this.deviceAddresses = [];
+		this.connectedSensorTags = [];
+		this.connectedSensorData = [];
+    }
 
     stopScanning() {
 		this.sensortag.stopScanningForDevices((foundDevice) => {
@@ -96,21 +123,22 @@ export class AppComponent implements OnInit {
 
     onFoundDevice(device) {
     	if (this.sensortag.deviceIsSensorTag(device)) {
-			if (this.sensorTagAddresses.indexOf(device.address) === -1) {
-				this.sensorTagAddresses.push(device.address);
-				this.availableSensorTags.push(device);
+			if (this.deviceAddresses.indexOf(device.address) === -1) {
+				this.deviceAddresses.push(device.address);
+				this.availableDevices.push(device);
     		}
     	}
     }
 
     connectToDevice(device) {
-		this.sensortag.connectToDevice(device);
+		var sensortag = this.createSensorTag(device);
+		this.connectedSensorTags[device.address] = sensortag;
+		this.connectedSensorTags[device.address].connectToDevice(device);
+		this.connectedSensorData[device.address] = {
+			humidityData: {}
+        }
     }
 
-    connect() {
-    	this.status = "connect";
-        this.sensortag.connectToNearestDevice();
-    }
 
     disconnect() {
 		this.resetSensorDisplayValues();
@@ -162,53 +190,56 @@ export class AppComponent implements OnInit {
         }
     }
 
-    keypressHandler(data) {
-
-		this.currentKey = data[0];
-
-		this.keypressData = "raw: 0x" + this.bufferToHexStr(data, 0, 1)
-    }
-
-    temperatureHandler(data) {
-        var values = this.sensortag.getTemperatureValues(data)
-        var ac = values.ambientTemperature
-        var af = this.sensortag.celsiusToFahrenheit(ac)
-        var tc = values.targetTemperature
-        var tf = this.sensortag.celsiusToFahrenheit(tc)
-
-        var temperatureString =
-            (tc >= 0 ? '+' : '') + tc.toFixed(2) + ' C ' +
-            '(' + (tf >= 0 ? '+' : '') + tf.toFixed(2) + ' F) ' +
-            (ac >= 0 ? '+' : '') + ac.toFixed(2) + ' C ' +
-            '(' + (af >= 0 ? '+' : '') + af.toFixed(2) + ' F) [amb]'
-
-
-		this.temperatureData = temperatureString;
-    }
-
-    humidityHandler(data) {
-        var values = this.sensortag.getHumidityValues(data)
+    humidityHandler(device, data) {
+    	console.log(data);
+        var values = this.connectedSensorTags[device.address].getHumidityValues(data)
         
         // Calculate the humidity temperature (C and F).
         var tc = values.humidityTemperature
-        var tf = this.sensortag.celsiusToFahrenheit(tc)
+        var tf = this.connectedSensorTags[device.address].celsiusToFahrenheit(tc)
 
         // Calculate the relative humidity.
         var h = values.relativeHumidity
 
-
-		// Prepare the information to display.
-        var humidityString =
-            //'raw: <span style="font-family: monospace;">0x' +
-            //  bufferToHexStr(data, 0, 4) + '</span><br/>'
-            (tc >= 0 ? '+' : '') + tc.toFixed(2) + ' C ' +
-            '(' + (tf >= 0 ? '+' : '') + tf.toFixed(2) + ' F) ' +
-            (h >= 0 ? '+' : '') + h.toFixed(2) + '% RH'
-
-
-
-		this.humidityData = humidityString;
+        this.connectedSensorData[device.address] = {
+			humidityData: {
+				humidityTemperature: tc,
+				humidityTemperatureFahrenheit: tf,
+				relativeHumidity: h
+			}
+        }
     }
+
+
+  //   connect() {
+		// this.status = "connect";
+  //       this.sensortag.connectToNearestDevice();
+  //   }
+
+
+  //   keypressHandler(data) {
+
+		// this.currentKey = data[0];
+
+		// this.keypressData = "raw: 0x" + this.bufferToHexStr(data, 0, 1)
+  //   }
+
+  //   temperatureHandler(data) {
+  //       var values = this.sensortag.getTemperatureValues(data)
+  //       var ac = values.ambientTemperature
+  //       var af = this.sensortag.celsiusToFahrenheit(ac)
+  //       var tc = values.targetTemperature
+  //       var tf = this.sensortag.celsiusToFahrenheit(tc)
+
+  //       var temperatureString =
+  //           (tc >= 0 ? '+' : '') + tc.toFixed(2) + ' C ' +
+  //           '(' + (tf >= 0 ? '+' : '') + tf.toFixed(2) + ' F) ' +
+  //           (ac >= 0 ? '+' : '') + ac.toFixed(2) + ' C ' +
+  //           '(' + (af >= 0 ? '+' : '') + af.toFixed(2) + ' F) [amb]'
+
+
+		// this.temperatureData = temperatureString;
+  //   }
 
     resetSensorDisplayValues() {
         // Clear current values.
@@ -218,7 +249,6 @@ export class AppComponent implements OnInit {
         this.firmwareData = '?';
         this.keypressData = blank;
         this.temperatureData = blank;
-        this.humidityData = blank;
         this.currentKey = 0;
     }
 

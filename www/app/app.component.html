@@ -1,37 +1,47 @@
 <h1>{{title}}</h1> 
 
-    <p>
-        <strong>Status:</strong> <span id="StatusData">{{status}}</span>
-    </p>
+<p>
+    <strong>Status:</strong> <span id="StatusData">{{status}}</span>
+</p>
 
-    <h2>Device info:</h2>
-    <p>
-        SensorTag device model: <span id="DeviceModel">{{deviceModel}}</span><br />
-        Firmware version: <span id="FirmwareData">{{firmwareData}}</span>
-    </p>
+<h2>Device info:</h2>
+<p>
+    SensorTag device model: <span id="DeviceModel">{{deviceModel}}</span><br />
+    Firmware version: <span id="FirmwareData">{{firmwareData}}</span>
+</p>
 
-    <p id="upgradeNotice" class="hidden">
-        <span class="color_softred">Please upgrade the firmware of your SensorTag.</span>
-    </p>
+<p id="upgradeNotice" class="hidden">
+    <span class="color_softred">Please upgrade the firmware of your SensorTag.</span>
+</p>
 
-    <button (click)="scan()" class="charcoal">
-        Scan
-    </button>
+<button (click)="scan()" class="charcoal">
+    Scan
+</button>
 
-    <button (click)="disconnect()" class="charcoal">
-        Disconnect
-    </button>
+<button (click)="disconnect()" class="charcoal">
+    Disconnect
+</button>
 
-    <div *ngFor="#device of availableSensorTags">
-        <div>Found Device {{device.address}}</div>
-        <button (click)="connectToDevice(device)">Connect to device</button>
+<div *ngFor="#device of availableDevices">
+    <h3>{{device.address}}</h3>
+    <button (click)="connectToDevice(device)">Connect</button>
+
+    <div>Sensor Data</div>
+    <div *ngIf="connectedSensorData[device.address]">Humidity Data: 
+        <div>
+            {{connectedSensorData[device.address].humidityData.humidityTemperature}} C
+        </div>
+        <div>
+            {{connectedSensorData[device.address].humidityData.humidityTemperatureFahrenheit}} F
+        </div>
+        <div>
+            {{connectedSensorData[device.address].humidityData.relativeHumidity}}% humidity
+        </div>
     </div>
+</div>
 
-    <h2>Humidity:</h2>
-    <p>
-        <span id="HumidityData">{{humidityData}}</span>
-    </p>
 
+<!-- 
     <h2>Temperature:</h2>
     <p>
         <span id="TemperatureData">{{temperatureData}}</span>
@@ -44,7 +54,6 @@
         </p>
     </div>
 
-<!-- 
     <h2>Accelerometer:</h2>
     <p>
         <span id="AccelerometerData">[Waiting for value]</span>
