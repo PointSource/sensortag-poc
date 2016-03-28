@@ -72,7 +72,7 @@ describe('Appcomponent', () => {
 
 		describe("when foundSensorTag fires", () => {
 			beforeEach(() => {
-				expect(appComponent.availableDevices.length).toEqual(0);
+				expect(appComponent.knownDevices.length).toEqual(0);
 				sensortag.deviceIsSensorTag = (device) => {
 					return device.model === "CC2650"
 				}
@@ -84,7 +84,7 @@ describe('Appcomponent', () => {
 					model: "Wrong Model",
 					address: "address123"
 				});
-				expect(appComponent.availableDevices.length).toEqual(0);
+				expect(appComponent.knownDevices.length).toEqual(0);
 			});
 
 			it('if this is a sensortag, should add device to list', () => {
@@ -93,7 +93,7 @@ describe('Appcomponent', () => {
 					model: "CC2650",
 					address: "address123"
 				});
-				expect(appComponent.availableDevices.length).toEqual(1);
+				expect(appComponent.knownDevices.length).toEqual(1);
 			});
 
 
@@ -108,7 +108,7 @@ describe('Appcomponent', () => {
 					model: "CC2650",
 					address: "address123"
 				});
-				expect(appComponent.availableDevices.length).toEqual(1);
+				expect(appComponent.knownDevices.length).toEqual(1);
 			});
 
 
@@ -123,7 +123,7 @@ describe('Appcomponent', () => {
 					model: "CC2650",
 					address: "address456"
 				});
-				expect(appComponent.availableDevices.length).toEqual(2);
+				expect(appComponent.knownDevices.length).toEqual(2);
 			});
 		})
 

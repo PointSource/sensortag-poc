@@ -14,9 +14,10 @@ export class AppComponent implements OnInit {
 	deviceModel: string;
 	needsUpgrade: boolean;
 
-	availableDevices;
+	// List of devices
+	knownDevices;
 	deviceAddresses;
-	connectedSensorTags;
+	connectedDevices;
 	connectedSensorData;
 
 	// sensor data
@@ -109,9 +110,9 @@ export class AppComponent implements OnInit {
 
     resetDeviceLists() {
 
-		this.availableDevices = [];
+		this.knownDevices = [];
 		this.deviceAddresses = [];
-		this.connectedSensorTags = [];
+		this.connectedDevices = [];
 		this.connectedSensorData = [];
     }
 
@@ -125,15 +126,15 @@ export class AppComponent implements OnInit {
     	if (this.sensortag.deviceIsSensorTag(device)) {
 			if (this.deviceAddresses.indexOf(device.address) === -1) {
 				this.deviceAddresses.push(device.address);
-				this.availableDevices.push(device);
+				this.knownDevices.push(device);
     		}
     	}
     }
 
     connectToDevice(device) {
 		var sensortag = this.createSensorTag(device);
-		this.connectedSensorTags[device.address] = sensortag;
-		this.connectedSensorTags[device.address].connectToDevice(device);
+		this.connectedDevices[device.address] = sensortag;
+		this.connectedDevices[device.address].connectToDevice(device);
 		this.connectedSensorData[device.address] = {
 			humidityData: {}
         }
@@ -192,11 +193,11 @@ export class AppComponent implements OnInit {
 
     humidityHandler(device, data) {
     	console.log(data);
-        var values = this.connectedSensorTags[device.address].getHumidityValues(data)
+        var values = this.connectedDevices[device.address].getHumidityValues(data)
         
         // Calculate the humidity temperature (C and F).
         var tc = values.humidityTemperature
-        var tf = this.connectedSensorTags[device.address].celsiusToFahrenheit(tc)
+        var tf = this.connectedDevices[device.address].celsiusToFahrenheit(tc)
 
         // Calculate the relative humidity.
         var h = values.relativeHumidity
