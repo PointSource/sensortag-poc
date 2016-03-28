@@ -78,9 +78,13 @@ export class AppComponent implements OnInit {
     }
 
     scan() {
+		this.sensorTagAddresses = [];
+		this.availableSensorTags = [];
 		this.sensortag.startScanningForDevices((foundDevice) => {
 			this.onFoundDevice(foundDevice);
-		})
+		});
+
+		setTimeout(() => { this.stopScanning() }, 1000);
     }
 
 
@@ -92,7 +96,7 @@ export class AppComponent implements OnInit {
 
     onFoundDevice(device) {
     	if (this.sensortag.deviceIsSensorTag(device)) {
-    		if (this.sensorTagAddresses.indexOf(device.address) === -1) {
+			if (this.sensorTagAddresses.indexOf(device.address) === -1) {
 				this.sensorTagAddresses.push(device.address);
 				this.availableSensorTags.push(device);
     		}
