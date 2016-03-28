@@ -16,7 +16,7 @@ export class AppComponent implements OnInit {
 
 	// List of devices
 	knownDevices;
-	deviceAddresses;
+	connectedDeviceAddresses;
 	connectedDevices;
 	connectedSensorData;
 
@@ -111,7 +111,7 @@ export class AppComponent implements OnInit {
     resetDeviceLists() {
 
 		this.knownDevices = [];
-		this.deviceAddresses = [];
+		this.connectedDeviceAddresses = [];
 		this.connectedDevices = [];
 		this.connectedSensorData = [];
     }
@@ -124,8 +124,8 @@ export class AppComponent implements OnInit {
 
     onFoundDevice(device) {
     	if (this.sensortag.deviceIsSensorTag(device)) {
-			if (this.deviceAddresses.indexOf(device.address) === -1) {
-				this.deviceAddresses.push(device.address);
+			if (this.connectedDeviceAddresses.indexOf(device.address) === -1) {
+				this.connectedDeviceAddresses.push(device.address);
 				this.knownDevices.push(device);
     		}
     	}
