@@ -91,7 +91,6 @@ export class AppComponent implements OnInit {
     }
 
     onFoundDevice(device) {
-		console.log('found something');
     	if (this.sensortag.deviceIsSensorTag(device)) {
     		if (this.sensorTagAddresses.indexOf(device.address) === -1) {
 				this.sensorTagAddresses.push(device.address);
@@ -100,13 +99,18 @@ export class AppComponent implements OnInit {
     	}
     }
 
+    connectToDevice(device) {
+		this.sensortag.connectToDevice(device);
+    }
+
     connect() {
     	this.status = "connect";
         this.sensortag.connectToNearestDevice();
     }
 
     disconnect() {
-    	alert(this.status);
+		this.resetSensorDisplayValues();
+		this.sensortag.disconnectDevice();
     }
 
 

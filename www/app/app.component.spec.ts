@@ -31,6 +31,35 @@ beforeEach(() => {
 describe('Appcomponent', () => {
 	let ngZone: NgZone;
 
+
+	describe('on create', () => {
+
+		it('initializes sensor tag', () => {
+			spyOn(evothings.tisensortag, "createInstance").and.returnValue(sensortag);
+			let appComponent = new AppComponent(evothings, ngZone);
+			appComponent.ngOnInit();
+			expect(evothings.tisensortag.createInstance).toHaveBeenCalled();
+		});
+
+
+		it('initializes callbacks on the sensor tag', () => {
+			let appComponent = new AppComponent(evothings, ngZone);
+			spyOn(sensortag, "statusCallback").and.returnValue(sensortag);
+			spyOn(sensortag, "errorCallback").and.returnValue(sensortag);
+			spyOn(sensortag, "keypressCallback").and.returnValue(sensortag);
+			spyOn(sensortag, "temperatureCallback").and.returnValue(sensortag);
+			spyOn(sensortag, "humidityCallback").and.returnValue(sensortag);
+			appComponent.ngOnInit();
+			expect(appComponent.sensortag.statusCallback).toHaveBeenCalled();
+			expect(appComponent.sensortag.errorCallback).toHaveBeenCalled();
+			expect(appComponent.sensortag.keypressCallback).toHaveBeenCalled();
+			expect(appComponent.sensortag.temperatureCallback).toHaveBeenCalled();
+			expect(appComponent.sensortag.humidityCallback).toHaveBeenCalled();
+		});
+	});
+
+
+
 	describe('on scan', () => {
 		let appComponent;
 
@@ -87,6 +116,7 @@ describe('Appcomponent', () => {
 				expect(appComponent.availableSensorTags.length).toEqual(1);
 			});
 
+
 			it('if it finds the two different devices, it should add both', () => {
 				appComponent.onFoundDevice({
 					type: "SensorTag",
@@ -124,31 +154,27 @@ describe('Appcomponent', () => {
 	});
 
 
-	describe('on create', () => {
+	describe('on connect to device', () => {
+		let appComponent;
 
-		it('initializes sensor tag', () => {
-			spyOn(evothings.tisensortag, "createInstance").and.returnValue(sensortag);
-			let appComponent = new AppComponent(evothings, ngZone);
+		beforeEach(() => {
+			sensortag.connectToDevice = () => { };
+			appComponent = new AppComponent(evothings, ngZone);
 			appComponent.ngOnInit();
-			expect(evothings.tisensortag.createInstance).toHaveBeenCalled();
 		});
 
 
-		it('initializes callbacks on the sensor tag', () => {
-			let appComponent = new AppComponent(evothings, ngZone);
-			spyOn(sensortag, "statusCallback").and.returnValue(sensortag);
-			spyOn(sensortag, "errorCallback").and.returnValue(sensortag);
-			spyOn(sensortag, "keypressCallback").and.returnValue(sensortag);
-			spyOn(sensortag, "temperatureCallback").and.returnValue(sensortag);
-			spyOn(sensortag, "humidityCallback").and.returnValue(sensortag);
-			appComponent.ngOnInit();
-			expect(appComponent.sensortag.statusCallback).toHaveBeenCalled();
-			expect(appComponent.sensortag.errorCallback).toHaveBeenCalled();
-			expect(appComponent.sensortag.keypressCallback).toHaveBeenCalled();
-			expect(appComponent.sensortag.temperatureCallback).toHaveBeenCalled();
-			expect(appComponent.sensortag.humidityCallback).toHaveBeenCalled();
+		it('calls connectToDevice', () => {
+			spyOn(sensortag, "connectToDevice");
+			appComponent.connectToDevice({
+				type: "SensorTag",
+				model: "CC2650",
+				address: "address456"
+			});
+			expect(sensortag.connectToDevice).toHaveBeenCalled();
 		});
-	});
+	})
+
 
 
 	describe('on click connect', () => {
@@ -163,6 +189,21 @@ describe('Appcomponent', () => {
 
 	});
 
+
+	describe('on click disconnect', () => {
+
+		it('calls connectToNearestDevice', () => {
+			let appComponent = new AppComponent(evothings, ngZone);
+			sensortag.disconnectDevice = () => { };
+			spyOn(sensortag, "disconnectDevice");
+			spyOn(appComponent, "resetSensorDisplayValues");
+			appComponent.ngOnInit();
+			appComponent.disconnect();
+			expect(appComponent.resetSensorDisplayValues).toHaveBeenCalled();
+			expect(appComponent.sensortag.disconnectDevice).toHaveBeenCalled();
+		});
+
+	});
 
 	describe('on status update', () => {
 

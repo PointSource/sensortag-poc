@@ -24,11 +24,8 @@
 
     <div *ngFor="#device of availableSensorTags">
         <div>Found Device {{device.address}}</div>
+        <button (click)="connectToDevice(device)">Connect to device</button>
     </div>
-
-    <button (click)="connect()" class="green">
-        Connect
-    </button>
 
     <button (click)="disconnect()" class="charcoal">
         Disconnect
