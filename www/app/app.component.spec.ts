@@ -290,19 +290,6 @@ describe('Appcomponent', () => {
 	});
 
 
-
-	// xdescribe('on click connect', () => {
-
-	// 	it('calls connectToNearestDevice', () => {
-	// 		let appComponent = new AppComponent(evothings, ngZone);
-	// 		spyOn(sensortag, "connectToNearestDevice");
-	// 		appComponent.ngOnInit();
-	// 		appComponent.connect();
-	// 		expect(appComponent.sensortag.connectToNearestDevice).toHaveBeenCalled();
-	// 	});
-
-	// });
-
 	// xdescribe('on keypress', () => {
 	// 	let appComponent;
 

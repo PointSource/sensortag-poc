@@ -211,12 +211,6 @@ export class AppComponent implements OnInit {
     }
 
 
-  //   connect() {
-		// this.status = "connect";
-  //       this.sensortag.connectToNearestDevice();
-  //   }
-
-
   //   keypressHandler(data) {
 
 		// this.currentKey = data[0];
