@@ -12,9 +12,9 @@ export class AppComponent implements OnInit {
     objIOT: any;
   	sensortag: any;
   	status: string;
+    deviceAddress: string;
 	firmwareData: string;
 	deviceModel: string;
-	needsUpgrade: boolean;
 
 	// List of devices
 	knownDevices;
@@ -60,10 +60,10 @@ export class AppComponent implements OnInit {
 
         this.objIOT
             .onConnectSuccessCallback(() => {
-                alert("connect success")
+                // alert("connect success")
             })
             .onConnectFailureCallback(() => {
-                alert("connect fail")
+                // alert("connect fail")
             })
             .connectToFoundationCloud() 
     }
@@ -102,22 +102,41 @@ export class AppComponent implements OnInit {
     }
 
     connectToNearestDevice() {
-        var sensorTag = this.initSensorTag();
+        var self = this;
+        var sensortag = this.initSensorTag();
 
-        sensorTag.connectToNearestDevice();
+        sensortag
+            .statusCallback(function(status, data) {
+                self._ngZone.run(function() {
+                    if ('DEVICE_INFO_AVAILABLE' == status) {
+                        self.deviceConnectedHandler(sensortag, self.connectedDevices.length);
+                    }
+
+                    self.status = status;
+                });
+            })
+            .errorCallback(function(error) {
+                self._ngZone.run(function() {
+                    self.errorHandler(error);
+                });
+            })
+
+        sensortag.connectToNearestDevice();
     }
 
-    scan() {
-		this.resetDeviceLists();
-		this.sensortag.startScanningForDevices((foundDevice) => {
-			this.onFoundDevice(foundDevice);
-		});
-
-		setTimeout(() => { this.stopScanning() }, 1000);
+    deviceConnectedHandler(sensortag, index) {
+        var self = this;
+        var deviceAddress = sensortag.getDeviceAddress();
+        sensortag
+            .humidityCallback(function(data) {
+                self._ngZone.run(function() {
+                    self.humidityHandler(index, data);
+                });
+            }, 1000)
+        this.connectedDevices.push(sensortag);
     }
 
     resetDeviceLists() {
-
 		this.knownDevices = [];
 		this.connectedDeviceAddresses = [];
 		this.connectedDevices = [];
@@ -165,6 +184,7 @@ export class AppComponent implements OnInit {
             // Show device model and firmware version.
             this.deviceModel = this.sensortag.getDeviceModel();
             this.firmwareData = this.sensortag.getFirmwareString();
+            this.deviceAddress = this.sensortag.getDeviceAddress();
         }
 
         this.status = status;
@@ -182,12 +202,12 @@ export class AppComponent implements OnInit {
         }
     }
 
-    humidityHandler(device, data) {
-        var values = this.connectedDevices[device.address].getHumidityValues(data)
+    humidityHandler(index, data) {
+        var values = this.connectedDevices[index].getHumidityValues(data)
         
         // Calculate the humidity temperature (C and F).
         var tc = values.humidityTemperature
-        var tf = this.connectedDevices[device.address].celsiusToFahrenheit(tc)
+        var tf = this.connectedDevices[index].celsiusToFahrenheit(tc)
 
         // Calculate the relative humidity.
         var h = values.relativeHumidity
@@ -199,11 +219,11 @@ export class AppComponent implements OnInit {
         }
 
 
-        this.connectedSensorData[device.address] = {
+        this.connectedSensorData[index] = {
 			humidityData: humidityData
         }
 
-        // here we publish event to the IoTF
+        // Publish event to the IoTF
         this.objIOT.publishToFoundationCloud({
             humidityData: humidityData
         });

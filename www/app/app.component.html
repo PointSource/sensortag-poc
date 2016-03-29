@@ -7,39 +7,35 @@
 </div>
 
 <div class="row columns">
-    
-    <button (click)="scan()" class="expanded large button">
-        Scan
-    </button>
 
+    <div class="callout secondary">
+      <h5>Status {{status}}</h5>
+      <p>Address {{deviceAddress}}</p>
+      <p>Firmware {{firmwareData}}</p>
+      <p>Model {{deviceModel}}</p>
+    </div>
+    
 
     <button (click)="connectToNearestDevice()" class="expanded large button">
         Connect to Sensor
     </button>
 
-    <div *ngFor="#device of knownDevices">
-        <h3>{{device.address}}</h3>
-        
-        <div class="expanded button-group">
-            <button (click)="connectToDevice(device)" class="button">Connect</button>
 
-            <button (click)="disconnectFromDevice(device)" class="button secondary">Disconnect</button>
-        </div>
+    <div *ngFor="#data of connectedSensorData">
 
         <div>Sensor Data</div>
-        <div *ngIf="connectedSensorData[device.address]">Humidity Data: 
+        <div>Humidity Data: 
             <div>
-                {{connectedSensorData[device.address].humidityData.humidityTemperature}} C
+                {{data.humidityData.humidityTemperature}} C
             </div>
             <div>
-                {{connectedSensorData[device.address].humidityData.humidityTemperatureFahrenheit}} F
+                {{data.humidityData.humidityTemperatureFahrenheit}} F
             </div>
             <div>
-                {{connectedSensorData[device.address].humidityData.relativeHumidity}}% humidity
+                {{data.humidityData.relativeHumidity}}% humidity
             </div>
         </div>
     </div>
-</div>
 
 
 

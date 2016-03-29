@@ -90,76 +90,105 @@ describe('Appcomponent', () => {
 		});
 	});
 
-	describe('on scan', () => {
+	describe('when device is connected', () => {
+
 		beforeEach(() => {
-			sensortag.startScanningForDevices = () => { };
 			appComponent.ngOnInit();
-		});
-
-		it('calls startScanningForDevices', () => {
-			spyOn(sensortag, "startScanningForDevices");
-			appComponent.scan();
-			expect(sensortag.startScanningForDevices).toHaveBeenCalled();
-		});
-
-		describe("when foundSensorTag fires", () => {
-			beforeEach(() => {
-				expect(appComponent.knownDevices.length).toEqual(0);
-				sensortag.deviceIsSensorTag = (device) => {
-					return device.model === "CC2650"
-				}
-			})
-
-			it('if this is NOT a sensortag, should NOT add device to list', () => {
-				appComponent.onFoundDevice({
-					type: "SensorTag",
-					model: "Wrong Model",
-					address: "address123"
-				});
-				expect(appComponent.knownDevices.length).toEqual(0);
-			});
-
-			it('if this is a sensortag, should add device to list', () => {
-				appComponent.onFoundDevice({
-					type: "SensorTag",
-					model: "CC2650",
-					address: "address123"
-				});
-				expect(appComponent.knownDevices.length).toEqual(1);
-			});
-
-
-			it('if it finds the same device twice, it should NOT add it over again', () => {
-				appComponent.onFoundDevice({
-					type: "SensorTag",
-					model: "CC2650",
-					address: "address123"
-				}); 
-				appComponent.onFoundDevice({
-					type: "SensorTag",
-					model: "CC2650",
-					address: "address123"
-				});
-				expect(appComponent.knownDevices.length).toEqual(1);
-			});
-
-
-			it('if it finds the two different devices, it should add both', () => {
-				appComponent.onFoundDevice({
-					type: "SensorTag",
-					model: "CC2650",
-					address: "address123"
-				});
-				appComponent.onFoundDevice({
-					type: "SensorTag",
-					model: "CC2650",
-					address: "address456"
-				});
-				expect(appComponent.knownDevices.length).toEqual(2);
-			});
+			sensortag.getDeviceAddress = function() {
+				return "address123"
+			}
 		})
 
-	})
+		it('gets the address of the device', () => {
+			spyOn(sensortag, "getDeviceAddress");
+			appComponent.deviceConnectedHandler(sensortag);
+			expect(sensortag.getDeviceAddress).toHaveBeenCalled();
+		})
+
+		it('adds the sensortag to the list of connected devices', () => {
+			appComponent.deviceConnectedHandler(sensortag);
+			expect(appComponent.connectedDevices[0])
+				.toEqual(sensortag);
+		})
+
+		it('sets humidity callback on sensortag', () => {
+			spyOn(sensortag, "humidityCallback").and.returnValue(sensortag);
+			appComponent.deviceConnectedHandler(sensortag);
+			expect(sensortag.humidityCallback).toHaveBeenCalled();
+		})
+	});
+
+
+	// describe('on scan', () => {
+	// 	beforeEach(() => {
+	// 		sensortag.startScanningForDevices = () => { };
+	// 		appComponent.ngOnInit();
+	// 	});
+
+	// 	it('calls startScanningForDevices', () => {
+	// 		spyOn(sensortag, "startScanningForDevices");
+	// 		appComponent.scan();
+	// 		expect(sensortag.startScanningForDevices).toHaveBeenCalled();
+	// 	});
+
+	// 	describe("when foundSensorTag fires", () => {
+	// 		beforeEach(() => {
+	// 			expect(appComponent.knownDevices.length).toEqual(0);
+	// 			sensortag.deviceIsSensorTag = (device) => {
+	// 				return device.model === "CC2650"
+	// 			}
+	// 		})
+
+	// 		it('if this is NOT a sensortag, should NOT add device to list', () => {
+	// 			appComponent.onFoundDevice({
+	// 				type: "SensorTag",
+	// 				model: "Wrong Model",
+	// 				address: "address123"
+	// 			});
+	// 			expect(appComponent.knownDevices.length).toEqual(0);
+	// 		});
+
+	// 		it('if this is a sensortag, should add device to list', () => {
+	// 			appComponent.onFoundDevice({
+	// 				type: "SensorTag",
+	// 				model: "CC2650",
+	// 				address: "address123"
+	// 			});
+	// 			expect(appComponent.knownDevices.length).toEqual(1);
+	// 		});
+
+
+	// 		it('if it finds the same device twice, it should NOT add it over again', () => {
+	// 			appComponent.onFoundDevice({
+	// 				type: "SensorTag",
+	// 				model: "CC2650",
+	// 				address: "address123"
+	// 			}); 
+	// 			appComponent.onFoundDevice({
+	// 				type: "SensorTag",
+	// 				model: "CC2650",
+	// 				address: "address123"
+	// 			});
+	// 			expect(appComponent.knownDevices.length).toEqual(1);
+	// 		});
+
+
+	// 		it('if it finds the two different devices, it should add both', () => {
+	// 			appComponent.onFoundDevice({
+	// 				type: "SensorTag",
+	// 				model: "CC2650",
+	// 				address: "address123"
+	// 			});
+	// 			appComponent.onFoundDevice({
+	// 				type: "SensorTag",
+	// 				model: "CC2650",
+	// 				address: "address456"
+	// 			});
+	// 			expect(appComponent.knownDevices.length).toEqual(2);
+	// 		});
+	// 	})
+
+	// })
 
 
 	describe('on stop scan', () => {
@@ -245,6 +274,9 @@ describe('Appcomponent', () => {
 			sensortag.getFirmwareString = function() {
 				return "Firmware 123"
 			}
+			sensortag.getDeviceAddress = function() {
+				return "address123"
+			}
 			sensortag.isLuxometerAvailable = function() {
 				return true;
 			}
@@ -298,9 +330,7 @@ describe('Appcomponent', () => {
 			}
 
 			spyOn(appComponent.objIOT, "publishToFoundationCloud");
-			appComponent.humidityHandler({
-				address: 'address123'
-			});
+			appComponent.humidityHandler('address123');
 		})
 
 		it('should update humidityData for this device', () => {
