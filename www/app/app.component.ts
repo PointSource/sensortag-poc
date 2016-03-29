@@ -80,16 +80,7 @@ export class AppComponent implements OnInit {
 
         var sensortag = this.initSensorTag();
 
-        //
-        // Here sensors are set up.
-        //
-        // If you wish to use only one or a few sensors, just set up
-        // the ones you wish to use.
-        //
-        // First parameter to sensor function is the callback function.
-        // Several of the sensors take a millisecond update interval
-        // as the second parameter.
-        //
+        // Set up sensors
         sensortag
             .statusCallback(function(status) {
 				self._ngZone.run(function() {
@@ -101,16 +92,6 @@ export class AppComponent implements OnInit {
 					self.errorHandler(error);
 				});
             })
-   //          .keypressCallback(function(error) {
-			// 	self._ngZone.run(function() {
-			// 		self.keypressHandler(error);
-			// 	});
-   //          })
-			// .temperatureCallback(function(data) {
-			// 	self._ngZone.run(function() {
-			// 		self.temperatureHandler(data);
-			// 	});
-			// }, 1000)
 			.humidityCallback(function(data) {
 				self._ngZone.run(function() {
 					self.humidityHandler(device, data);

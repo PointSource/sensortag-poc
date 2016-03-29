@@ -12,6 +12,11 @@
         Scan
     </button>
 
+
+    <button (click)="connectToNearestDevice()" class="expanded large button">
+        Connect to Sensor
+    </button>
+
     <div *ngFor="#device of knownDevices">
         <h3>{{device.address}}</h3>
         
