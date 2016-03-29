@@ -17,65 +17,27 @@
     
 
     <button (click)="connectToNearestDevice()" class="expanded large button">
-        Connect to Sensor
+        Add a Sensor
     </button>
 
 
-    <div *ngFor="#data of connectedSensorData">
+    <div *ngFor="#device of connectedDevices; #i = index">
 
-        <div>Sensor Data</div>
-        <div>Humidity Data: 
+        <h4>Sensor {{device.address}}</h4>
+        <div>Status: {{device.status}}</div>
+        <div *ngIf="device.data.humidityData">
+            <h5>Humidity Data: </h5>
             <div>
-                {{data.humidityData.humidityTemperature}} C
+                {{device.data.humidityData.humidityTemperature}} C
             </div>
             <div>
-                {{data.humidityData.humidityTemperatureFahrenheit}} F
+                {{device.data.humidityData.humidityTemperatureFahrenheit}} F
             </div>
             <div>
-                {{data.humidityData.relativeHumidity}}% humidity
+                {{device.data.humidityData.relativeHumidity}}% humidity
             </div>
         </div>
+
+        <button (click)="disconnectFromDevice(i)" class="button secondary">Disconnect</button>
     </div>
-
-
-
-<!-- 
-    <h2>Temperature:</h2>
-    <p>
-        <span id="TemperatureData">{{temperatureData}}</span>
-    </p>
-
-    <div [ngClass]="{white: (currentKey === 0), red: (currentKey === 1), blue: (currentKey === 2), purple: (currentKey === 3)}">
-        <h2>Keypress:</h2>
-        <p>
-            <span id="KeypressData">{{keypressData}}</span>
-        </p>
-    </div>
-
-    <h2>Accelerometer:</h2>
-    <p>
-        <span id="AccelerometerData">[Waiting for value]</span>
-    </p>
-    <h2>Magnetometer:</h2>
-    <p>
-        <span id="MagnetometerData">[Waiting for value]</span>
-    </p>
-
-    <h2>Barometer:</h2>
-    <p>
-        <span id="BarometerData">[Waiting for value]</span>
-    </p>
-
-    <h2>Gyroscope:</h2>
-    <p>
-        <span id="GyroscopeData">[Waiting for value]</span>
-    </p>
-
-    <div id="Luxometer">
-        <h2>Luxometer:</h2>
-        <p>
-            <span id="LuxometerData">[Waiting for value]</span>
-        </p>
-    </div>
-
- -->
+</div>

@@ -92,7 +92,7 @@ describe('Appcomponent', () => {
 
 		it('adds the sensortag to the list of connected devices', () => {
 			appComponent.deviceConnectedHandler(sensortag);
-			expect(appComponent.connectedDevices[0])
+			expect(appComponent.connectedDevices[0].sensortag)
 				.toEqual(sensortag);
 		})
 
@@ -105,48 +105,49 @@ describe('Appcomponent', () => {
 
 	describe('on click disconnectFromDevice', () => {
 
-		it('calls disconnectDevice', () => {
-			appComponent.connectedDevices = {
-				"address123": {
-					disconnectDevice: () => {}
+		beforeEach(() => {
+			appComponent.connectedDevices = [{
+				sensortag: {
+					disconnectDevice: () => { }
 				}
-			};
-			spyOn(appComponent.connectedDevices["address123"], "disconnectDevice");
-			appComponent.disconnectFromDevice({
-				type: "SensorTag",
-				model: "CC2650",
-				address: "address123"
-			});
-			expect(appComponent.connectedDevices["address123"].disconnectDevice).toHaveBeenCalled();
+			}];
+		})
+
+		it('calls disconnectDevice', () => {
+			spyOn(appComponent.connectedDevices[0].sensortag, "disconnectDevice");
+			appComponent.disconnectFromDevice(0);
+			expect(appComponent.connectedDevices[0].sensortag.disconnectDevice).toHaveBeenCalled();
 		});
 
 	});
 
 	// update this to report to indv devices
-	xdescribe('on status update', () => {
+	describe('on status update', () => {
 
-		it('should update status display to match', () => {
+		beforeEach(() => {
 			appComponent.ngOnInit();
-			appComponent.statusHandler("SCANNING");
+			appComponent.connectedDevices = [{}]
+		})
+
+		it('should update device status', () => {
+			appComponent.statusHandler(0, "SCANNING");
+			expect(appComponent.connectedDevices[0].status).toBe("SCANNING");
+		});
+	});
+
+	// update this to report to indv devices
+	describe('on initial status update', () => {
+
+		it('should update main status', () => {
+			appComponent.initialStatusHandler(sensortag, "SCANNING");
 			expect(appComponent.status).toBe("SCANNING");
 		});
 
-
-		it('if status is DEVICE_INFO_AVAILABLE update firmware and device model information', () => {
-			sensortag.getDeviceModel = function () {
-				return "TI Something"
-			}
-			sensortag.getFirmwareString = function() {
-				return "Firmware 123"
-			}
-			sensortag.isLuxometerAvailable = function() {
-				return true;
-			}
-
+		it('if status is DEVICE_INFO_AVAILABLE add sensortag to connected devices', () => {
 			appComponent.ngOnInit();
-			appComponent.statusHandler("DEVICE_INFO_AVAILABLE");
-			expect(appComponent.deviceModel).toBe("TI Something");
-			expect(appComponent.firmwareData).toBe("Firmware 123");
+			spyOn(appComponent, "deviceConnectedHandler");
+			appComponent.initialStatusHandler(sensortag, "DEVICE_INFO_AVAILABLE");
+			expect(appComponent.deviceConnectedHandler).toHaveBeenCalled();
 		});
 
 	});
@@ -192,7 +193,7 @@ describe('Appcomponent', () => {
 		})
 
 		it('should update humidityData for this device', () => {
-			expect(appComponent.connectedSensorData[0].humidityData)
+			expect(appComponent.connectedDevices[0].data.humidityData)
 				.toEqual({
 					humidityTemperature: 75,
 					humidityTemperatureFahrenheit: 167,

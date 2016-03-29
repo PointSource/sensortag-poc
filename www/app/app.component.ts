@@ -8,24 +8,12 @@ import {Component, OnInit, Inject, NgZone} from 'angular2/core';
 	styleUrls: ['app/app.component.css']
 })
 export class AppComponent implements OnInit {
-	public title: string = "TI SensorTag CC2650";
+	public title: string = "SensorTag Demo";
     objIOT: any;
-  	sensortag: any;
   	status: string;
-    deviceAddress: string;
-	firmwareData: string;
-	deviceModel: string;
 
 	// List of devices
-	knownDevices;
-	connectedDeviceAddresses;
 	connectedDevices;
-	connectedSensorData;
-
-	// sensor data
-	keypressData: string;
-	currentKey: number;
-	temperatureData: string;
 
   	constructor(
         @Inject('IoTFoundationLib') private _iotfoundationlib,
@@ -63,13 +51,9 @@ export class AppComponent implements OnInit {
         var sensortag = this.initSensorTag();
 
         sensortag
-            .statusCallback(function(status, data) {
+            .statusCallback(function(status) {
                 self._ngZone.run(function() {
-                    if ('DEVICE_INFO_AVAILABLE' == status) {
-                        self.deviceConnectedHandler(sensortag, self.connectedDevices.length);
-                    }
-
-                    self.status = status;
+                    self.initialStatusHandler(sensortag, status)
                 });
             })
             .errorCallback(function(error) {
@@ -81,30 +65,44 @@ export class AppComponent implements OnInit {
         sensortag.connectToNearestDevice();
     }
 
+    initialStatusHandler(sensortag, status) {
+        if ('DEVICE_INFO_AVAILABLE' == status) {
+            this.deviceConnectedHandler(sensortag, this.connectedDevices.length);
+        }
+
+        this.status = status;
+    }
+
     deviceConnectedHandler(sensortag, index) {
         var self = this;
-        var deviceAddress = sensortag.getDeviceAddress();
         sensortag
+            .statusCallback(function(status) {
+                self._ngZone.run(function() {
+                    self.statusHandler(index, status)
+                });
+            })
             .humidityCallback(function(data) {
                 self._ngZone.run(function() {
                     self.humidityHandler(index, data);
                 });
             }, 1000)
-        this.connectedDevices.push(sensortag);
+        this.connectedDevices.push({
+            status: "initializing",
+            sensortag: sensortag,
+            data: {},
+            address: sensortag.getDeviceAddress()
+        });
     }
 
-    resetDeviceLists() {
-		this.knownDevices = [];
-		this.connectedDeviceAddresses = [];
-		this.connectedDevices = [];
-		this.connectedSensorData = [];
+
+    disconnectFromDevice(index) {
+        this.connectedDevices[index].sensortag.disconnectDevice();
+        this.connectedDevices[index].status = "DISCONNECTED";
     }
 
-
-    disconnectFromDevice(device) {
-        this.connectedDevices[device.address].disconnectDevice();
+    statusHandler(index, status) {
+        this.connectedDevices[index].status = status;
     }
-
 
     errorHandler(error)
     {
@@ -119,11 +117,11 @@ export class AppComponent implements OnInit {
     }
 
     humidityHandler(index, data) {
-        var values = this.connectedDevices[index].getHumidityValues(data)
+        var values = this.connectedDevices[index].sensortag.getHumidityValues(data)
         
         // Calculate the humidity temperature (C and F).
         var tc = values.humidityTemperature
-        var tf = this.connectedDevices[index].celsiusToFahrenheit(tc)
+        var tf = this.connectedDevices[index].sensortag.celsiusToFahrenheit(tc)
 
         // Calculate the relative humidity.
         var h = values.relativeHumidity
@@ -135,9 +133,7 @@ export class AppComponent implements OnInit {
         }
 
 
-        this.connectedSensorData[index] = {
-			humidityData: humidityData
-        }
+        this.connectedDevices[index].data.humidityData = humidityData;
 
         // Publish event to the IoTF
         this.objIOT.publishToFoundationCloud({
@@ -145,18 +141,18 @@ export class AppComponent implements OnInit {
         });
     }
 
-
-
     resetSensorDisplayValues() {
         // Clear current values.
         var blank = '[Waiting for value]'
         this.status = 'Press Connect to find a SensorTag';
-        this.deviceModel = '?';
-        this.firmwareData = '?';
-        this.keypressData = blank;
-        this.temperatureData = blank;
         this.currentKey = 0;
     }
+
+
+    resetDeviceLists() {
+        this.connectedDevices = [];
+    }
+
 
 }
 
