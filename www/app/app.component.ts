@@ -68,12 +68,17 @@ export class AppComponent implements OnInit {
             .connectToFoundationCloud() 
     }
 
-    createSensorTag(device) {
-		var self = this;
-
+    initSensorTag() {
         // Create SensorTag CC2650 instance.
         var sensortag = this._evothings.tisensortag.createInstance(
             this._evothings.tisensortag.CC2650_BLUETOOTH_SMART)
+        return sensortag;
+    }
+
+    createSensorTag(device) {
+		var self = this;
+
+        var sensortag = this.initSensorTag();
 
         //
         // Here sensors are set up.
@@ -115,6 +120,12 @@ export class AppComponent implements OnInit {
 		return sensortag;
     }
 
+    connectToNearestDevice() {
+        var sensorTag = this.initSensorTag();
+
+        sensorTag.connectToNearestDevice();
+    }
+
     scan() {
 		this.resetDeviceLists();
 		this.sensortag.startScanningForDevices((foundDevice) => {
@@ -147,6 +158,10 @@ export class AppComponent implements OnInit {
     	}
     }
 
+
+
+
+
     connectToDevice(device) {
 		var sensortag = this.createSensorTag(device);
 		this.connectedDevices[device.address] = sensortag;
@@ -166,29 +181,9 @@ export class AppComponent implements OnInit {
     {
         if ('DEVICE_INFO_AVAILABLE' == status)
         {
-            // Show a notification about that the firmware should be
-            // upgraded if the connected device is a SensorTag CC2541
-            // with firmware revision less than 1.5, since this the
-            // SensorTag library does not support these versions.
-            if ('CC2541' == this.sensortag.getDeviceModel() &&
-                parseFloat(this.sensortag.getFirmwareString()) < 1.5)
-            {
-                this.needsUpgrade = true;
-            }
-            else
-            {
-                this.needsUpgrade = false;
-            }
-
             // Show device model and firmware version.
             this.deviceModel = this.sensortag.getDeviceModel();
             this.firmwareData = this.sensortag.getFirmwareString();
-
-            // Show which sensors are not supported by the connected SensorTag.
-            if (!this.sensortag.isLuxometerAvailable())
-            {
-                document.getElementById('Luxometer').style.display = 'none'
-            }
         }
 
         this.status = status;

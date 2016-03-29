@@ -76,13 +76,17 @@ describe('Appcomponent', () => {
 		});
 	});
 
-	describe('on click [Connect to Sensor]', () => {
+	describe('on connectToNearestDevice', () => {
 		it('creates a sensorTag instance to track device information', () => {
-
+			spyOn(appComponent, "initSensorTag").and.callThrough();
+			appComponent.connectToNearestDevice();
+			expect(appComponent.initSensorTag).toHaveBeenCalled();
 		});
 
-
-		it('attempts to connect to nearest device', () => {
+		it('calls sensortag.connectToNearestDevice', () => {
+			spyOn(sensortag, "connectToNearestDevice");
+			appComponent.connectToNearestDevice();
+			expect(sensortag.connectToNearestDevice).toHaveBeenCalled();
 		});
 	});
 
