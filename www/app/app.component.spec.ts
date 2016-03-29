@@ -72,7 +72,6 @@ describe('Appcomponent', () => {
 	});
 
 
-
 	describe('on scan', () => {
 		let appComponent;
 

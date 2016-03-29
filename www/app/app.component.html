@@ -1,38 +1,41 @@
-<h1>{{title}}</h1> 
+<div class="top-bar">
+    <div class="top-bar-left">
+        <ul class="menu">
+            <li class="menu-text">{{title}}</li>
+        </ul>
+    </div>
+</div>
 
-<p>
-    <strong>Status:</strong> <span id="StatusData">{{status}}</span>
-</p>
+<div class="row columns">
+    
+    <button (click)="scan()" class="expanded large button">
+        Scan
+    </button>
 
-<h2>Device info:</h2>
-<p>
-    SensorTag device model: <span id="DeviceModel">{{deviceModel}}</span><br />
-    Firmware version: <span id="FirmwareData">{{firmwareData}}</span>
-</p>
+    <div *ngFor="#device of knownDevices">
+        <h3>{{device.address}}</h3>
+        
+        <div class="expanded button-group">
+            <button (click)="connectToDevice(device)" class="button">Connect</button>
 
-<button (click)="scan()" class="charcoal">
-    Scan
-</button>
-
-<div *ngFor="#device of knownDevices">
-    <h3>{{device.address}}</h3>
-    <button (click)="connectToDevice(device)">Connect</button>
-
-    <button (click)="disconnectFromDevice(device)">Disconnect</button>
-
-    <div>Sensor Data</div>
-    <div *ngIf="connectedSensorData[device.address]">Humidity Data: 
-        <div>
-            {{connectedSensorData[device.address].humidityData.humidityTemperature}} C
+            <button (click)="disconnectFromDevice(device)" class="button secondary">Disconnect</button>
         </div>
-        <div>
-            {{connectedSensorData[device.address].humidityData.humidityTemperatureFahrenheit}} F
-        </div>
-        <div>
-            {{connectedSensorData[device.address].humidityData.relativeHumidity}}% humidity
+
+        <div>Sensor Data</div>
+        <div *ngIf="connectedSensorData[device.address]">Humidity Data: 
+            <div>
+                {{connectedSensorData[device.address].humidityData.humidityTemperature}} C
+            </div>
+            <div>
+                {{connectedSensorData[device.address].humidityData.humidityTemperatureFahrenheit}} F
+            </div>
+            <div>
+                {{connectedSensorData[device.address].humidityData.relativeHumidity}}% humidity
+            </div>
         </div>
     </div>
 </div>
+
 
 
 <!-- 
