@@ -229,7 +229,9 @@ export class AppComponent implements OnInit {
         }
 
         // here we publish event to the IoTF
-        this.objIOT.publishToFoundationCloud(humidityData);
+        this.objIOT.publishToFoundationCloud({
+            humidityData: humidityData
+        });
     }
 
 
