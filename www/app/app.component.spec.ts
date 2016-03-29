@@ -4,6 +4,7 @@ import {AppComponent} from "./app.component"
 var sensortag;
 var tisensortag;
 var evothings;
+var iotFoundationLib;
 
 beforeEach(() => {
 	sensortag = {
@@ -26,25 +27,42 @@ beforeEach(() => {
 			}
 		}
 	}
+
+	var objIOT = {
+		onConnectSuccessCallback: () => { return objIOT },
+		onConnectFailureCallback: () => { return objIOT },
+		connectToFoundationCloud: () => { return objIOT },
+		publishToFoundationCloud: () => { }
+	}
+
+	iotFoundationLib = {
+		createInstance: () => {
+			return objIOT
+		}
+	}
 })
+
 
 
 describe('Appcomponent', () => {
 	let ngZone: NgZone;
 
+	var createAppComponent = () => {
+		return new AppComponent(iotFoundationLib, evothings, ngZone);
+	}
 
 	describe('on create', () => {
 
 		it('initializes sensor tag', () => {
 			spyOn(evothings.tisensortag, "createInstance").and.returnValue(sensortag);
-			let appComponent = new AppComponent(evothings, ngZone);
+			let appComponent = createAppComponent();
 			appComponent.ngOnInit();
 			expect(evothings.tisensortag.createInstance).toHaveBeenCalled();
 		});
 
 
 		it('initializes callbacks on the sensor tag', () => {
-			let appComponent = new AppComponent(evothings, ngZone);
+			let appComponent = createAppComponent();
 			spyOn(sensortag, "statusCallback").and.returnValue(sensortag);
 			spyOn(sensortag, "errorCallback").and.returnValue(sensortag);
 			appComponent.ngOnInit();
@@ -60,7 +78,7 @@ describe('Appcomponent', () => {
 
 		beforeEach(() => {
 			sensortag.startScanningForDevices = () => { };
-			appComponent = new AppComponent(evothings, ngZone);
+			appComponent = createAppComponent();
 			appComponent.ngOnInit();
 		});
 
@@ -135,7 +153,7 @@ describe('Appcomponent', () => {
 
 		beforeEach(() => {
 			sensortag.stopScanningForDevices = () => { };
-			appComponent = new AppComponent(evothings, ngZone);
+			appComponent = createAppComponent();
 			appComponent.ngOnInit();
 		});
 
@@ -153,7 +171,7 @@ describe('Appcomponent', () => {
 		let appComponent;
 
 		beforeEach(() => {
-			appComponent = new AppComponent(evothings, ngZone);
+			appComponent = createAppComponent();
 			appComponent.ngOnInit();
 		});
 
@@ -185,7 +203,7 @@ describe('Appcomponent', () => {
 	describe('on click disconnect', () => {
 
 		it('calls disconnectDevice', () => {
-			let appComponent = new AppComponent(evothings, ngZone);
+			let appComponent = createAppComponent();
 			sensortag.disconnectDevice = () => { };
 			spyOn(sensortag, "disconnectDevice");
 			spyOn(appComponent, "resetSensorDisplayValues");
@@ -200,7 +218,7 @@ describe('Appcomponent', () => {
 	describe('on status update', () => {
 
 		it('should update status display to match', () => {
-			let appComponent = new AppComponent(evothings, ngZone);
+			let appComponent = createAppComponent();
 			appComponent.ngOnInit();
 			appComponent.statusHandler("SCANNING");
 			expect(appComponent.status).toBe("SCANNING");
@@ -219,7 +237,7 @@ describe('Appcomponent', () => {
 			}
 
 
-			let appComponent = new AppComponent(evothings, ngZone);
+			let appComponent = createAppComponent();
 			appComponent.ngOnInit();
 			appComponent.statusHandler("DEVICE_INFO_AVAILABLE");
 			expect(appComponent.deviceModel).toBe("TI Something");
@@ -240,13 +258,13 @@ describe('Appcomponent', () => {
 		})
 
 		it('should update status to display error', () => {
-			let appComponent = new AppComponent(evothings, ngZone);
+			let appComponent = createAppComponent();
 			appComponent.errorHandler("OOPS");
 			expect(appComponent.status).toBe("Error: " + "OOPS");
 		});
 
 		it('if device is disconnected, clear the display values', () => {
-			let appComponent = new AppComponent(evothings, ngZone);
+			let appComponent = createAppComponent();
 			spyOn(appComponent, "resetSensorDisplayValues");
 			appComponent.errorHandler("EASYBLE_ERROR_DISCONNECTED");
 			expect(appComponent.resetSensorDisplayValues).toHaveBeenCalled();
@@ -257,7 +275,7 @@ describe('Appcomponent', () => {
 		let appComponent;
 
 		beforeEach(() => {
-			appComponent = new AppComponent(evothings, ngZone);
+			appComponent = createAppComponent();
 			appComponent.ngOnInit();
 			appComponent.connectToDevice({
 				type: "SensorTag",
@@ -272,6 +290,7 @@ describe('Appcomponent', () => {
 				}
 			}
 
+			spyOn(appComponent.objIOT, "publishToFoundationCloud");
 			appComponent.humidityHandler({
 				address: 'address123'
 			});
@@ -284,6 +303,11 @@ describe('Appcomponent', () => {
 					humidityTemperatureFahrenheit: 167,
 					relativeHumidity: 90
 				});
+		});
+
+
+		it('should send sensor data to the service', () => {
+			expect(appComponent.objIOT.publishToFoundationCloud).toHaveBeenCalled();
 		});
 
 

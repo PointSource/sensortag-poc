@@ -22,7 +22,7 @@
     Disconnect
 </button>
 
-<div *ngFor="#device of availableDevices">
+<div *ngFor="#device of knownDevices">
     <h3>{{device.address}}</h3>
     <button (click)="connectToDevice(device)">Connect</button>
 

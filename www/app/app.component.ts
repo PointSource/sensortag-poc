@@ -1,6 +1,7 @@
 import {Component, OnInit, Inject, NgZone} from 'angular2/core';
 
 
+
 @Component({
     selector: 'my-app',
     templateUrl: 'app/app.component.html',
@@ -8,6 +9,7 @@ import {Component, OnInit, Inject, NgZone} from 'angular2/core';
 })
 export class AppComponent implements OnInit {
 	public title: string = "TI SensorTag CC2650";
+    objIOT: any;
   	sensortag: any;
   	status: string;
 	firmwareData: string;
@@ -26,7 +28,8 @@ export class AppComponent implements OnInit {
 	temperatureData: string;
 
   	constructor(
-		@Inject('Evothings') private _evothings: Evothings,
+        @Inject('IoTFoundationLib') private _iotfoundationlib,
+        @Inject('Evothings') private _evothings,
   		private _ngZone: NgZone
   	) { }
 
@@ -50,6 +53,19 @@ export class AppComponent implements OnInit {
 					self.errorHandler(error);
 				});
             })
+
+
+        // IoT Foundation object..
+        this.objIOT = this._iotfoundationlib.createInstance();
+
+        this.objIOT
+            .onConnectSuccessCallback(() => {
+                alert("connect success")
+            })
+            .onConnectFailureCallback(() => {
+                alert("connect fail")
+            })
+            .connectToFoundationCloud() 
     }
 
     createSensorTag(device) {
@@ -192,7 +208,6 @@ export class AppComponent implements OnInit {
     }
 
     humidityHandler(device, data) {
-    	console.log(data);
         var values = this.connectedDevices[device.address].getHumidityValues(data)
         
         // Calculate the humidity temperature (C and F).
@@ -202,13 +217,19 @@ export class AppComponent implements OnInit {
         // Calculate the relative humidity.
         var h = values.relativeHumidity
 
-        this.connectedSensorData[device.address] = {
-			humidityData: {
-				humidityTemperature: tc,
-				humidityTemperatureFahrenheit: tf,
-				relativeHumidity: h
-			}
+        var humidityData = {
+            humidityTemperature: tc,
+            humidityTemperatureFahrenheit: tf,
+            relativeHumidity: h
         }
+
+
+        this.connectedSensorData[device.address] = {
+			humidityData: humidityData
+        }
+
+        // here we publish event to the IoTF
+        this.objIOT.publishToFoundationCloud(humidityData);
     }
 
 
