@@ -17,6 +17,9 @@ beforeEach(() => {
 		connectToDevice: () => { },
 		celsiusToFahrenheit: (celsius) => {
 			return (celsius * 9 / 5) + 32
+		},
+		getDeviceAddress: () => {
+			return "address123"
 		}
 	};
 
@@ -54,21 +57,6 @@ describe('Appcomponent', () => {
 
 	describe('on create', () => {
 
-		it('initializes sensor tag', () => {
-			spyOn(evothings.tisensortag, "createInstance").and.returnValue(sensortag);
-			appComponent.ngOnInit();
-			expect(evothings.tisensortag.createInstance).toHaveBeenCalled();
-		});
-
-
-		it('initializes callbacks on the sensor tag', () => {
-			spyOn(sensortag, "statusCallback").and.returnValue(sensortag);
-			spyOn(sensortag, "errorCallback").and.returnValue(sensortag);
-			appComponent.ngOnInit();
-			expect(appComponent.sensortag.statusCallback).toHaveBeenCalled();
-			expect(appComponent.sensortag.errorCallback).toHaveBeenCalled();
-		});
-
 		it('initializes IoT Foundation connection', () => {
 			spyOn(iotFoundationLib, "createInstance").and.callThrough();
 			appComponent.ngOnInit();
@@ -94,9 +82,6 @@ describe('Appcomponent', () => {
 
 		beforeEach(() => {
 			appComponent.ngOnInit();
-			sensortag.getDeviceAddress = function() {
-				return "address123"
-			}
 		})
 
 		it('gets the address of the device', () => {
@@ -118,127 +103,6 @@ describe('Appcomponent', () => {
 		})
 	});
 
-
-	// describe('on scan', () => {
-	// 	beforeEach(() => {
-	// 		sensortag.startScanningForDevices = () => { };
-	// 		appComponent.ngOnInit();
-	// 	});
-
-	// 	it('calls startScanningForDevices', () => {
-	// 		spyOn(sensortag, "startScanningForDevices");
-	// 		appComponent.scan();
-	// 		expect(sensortag.startScanningForDevices).toHaveBeenCalled();
-	// 	});
-
-	// 	describe("when foundSensorTag fires", () => {
-	// 		beforeEach(() => {
-	// 			expect(appComponent.knownDevices.length).toEqual(0);
-	// 			sensortag.deviceIsSensorTag = (device) => {
-	// 				return device.model === "CC2650"
-	// 			}
-	// 		})
-
-	// 		it('if this is NOT a sensortag, should NOT add device to list', () => {
-	// 			appComponent.onFoundDevice({
-	// 				type: "SensorTag",
-	// 				model: "Wrong Model",
-	// 				address: "address123"
-	// 			});
-	// 			expect(appComponent.knownDevices.length).toEqual(0);
-	// 		});
-
-	// 		it('if this is a sensortag, should add device to list', () => {
-	// 			appComponent.onFoundDevice({
-	// 				type: "SensorTag",
-	// 				model: "CC2650",
-	// 				address: "address123"
-	// 			});
-	// 			expect(appComponent.knownDevices.length).toEqual(1);
-	// 		});
-
-
-	// 		it('if it finds the same device twice, it should NOT add it over again', () => {
-	// 			appComponent.onFoundDevice({
-	// 				type: "SensorTag",
-	// 				model: "CC2650",
-	// 				address: "address123"
-	// 			}); 
-	// 			appComponent.onFoundDevice({
-	// 				type: "SensorTag",
-	// 				model: "CC2650",
-	// 				address: "address123"
-	// 			});
-	// 			expect(appComponent.knownDevices.length).toEqual(1);
-	// 		});
-
-
-	// 		it('if it finds the two different devices, it should add both', () => {
-	// 			appComponent.onFoundDevice({
-	// 				type: "SensorTag",
-	// 				model: "CC2650",
-	// 				address: "address123"
-	// 			});
-	// 			appComponent.onFoundDevice({
-	// 				type: "SensorTag",
-	// 				model: "CC2650",
-	// 				address: "address456"
-	// 			});
-	// 			expect(appComponent.knownDevices.length).toEqual(2);
-	// 		});
-	// 	})
-
-	// })
-
-
-	describe('on stop scan', () => {
-
-		beforeEach(() => {
-			sensortag.stopScanningForDevices = () => { };
-			appComponent.ngOnInit();
-		});
-
-
-		it('calls stopScanningForDevices', () => {
-			spyOn(sensortag, "stopScanningForDevices");
-			appComponent.stopScanning();
-			expect(sensortag.stopScanningForDevices).toHaveBeenCalled();
-		});
-
-	});
-
-
-	describe('on connect to device', () => {
-
-		beforeEach(() => {
-			appComponent.ngOnInit();
-		});
-
-
-		it('calls connectToDevice', () => {
-			spyOn(sensortag, "connectToDevice");
-			appComponent.connectToDevice({
-				type: "SensorTag",
-				model: "CC2650",
-				address: "address456"
-			});
-			expect(sensortag.connectToDevice).toHaveBeenCalled();
-		});
-
-		it('creates a new sensorTag instance', () => {
-			spyOn(appComponent, "createSensorTag").and.callThrough();
-			appComponent.connectToDevice({
-				type: "SensorTag",
-				model: "CC2650",
-				address: "address456"
-			});
-			expect(appComponent.createSensorTag).toHaveBeenCalled();
-		})
-	})
-
-
-
-
 	describe('on click disconnectFromDevice', () => {
 
 		it('calls disconnectDevice', () => {
@@ -258,7 +122,8 @@ describe('Appcomponent', () => {
 
 	});
 
-	describe('on status update', () => {
+	// update this to report to indv devices
+	xdescribe('on status update', () => {
 
 		it('should update status display to match', () => {
 			appComponent.ngOnInit();
@@ -273,9 +138,6 @@ describe('Appcomponent', () => {
 			}
 			sensortag.getFirmwareString = function() {
 				return "Firmware 123"
-			}
-			sensortag.getDeviceAddress = function() {
-				return "address123"
 			}
 			sensortag.isLuxometerAvailable = function() {
 				return true;
@@ -316,11 +178,7 @@ describe('Appcomponent', () => {
 
 		beforeEach(() => {
 			appComponent.ngOnInit();
-			appComponent.connectToDevice({
-				type: "SensorTag",
-				model: "CC2650",
-				address: "address123"
-			});
+			appComponent.deviceConnectedHandler(sensortag, 0);
 
 			sensortag.getHumidityValues = function() {
 				return {
@@ -330,11 +188,11 @@ describe('Appcomponent', () => {
 			}
 
 			spyOn(appComponent.objIOT, "publishToFoundationCloud");
-			appComponent.humidityHandler('address123');
+			appComponent.humidityHandler(0);
 		})
 
 		it('should update humidityData for this device', () => {
-			expect(appComponent.connectedSensorData['address123'].humidityData)
+			expect(appComponent.connectedSensorData[0].humidityData)
 				.toEqual({
 					humidityTemperature: 75,
 					humidityTemperatureFahrenheit: 167,
@@ -350,45 +208,6 @@ describe('Appcomponent', () => {
 
 	});
 
-
-	// xdescribe('on keypress', () => {
-	// 	let appComponent;
-
-	// 	beforeEach(() => {
-	// 		appComponent = new AppComponent(evothings, ngZone);
-	// 	})
-
-	// 	it('should update keypressData', () => {
-	// 		appComponent.keypressHandler("12345");
-	// 		expect(appComponent.keypressData).toBe("raw: 0x" + "01");
-	// 	});
-
-	// 	it('should set currentKey to match which key was pressed', () => {
-	// 		appComponent.keypressHandler("12345");
-	// 		expect(appComponent.currentKey).toBe("1");
-	// 	});
-	// });
-
-	// xdescribe('on temperature callback', () => {
-	// 	let appComponent;
-
-	// 	beforeEach(() => {
-	// 		appComponent = new AppComponent(evothings, ngZone);
-	// 		appComponent.ngOnInit();
-	// 		sensortag.getTemperatureValues = function() {
-	// 			return {
-	// 				ambientTemperature: 75,
-	// 				targetTemperature: 90
-	// 			}
-	// 		}
-	// 	})
-
-	// 	it('should update temperatureData', () => {
-	// 		appComponent.temperatureHandler(null);
-	// 		expect(appComponent.temperatureData).toBe("+90.00 C (+194.00 F) +75.00 C (+167.00 F) [amb]");
-	// 	});
-
-	// });
 
 
 });
