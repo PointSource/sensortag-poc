@@ -14,13 +14,11 @@
     Scan
 </button>
 
-<button (click)="disconnect()" class="charcoal">
-    Disconnect
-</button>
-
 <div *ngFor="#device of knownDevices">
     <h3>{{device.address}}</h3>
     <button (click)="connectToDevice(device)">Connect</button>
+
+    <button (click)="disconnectFromDevice(device)">Disconnect</button>
 
     <div>Sensor Data</div>
     <div *ngIf="connectedSensorData[device.address]">Humidity Data: 

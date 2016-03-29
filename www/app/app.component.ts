@@ -157,9 +157,8 @@ export class AppComponent implements OnInit {
     }
 
 
-    disconnect() {
-		this.resetSensorDisplayValues();
-		this.sensortag.disconnectDevice();
+    disconnectFromDevice(device) {
+        this.connectedDevices[device.address].disconnectDevice();
     }
 
 

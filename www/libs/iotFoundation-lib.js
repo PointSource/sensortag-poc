@@ -26,12 +26,19 @@ var IoTFoundationLib = (function()
     // iotFoundation.IOT_PASS = '<PASSWORD>'; // put your provided password here
     // iotFoundation.IOT_TOPIC = 'iot-2/evt/iotsensor/fmt/json'; // leave this set
 
-    iotFoundation.CLIENT_ID = 'd:wrr3st:TiCC2650STKSensorTag:34363bcf8050'; // change this - the format is:  d:<organization>:<device type>:<device ID>
-    iotFoundation.ORG_ID = 'wrr3st'; // change this to your organization ID
-    iotFoundation.IOT_URL = 'wrr3st.messaging.internetofthings.ibmcloud.com';  // change the first part of this to match your organization ID
+    config = {
+        org: "wrr3st",
+        deviceType: "TiCC2650STKSensorTag",
+        deviceId: "b0b448d31202",
+        authToken: "b4KBCvZ*ivr9cVhpPg"
+    }
+
+    iotFoundation.CLIENT_ID = 'd:'+config.org+':'+config.deviceType+':'+config.deviceId; // change this - the format is:  d:<organization>:<device type>:<device ID>
+    iotFoundation.ORG_ID = config.org; // change this to your organization ID
+    iotFoundation.IOT_URL = config.org+'.messaging.internetofthings.ibmcloud.com';  // change the first part of this to match your organization ID
     iotFoundation.IOT_PORT = 1883; // leave this
     iotFoundation.IOT_USER = 'use-token-auth'; // leave this set
-    iotFoundation.IOT_PASS = 'BT?u22am3HlceQFW8n'; // put your provided password here
+    iotFoundation.IOT_PASS = config.authToken; // put your provided password here
     iotFoundation.IOT_TOPIC = 'iot-2/evt/iotsensor/fmt/json'; // leave this set
 
 

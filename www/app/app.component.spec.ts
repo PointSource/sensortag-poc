@@ -200,17 +200,22 @@ describe('Appcomponent', () => {
 
 
 
-	describe('on click disconnect', () => {
+	describe('on click disconnectFromDevice', () => {
 
 		it('calls disconnectDevice', () => {
 			let appComponent = createAppComponent();
-			sensortag.disconnectDevice = () => { };
-			spyOn(sensortag, "disconnectDevice");
-			spyOn(appComponent, "resetSensorDisplayValues");
-			appComponent.ngOnInit();
-			appComponent.disconnect();
-			expect(appComponent.resetSensorDisplayValues).toHaveBeenCalled();
-			expect(appComponent.sensortag.disconnectDevice).toHaveBeenCalled();
+			appComponent.connectedDevices = {
+				"address123": {
+					disconnectDevice: () => {}
+				}
+			};
+			spyOn(appComponent.connectedDevices["address123"], "disconnectDevice");
+			appComponent.disconnectFromDevice({
+				type: "SensorTag",
+				model: "CC2650",
+				address: "address123"
+			});
+			expect(appComponent.connectedDevices["address123"].disconnectDevice).toHaveBeenCalled();
 		});
 
 	});
