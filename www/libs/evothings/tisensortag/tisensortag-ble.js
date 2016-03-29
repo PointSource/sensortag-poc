@@ -521,7 +521,8 @@
 			{
 				// Reading of model is disabled. See comment below.
 				//readModelNumber()
-				readFirmwareVersion()
+				readDeviceAddress();
+				readFirmwareVersion();
 			}
 
 			/*
@@ -560,6 +561,9 @@
 				readFirmwareVersion()
 			}
 			*/
+			function readDeviceAddress() {
+				instance.deviceAddress = instance.device.address;
+			}
 
 			function readFirmwareVersion()
 			{
