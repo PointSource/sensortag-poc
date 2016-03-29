@@ -52,22 +52,31 @@ describe('Appcomponent', () => {
 	}
 
 	describe('on create', () => {
+		let appComponent;
+
+		beforeEach(() => {
+			appComponent = createAppComponent();
+		})
 
 		it('initializes sensor tag', () => {
 			spyOn(evothings.tisensortag, "createInstance").and.returnValue(sensortag);
-			let appComponent = createAppComponent();
 			appComponent.ngOnInit();
 			expect(evothings.tisensortag.createInstance).toHaveBeenCalled();
 		});
 
 
 		it('initializes callbacks on the sensor tag', () => {
-			let appComponent = createAppComponent();
 			spyOn(sensortag, "statusCallback").and.returnValue(sensortag);
 			spyOn(sensortag, "errorCallback").and.returnValue(sensortag);
 			appComponent.ngOnInit();
 			expect(appComponent.sensortag.statusCallback).toHaveBeenCalled();
 			expect(appComponent.sensortag.errorCallback).toHaveBeenCalled();
+		});
+
+		it('initializes IoT Foundation connection', () => {
+			spyOn(iotFoundationLib, "createInstance").and.callThrough();
+			appComponent.ngOnInit();
+			expect(iotFoundationLib.createInstance).toHaveBeenCalled();
 		});
 	});
 
