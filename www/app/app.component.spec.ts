@@ -226,9 +226,8 @@ describe('Appcomponent', () => {
 		it('should update humidityData for this device', () => {
 			expect(appComponent.connectedDevices[0].data.humidityData)
 				.toEqual({
-					humidityTemperature: 75,
-					humidityTemperatureFahrenheit: 167,
-					relativeHumidity: 90
+					humidityTemperature: '75.0',
+					relativeHumidity: '90.0'
 				});
 		});
 
