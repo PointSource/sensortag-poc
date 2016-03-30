@@ -11,6 +11,7 @@ export class AppComponent implements OnInit {
 	public title: string = "SensorTag Demo";
     objIOT: any;
   	status: string;
+    statusPercentage: number;
 
 	// List of devices
 	connectedDevices;
@@ -23,6 +24,8 @@ export class AppComponent implements OnInit {
 
   	ngOnInit() {
 		var self = this;
+
+        this.statusPercentage = 0;
 
 		this.resetDeviceLists();
 
@@ -65,9 +68,20 @@ export class AppComponent implements OnInit {
         sensortag.connectToNearestDevice();
     }
 
-    initialStatusHandler(sensortag, status) {
-        if ('DEVICE_INFO_AVAILABLE' == status) {
+    initialStatusHandler(sensortag, status) {;
+        if ('SCANNING' == status) {
+            this.statusPercentage = 20
+        } else if ('SENSORTAG_FOUND' == status) {
+            this.statusPercentage = 40
+        } else if ('CONNECTING' == status) {
+            this.statusPercentage = 60
+        } else if ('READING_DEVICE_INFO' == status) {
+            this.statusPercentage = 80
+        } else if ('DEVICE_INFO_AVAILABLE' == status) {
+            this.statusPercentage = 100;
             this.deviceConnectedHandler(sensortag, this.connectedDevices.length);
+        } else if ('SENSORTAG_NOT_FOUND' == status) {
+            this.statusPercentage = 0;
         }
 
         this.status = status;

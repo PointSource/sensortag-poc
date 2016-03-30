@@ -106,6 +106,38 @@ describe('Appcomponent', () => {
 		})
 	});
 
+	describe('on initial status update', () => {
+
+		it('should update main status', () => {
+			appComponent.ngOnInit();
+			appComponent.initialStatusHandler(sensortag, "SCANNING");
+			expect(appComponent.status).toBe("SCANNING");
+		});
+
+
+		it('should update status percentage', () => {
+			appComponent.ngOnInit();
+			appComponent.initialStatusHandler(sensortag, "SCANNING");
+			expect(appComponent.statusPercentage).toBe(20);
+			appComponent.initialStatusHandler(sensortag, "SENSORTAG_FOUND");
+			expect(appComponent.statusPercentage).toBe(40);
+			appComponent.initialStatusHandler(sensortag, "CONNECTING");
+			expect(appComponent.statusPercentage).toBe(60);
+			appComponent.initialStatusHandler(sensortag, "READING_DEVICE_INFO");
+			expect(appComponent.statusPercentage).toBe(80);
+			appComponent.initialStatusHandler(sensortag, "DEVICE_INFO_AVAILABLE");
+			expect(appComponent.statusPercentage).toBe(100);
+		});
+
+		it('if status is DEVICE_INFO_AVAILABLE add sensortag to connected devices', () => {
+			appComponent.ngOnInit();
+			spyOn(appComponent, "deviceConnectedHandler");
+			appComponent.initialStatusHandler(sensortag, "DEVICE_INFO_AVAILABLE");
+			expect(appComponent.deviceConnectedHandler).toHaveBeenCalled();
+		});
+
+	});
+
 
 	describe('when device is named', () => {
 		it('sets device.isNamed to true', () => {
@@ -150,22 +182,6 @@ describe('Appcomponent', () => {
 		});
 	});
 
-	// update this to report to indv devices
-	describe('on initial status update', () => {
-
-		it('should update main status', () => {
-			appComponent.initialStatusHandler(sensortag, "SCANNING");
-			expect(appComponent.status).toBe("SCANNING");
-		});
-
-		it('if status is DEVICE_INFO_AVAILABLE add sensortag to connected devices', () => {
-			appComponent.ngOnInit();
-			spyOn(appComponent, "deviceConnectedHandler");
-			appComponent.initialStatusHandler(sensortag, "DEVICE_INFO_AVAILABLE");
-			expect(appComponent.deviceConnectedHandler).toHaveBeenCalled();
-		});
-
-	});
 
 
 	describe('on error connecting', () => {

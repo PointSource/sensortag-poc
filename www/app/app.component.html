@@ -8,15 +8,25 @@
 
 <div class="row columns" style="padding-top: 1rem">
 
-    <div *ngIf="status" class="callout secondary">
-        <h5>
-            <span *ngIf="status === 'SCANNING'">Scanning for devices</span>
-            <span *ngIf="status === 'SENSORTAG_FOUND'">Found a Sensor</span>
-            <span *ngIf="status === 'DEVICE_INFO_AVAILABLE'">Connected to Sensor</span>
-        </h5>
+    <div *ngIf="status" class="callout secondary" [ngClass]="{warning: status === 'SENSORTAG_NOT_FOUND'}">
+
+        <h5 *ngIf="status === 'SCANNING'">Scanning for devices</h5>
+        <h5 *ngIf="status === 'SENSORTAG_FOUND'">Found a Sensor</h5>
+        <h5 *ngIf="status === 'READING_DEVICE_INFO' || status === 'CONNECTING'">Connecting to Sensor</h5>
+        <h5 *ngIf="status === 'DEVICE_INFO_AVAILABLE'">Sensor Connected!</h5>
+
+        <div *ngIf="status === 'SENSORTAG_NOT_FOUND'">
+            <h5>Could not find sensor</h5>
+            <p>Make sure you have the sensor tag turned on. Check if LED light is blinking on device.</p>
+            <button class="button expanded" (click)="connectToNearestDevice()">Try Again</button>
+        </div>
+
+        <div *ngIf="status !== 'SENSORTAG_NOT_FOUND'" class="progress" role="progressbar" tabindex="0" aria-valuenow="50" aria-valuemin="0" aria-valuetext="50 percent" aria-valuemax="100">
+            <div class="progress-meter" style="width: {{statusPercentage}}%"></div>
+        </div>
     </div>
 
-    <button *ngIf="status !== 'SCANNING' && status !== 'DEVICE_INFO_AVAILABLE'" (click)="connectToNearestDevice()" class="expanded large button">
+    <button *ngIf="!status" (click)="connectToNearestDevice()" class="expanded large button">
         Add a Sensor
     </button>
 
@@ -33,9 +43,7 @@
         </div>
 
         <div *ngIf="device.isNamed === true" class="callout">
-            <h4>{{device.name}}</h4>
-            <div>Address {{device.address}}</div>
-            <div>Status: {{device.status}}</div>
+            <h4 class="sensorName">{{device.name}} <small>{{device.address}}</small></h4>
             <div *ngIf="device.data.humidityData">
                 <h5>Humidity Data: </h5>
                 <div>
