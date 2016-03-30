@@ -10,6 +10,7 @@ import {Component, OnInit, Inject, NgZone} from 'angular2/core';
 export class AppComponent implements OnInit {
 	public title: string = "SensorTag Demo";
     objIOT: any;
+    chart: any;
   	status: string;
     statusPercentage: number;
 
@@ -40,6 +41,39 @@ export class AppComponent implements OnInit {
                 // alert("connect fail")
             })
             .connectToFoundationCloud() 
+
+
+        var lineChartData = {
+            labels: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+            datasets: [
+                {
+                    label: "My First dataset",
+                    fillColor: "rgba(151,187,205,0.2)",
+                    strokeColor: "rgba(151,187,205,1)",
+                    pointColor: "rgba(151,187,205,1)",
+                    pointStrokeColor: "#fff",
+                    pointHighlightFill: "#fff",
+                    pointHighlightStroke: "rgba(220,220,220,1)",
+                    data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                },
+                // {
+                //     label: "My Second dataset",
+                //     fillColor: "rgba(151,187,205,0.2)",
+                //     strokeColor: "rgba(151,187,205,1)",
+                //     pointColor: "rgba(151,187,205,1)",
+                //     pointStrokeColor: "#fff",
+                //     pointHighlightFill: "#fff",
+                //     pointHighlightStroke: "rgba(151,187,205,1)",
+                //     data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
+                // }
+            ]
+        }
+
+        var ctx = document.getElementById("canvas").getContext("2d");
+        this.chart = new Chart(ctx).Line(lineChartData, {
+            responsive: true,
+            bezierCurve: false
+        });
     }
 
     initSensorTag() {
@@ -153,6 +187,8 @@ export class AppComponent implements OnInit {
             relativeHumidity: h
         }
 
+        this.chart.addData([h], "8");
+        this.chart.removeData();
 
         this.connectedDevices[index].data.humidityData = humidityData;
 
