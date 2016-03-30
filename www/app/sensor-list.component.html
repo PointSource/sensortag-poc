@@ -1,0 +1,53 @@
+  <div *ngIf="status" class="callout secondary" [ngClass]="{warning: status === 'SENSORTAG_NOT_FOUND'}">
+
+        <h5 *ngIf="status === 'SCANNING'">Scanning for devices</h5>
+        <h5 *ngIf="status === 'SENSORTAG_FOUND'">Found a Sensor</h5>
+        <h5 *ngIf="status === 'READING_DEVICE_INFO' || status === 'CONNECTING'">Connecting to Sensor</h5>
+        <h5 *ngIf="status === 'DEVICE_INFO_AVAILABLE'">Sensor Connected!</h5>
+
+        <div *ngIf="status === 'SENSORTAG_NOT_FOUND'">
+            <h5>Could not find sensor</h5>
+            <p>Make sure you have the sensor tag turned on. Check if LED light is blinking on device.</p>
+            <button class="button expanded" (click)="connectToNearestDevice()">Try Again</button>
+        </div>
+
+        <div *ngIf="status !== 'SENSORTAG_NOT_FOUND'" class="progress" role="progressbar" tabindex="0" aria-valuenow="50" aria-valuemin="0" aria-valuetext="50 percent" aria-valuemax="100">
+            <div class="progress-meter" style="width: {{statusPercentage}}%"></div>
+        </div>
+    </div>
+
+    <button *ngIf="!status" (click)="connectToNearestDevice()" class="expanded large button">
+        Add a Sensor
+    </button>
+
+
+    <div *ngFor="#device of connectedDevices; #i = index">
+        <div *ngIf="device.isNamed === false" class="row columns">
+            <div class="input-group">
+                <input class="input-group-field" type="text" placeholder="Sensor name" [(ngModel)]="device.name" />
+                <div class="input-group-button">
+                    <input type="submit" class="button" value="Submit" (click)="nameDevice(device, device.name)">
+                </div>
+            </div>
+            <p class="help-text" id="passwordHelpText">Enter a name to identify this sensor. You can use the location of the sensor, etc</p>
+        </div>
+
+        <div *ngIf="device.isNamed === true" class="callout">
+            <h4 class="sensorName">{{device.name}} <small>{{device.address}}</small></h4>
+            <div *ngIf="device.data.humidityData">
+                <h5>Humidity Data: </h5>
+                <div>
+                    {{device.data.humidityData.humidityTemperature}} C
+                </div>
+                <div>
+                    {{device.data.humidityData.relativeHumidity}}% rH
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button (click)="disconnectFromDevice(i)" class="button secondary">Disconnect</button>
+                <button (click)="device.isNamed = false" class="button secondary">Rename</button>
+                <button (click)="goToSensorDetails()"class="button">Details</button>
+            </div>
+        </div>
+    </div>
