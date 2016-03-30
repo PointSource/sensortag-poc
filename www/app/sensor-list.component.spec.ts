@@ -1,5 +1,6 @@
 import {NgZone} from 'angular2/core';
-import {AppComponent} from "./app.component"
+import {Router} from 'angular2/router';
+import {SensorListComponent} from "./sensor-list.component"
 
 var sensortag;
 var tisensortag;
@@ -47,33 +48,34 @@ beforeEach(() => {
 
 
 
-describe('Appcomponent', () => {
+describe('Sensor List Component', () => {
 	let ngZone: NgZone;
-	let appComponent;
+	let router: Router;
+	let sensorListComponent;
 
 	beforeEach(() => {
-		appComponent = new AppComponent(iotFoundationLib, evothings, ngZone);
+		sensorListComponent = new SensorListComponent(iotFoundationLib, evothings, ngZone, router);
 	})
 
 	describe('on create', () => {
 
 		it('initializes IoT Foundation connection', () => {
 			spyOn(iotFoundationLib, "createInstance").and.callThrough();
-			appComponent.ngOnInit();
+			sensorListComponent.ngOnInit();
 			expect(iotFoundationLib.createInstance).toHaveBeenCalled();
 		});
 	});
 
 	describe('on connectToNearestDevice', () => {
 		it('creates a sensorTag instance to track device information', () => {
-			spyOn(appComponent, "initSensorTag").and.callThrough();
-			appComponent.connectToNearestDevice();
-			expect(appComponent.initSensorTag).toHaveBeenCalled();
+			spyOn(sensorListComponent, "initSensorTag").and.callThrough();
+			sensorListComponent.connectToNearestDevice();
+			expect(sensorListComponent.initSensorTag).toHaveBeenCalled();
 		});
 
 		it('calls sensortag.connectToNearestDevice', () => {
 			spyOn(sensortag, "connectToNearestDevice");
-			appComponent.connectToNearestDevice();
+			sensorListComponent.connectToNearestDevice();
 			expect(sensortag.connectToNearestDevice).toHaveBeenCalled();
 		});
 	});
@@ -81,27 +83,27 @@ describe('Appcomponent', () => {
 	describe('when device is connected', () => {
 
 		beforeEach(() => {
-			appComponent.ngOnInit();
+			sensorListComponent.ngOnInit();
 		})
 
 		it('gets the address of the device', () => {
 			spyOn(sensortag, "getDeviceAddress");
-			appComponent.deviceConnectedHandler(sensortag);
+			sensorListComponent.deviceConnectedHandler(sensortag);
 			expect(sensortag.getDeviceAddress).toHaveBeenCalled();
 		})
 
 		it('adds the sensortag to the list of connected devices', () => {
-			appComponent.deviceConnectedHandler(sensortag);
-			expect(appComponent.connectedDevices[0].sensortag)
+			sensorListComponent.deviceConnectedHandler(sensortag);
+			expect(sensorListComponent.connectedDevices[0].sensortag)
 				.toEqual(sensortag);
-			expect(appComponent.connectedDevices[0].isNamed)
+			expect(sensorListComponent.connectedDevices[0].isNamed)
 				.toBe(false);
 
 		})
 
 		it('sets humidity callback on sensortag', () => {
 			spyOn(sensortag, "humidityCallback").and.returnValue(sensortag);
-			appComponent.deviceConnectedHandler(sensortag);
+			sensorListComponent.deviceConnectedHandler(sensortag);
 			expect(sensortag.humidityCallback).toHaveBeenCalled();
 		})
 	});
@@ -109,31 +111,31 @@ describe('Appcomponent', () => {
 	describe('on initial status update', () => {
 
 		it('should update main status', () => {
-			appComponent.ngOnInit();
-			appComponent.initialStatusHandler(sensortag, "SCANNING");
-			expect(appComponent.status).toBe("SCANNING");
+			sensorListComponent.ngOnInit();
+			sensorListComponent.initialStatusHandler(sensortag, "SCANNING");
+			expect(sensorListComponent.status).toBe("SCANNING");
 		});
 
 
 		it('should update status percentage', () => {
-			appComponent.ngOnInit();
-			appComponent.initialStatusHandler(sensortag, "SCANNING");
-			expect(appComponent.statusPercentage).toBe(20);
-			appComponent.initialStatusHandler(sensortag, "SENSORTAG_FOUND");
-			expect(appComponent.statusPercentage).toBe(40);
-			appComponent.initialStatusHandler(sensortag, "CONNECTING");
-			expect(appComponent.statusPercentage).toBe(60);
-			appComponent.initialStatusHandler(sensortag, "READING_DEVICE_INFO");
-			expect(appComponent.statusPercentage).toBe(80);
-			appComponent.initialStatusHandler(sensortag, "DEVICE_INFO_AVAILABLE");
-			expect(appComponent.statusPercentage).toBe(100);
+			sensorListComponent.ngOnInit();
+			sensorListComponent.initialStatusHandler(sensortag, "SCANNING");
+			expect(sensorListComponent.statusPercentage).toBe(20);
+			sensorListComponent.initialStatusHandler(sensortag, "SENSORTAG_FOUND");
+			expect(sensorListComponent.statusPercentage).toBe(40);
+			sensorListComponent.initialStatusHandler(sensortag, "CONNECTING");
+			expect(sensorListComponent.statusPercentage).toBe(60);
+			sensorListComponent.initialStatusHandler(sensortag, "READING_DEVICE_INFO");
+			expect(sensorListComponent.statusPercentage).toBe(80);
+			sensorListComponent.initialStatusHandler(sensortag, "DEVICE_INFO_AVAILABLE");
+			expect(sensorListComponent.statusPercentage).toBe(100);
 		});
 
 		it('if status is DEVICE_INFO_AVAILABLE add sensortag to connected devices', () => {
-			appComponent.ngOnInit();
-			spyOn(appComponent, "deviceConnectedHandler");
-			appComponent.initialStatusHandler(sensortag, "DEVICE_INFO_AVAILABLE");
-			expect(appComponent.deviceConnectedHandler).toHaveBeenCalled();
+			sensorListComponent.ngOnInit();
+			spyOn(sensorListComponent, "deviceConnectedHandler");
+			sensorListComponent.initialStatusHandler(sensortag, "DEVICE_INFO_AVAILABLE");
+			expect(sensorListComponent.deviceConnectedHandler).toHaveBeenCalled();
 		});
 
 	});
@@ -141,11 +143,11 @@ describe('Appcomponent', () => {
 
 	describe('when device is named', () => {
 		it('sets device.isNamed to true', () => {
-			appComponent.ngOnInit();
-			appComponent.deviceConnectedHandler(sensortag);
-			appComponent.nameDevice(appComponent.connectedDevices[0], "new name");
-			expect(appComponent.connectedDevices[0].isNamed).toBe(true);
-			expect(appComponent.connectedDevices[0].name).toBe("new name");
+			sensorListComponent.ngOnInit();
+			sensorListComponent.deviceConnectedHandler(sensortag);
+			sensorListComponent.nameDevice(sensorListComponent.connectedDevices[0], "new name");
+			expect(sensorListComponent.connectedDevices[0].isNamed).toBe(true);
+			expect(sensorListComponent.connectedDevices[0].name).toBe("new name");
 		});
 
 	});
@@ -153,7 +155,7 @@ describe('Appcomponent', () => {
 	describe('on click disconnectFromDevice', () => {
 
 		beforeEach(() => {
-			appComponent.connectedDevices = [{
+			sensorListComponent.connectedDevices = [{
 				sensortag: {
 					disconnectDevice: () => { }
 				}
@@ -161,9 +163,9 @@ describe('Appcomponent', () => {
 		})
 
 		it('calls disconnectDevice', () => {
-			spyOn(appComponent.connectedDevices[0].sensortag, "disconnectDevice");
-			appComponent.disconnectFromDevice(0);
-			expect(appComponent.connectedDevices[0].sensortag.disconnectDevice).toHaveBeenCalled();
+			spyOn(sensorListComponent.connectedDevices[0].sensortag, "disconnectDevice");
+			sensorListComponent.disconnectFromDevice(0);
+			expect(sensorListComponent.connectedDevices[0].sensortag.disconnectDevice).toHaveBeenCalled();
 		});
 
 	});
@@ -172,13 +174,13 @@ describe('Appcomponent', () => {
 	describe('on status update', () => {
 
 		beforeEach(() => {
-			appComponent.ngOnInit();
-			appComponent.connectedDevices = [{}]
+			sensorListComponent.ngOnInit();
+			sensorListComponent.connectedDevices = [{}]
 		})
 
 		it('should update device status', () => {
-			appComponent.statusHandler(0, "SCANNING");
-			expect(appComponent.connectedDevices[0].status).toBe("SCANNING");
+			sensorListComponent.statusHandler(0, "SCANNING");
+			expect(sensorListComponent.connectedDevices[0].status).toBe("SCANNING");
 		});
 	});
 
@@ -195,22 +197,22 @@ describe('Appcomponent', () => {
 		})
 
 		it('should update status to display error', () => {
-			appComponent.errorHandler("OOPS");
-			expect(appComponent.status).toBe("Error: " + "OOPS");
+			sensorListComponent.errorHandler("OOPS");
+			expect(sensorListComponent.status).toBe("Error: " + "OOPS");
 		});
 
 		it('if device is disconnected, clear the display values', () => {
-			spyOn(appComponent, "resetSensorDisplayValues");
-			appComponent.errorHandler("EASYBLE_ERROR_DISCONNECTED");
-			expect(appComponent.resetSensorDisplayValues).toHaveBeenCalled();
+			spyOn(sensorListComponent, "resetSensorDisplayValues");
+			sensorListComponent.errorHandler("EASYBLE_ERROR_DISCONNECTED");
+			expect(sensorListComponent.resetSensorDisplayValues).toHaveBeenCalled();
 		});
 	});
 
 	describe('on humidity callback', () => {
 
 		beforeEach(() => {
-			appComponent.ngOnInit();
-			appComponent.deviceConnectedHandler(sensortag, 0);
+			sensorListComponent.ngOnInit();
+			sensorListComponent.deviceConnectedHandler(sensortag, 0);
 
 			sensortag.getHumidityValues = function() {
 				return {
@@ -219,12 +221,12 @@ describe('Appcomponent', () => {
 				}
 			}
 
-			spyOn(appComponent.objIOT, "publishToFoundationCloud");
-			appComponent.humidityHandler(0);
+			spyOn(sensorListComponent.objIOT, "publishToFoundationCloud");
+			sensorListComponent.humidityHandler(0);
 		})
 
 		it('should update humidityData for this device', () => {
-			expect(appComponent.connectedDevices[0].data.humidityData)
+			expect(sensorListComponent.connectedDevices[0].data.humidityData)
 				.toEqual({
 					humidityTemperature: '75.0',
 					relativeHumidity: '90.0'
@@ -233,7 +235,7 @@ describe('Appcomponent', () => {
 
 
 		it('should send sensor data to the service', () => {
-			expect(appComponent.objIOT.publishToFoundationCloud).toHaveBeenCalled();
+			expect(sensorListComponent.objIOT.publishToFoundationCloud).toHaveBeenCalled();
 		});
 
 

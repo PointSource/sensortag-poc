@@ -15,10 +15,10 @@ export class SensorListComponent implements OnInit {
 	connectedDevices;
 
 	constructor(
-		private _router: Router,
-		private _ngZone: NgZone,
         @Inject('IoTFoundationLib') private _iotfoundationlib,
-        @Inject('Evothings') private _evothings
+        @Inject('Evothings') private _evothings,
+        private _ngZone: NgZone,
+		private _router: Router
 	) { }
 
 	ngOnInit() {
