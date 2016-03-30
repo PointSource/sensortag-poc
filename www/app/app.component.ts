@@ -44,7 +44,7 @@ export class AppComponent implements OnInit {
 
 
         var lineChartData = {
-            labels: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+            labels: ["-", "-", "-", "-", "-", "-", "-", "-", "-", "-"],
             datasets: [
                 {
                     label: "My First dataset",
@@ -187,7 +187,7 @@ export class AppComponent implements OnInit {
             relativeHumidity: h
         }
 
-        this.chart.addData([h], "8");
+        this.chart.addData([h], "-");
         this.chart.removeData();
 
         this.connectedDevices[index].data.humidityData = humidityData;
