@@ -179,15 +179,14 @@ export class AppComponent implements OnInit {
         var tf = this.connectedDevices[index].sensortag.celsiusToFahrenheit(tc)
 
         // Calculate the relative humidity.
-        var h = values.relativeHumidity
+        var h = values.relativeHumidity;
 
         var humidityData = {
-            humidityTemperature: tc,
-            humidityTemperatureFahrenheit: tf,
-            relativeHumidity: h
+            humidityTemperature: tc.toFixed(1),
+            relativeHumidity: h.toFixed(1)
         }
 
-        this.chart.addData([h], "-");
+        this.chart.addData([h.toFixed(1)], "-");
         this.chart.removeData();
 
         this.connectedDevices[index].data.humidityData = humidityData;
@@ -202,7 +201,6 @@ export class AppComponent implements OnInit {
         // Clear current values.
         var blank = '[Waiting for value]'
         this.status = 'Press Connect to find a SensorTag';
-        this.currentKey = 0;
     }
 
 
