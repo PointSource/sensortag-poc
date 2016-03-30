@@ -41,39 +41,6 @@ export class AppComponent implements OnInit {
                 // alert("connect fail")
             })
             .connectToFoundationCloud() 
-
-
-        var lineChartData = {
-            labels: ["-", "-", "-", "-", "-", "-", "-", "-", "-", "-"],
-            datasets: [
-                {
-                    label: "My First dataset",
-                    fillColor: "rgba(151,187,205,0.2)",
-                    strokeColor: "rgba(151,187,205,1)",
-                    pointColor: "rgba(151,187,205,1)",
-                    pointStrokeColor: "#fff",
-                    pointHighlightFill: "#fff",
-                    pointHighlightStroke: "rgba(220,220,220,1)",
-                    data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-                },
-                // {
-                //     label: "My Second dataset",
-                //     fillColor: "rgba(151,187,205,0.2)",
-                //     strokeColor: "rgba(151,187,205,1)",
-                //     pointColor: "rgba(151,187,205,1)",
-                //     pointStrokeColor: "#fff",
-                //     pointHighlightFill: "#fff",
-                //     pointHighlightStroke: "rgba(151,187,205,1)",
-                //     data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
-                // }
-            ]
-        }
-
-        var ctx = document.getElementById("canvas").getContext("2d");
-        this.chart = new Chart(ctx).Line(lineChartData, {
-            responsive: true,
-            bezierCurve: false
-        });
     }
 
     initSensorTag() {
@@ -133,7 +100,9 @@ export class AppComponent implements OnInit {
                 self._ngZone.run(function() {
                     self.humidityHandler(index, data);
                 });
-            }, 1000)
+            }, 1000);
+
+
         this.connectedDevices.push({
             status: "initializing",
             sensortag: sensortag,
@@ -185,9 +154,6 @@ export class AppComponent implements OnInit {
             humidityTemperature: tc.toFixed(1),
             relativeHumidity: h.toFixed(1)
         }
-
-        this.chart.addData([h.toFixed(1)], "-");
-        this.chart.removeData();
 
         this.connectedDevices[index].data.humidityData = humidityData;
 
