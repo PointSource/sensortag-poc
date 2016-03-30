@@ -94,6 +94,9 @@ describe('Appcomponent', () => {
 			appComponent.deviceConnectedHandler(sensortag);
 			expect(appComponent.connectedDevices[0].sensortag)
 				.toEqual(sensortag);
+			expect(appComponent.connectedDevices[0].isNamed)
+				.toBe(false);
+
 		})
 
 		it('sets humidity callback on sensortag', () => {
@@ -101,6 +104,18 @@ describe('Appcomponent', () => {
 			appComponent.deviceConnectedHandler(sensortag);
 			expect(sensortag.humidityCallback).toHaveBeenCalled();
 		})
+	});
+
+
+	describe('when device is named', () => {
+		it('sets device.isNamed to true', () => {
+			appComponent.ngOnInit();
+			appComponent.deviceConnectedHandler(sensortag);
+			appComponent.nameDevice(appComponent.connectedDevices[0], "new name");
+			expect(appComponent.connectedDevices[0].isNamed).toBe(true);
+			expect(appComponent.connectedDevices[0].name).toBe("new name");
+		});
+
 	});
 
 	describe('on click disconnectFromDevice', () => {

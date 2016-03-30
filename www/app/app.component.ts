@@ -90,10 +90,17 @@ export class AppComponent implements OnInit {
             status: "initializing",
             sensortag: sensortag,
             data: {},
-            address: sensortag.getDeviceAddress()
+            address: sensortag.getDeviceAddress(),
+            name: "",
+            isNamed: false
         });
     }
 
+    nameDevice(connectedDevice, name) {
+        connectedDevice.isNamed = true;
+        connectedDevice.name = name;
+        this.status = "";
+    }
 
     disconnectFromDevice(index) {
         this.connectedDevices[index].sensortag.disconnectDevice();

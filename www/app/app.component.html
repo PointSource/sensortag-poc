@@ -6,38 +6,53 @@
     </div>
 </div>
 
-<div class="row columns">
+<div class="row columns" style="padding-top: 1rem">
 
-    <div class="callout secondary">
-      <h5>Status {{status}}</h5>
-      <p>Address {{deviceAddress}}</p>
-      <p>Firmware {{firmwareData}}</p>
-      <p>Model {{deviceModel}}</p>
+    <div *ngIf="status" class="callout secondary">
+        <h5>
+            <span *ngIf="status === 'SCANNING'">Scanning for devices</span>
+            <span *ngIf="status === 'SENSORTAG_FOUND'">Found a Sensor</span>
+            <span *ngIf="status === 'DEVICE_INFO_AVAILABLE'">Connected to Sensor</span>
+        </h5>
     </div>
-    
 
-    <button (click)="connectToNearestDevice()" class="expanded large button">
+    <button *ngIf="status !== 'SCANNING' && status !== 'DEVICE_INFO_AVAILABLE'" (click)="connectToNearestDevice()" class="expanded large button">
         Add a Sensor
     </button>
 
 
     <div *ngFor="#device of connectedDevices; #i = index">
-
-        <h4>Sensor {{device.address}}</h4>
-        <div>Status: {{device.status}}</div>
-        <div *ngIf="device.data.humidityData">
-            <h5>Humidity Data: </h5>
-            <div>
-                {{device.data.humidityData.humidityTemperature}} C
+        <div *ngIf="device.isNamed === false" class="row columns">
+            <div class="input-group">
+                <input class="input-group-field" type="text" placeholder="Sensor name" [(ngModel)]="device.name" />
+                <div class="input-group-button">
+                    <input type="submit" class="button" value="Submit" (click)="nameDevice(device, device.name)">
+                </div>
             </div>
-            <div>
-                {{device.data.humidityData.humidityTemperatureFahrenheit}} F
-            </div>
-            <div>
-                {{device.data.humidityData.relativeHumidity}}% humidity
-            </div>
+            <p class="help-text" id="passwordHelpText">Enter a name to identify this sensor. You can use the location of the sensor, etc</p>
         </div>
 
-        <button (click)="disconnectFromDevice(i)" class="button secondary">Disconnect</button>
+        <div *ngIf="device.isNamed === true" class="callout">
+            <h4>{{device.name}}</h4>
+            <div>Address {{device.address}}</div>
+            <div>Status: {{device.status}}</div>
+            <div *ngIf="device.data.humidityData">
+                <h5>Humidity Data: </h5>
+                <div>
+                    {{device.data.humidityData.humidityTemperature}} C
+                </div>
+                <div>
+                    {{device.data.humidityData.humidityTemperatureFahrenheit}} F
+                </div>
+                <div>
+                    {{device.data.humidityData.relativeHumidity}}% humidity
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button (click)="disconnectFromDevice(i)" class="button secondary">Disconnect</button>
+                <button (click)="device.isNamed = false" class="button secondary">Rename</button>
+            </div>
+        </div>
     </div>
 </div>
