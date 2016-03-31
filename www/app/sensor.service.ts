@@ -10,7 +10,7 @@ export class SensorService {
 		return this.sensors;
 	}
 
-	addSensor(sensor): void {
+	addSensor(sensor: ConnectedDevice): void {
 		this.sensors.push(sensor);
 	}
 

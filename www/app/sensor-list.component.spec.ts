@@ -62,12 +62,22 @@ describe('Sensor List Component', () => {
 		}, sensorService);
 	})
 
-	describe('on create', () => {
+	describe('on init', () => {
 
 		it('initializes IoT Foundation connection', () => {
 			spyOn(iotFoundationLib, "createInstance").and.callThrough();
 			sensorListComponent.ngOnInit();
 			expect(iotFoundationLib.createInstance).toHaveBeenCalled();
+		});
+
+		it('fills list with any devices that were saved', () => {
+			sensorListComponent._sensorService.addSensor({
+				address: "address123"
+			});
+			spyOn(sensorListComponent._sensorService, "getSensors").and.callThrough();
+			sensorListComponent.ngOnInit();
+			expect(sensorListComponent._sensorService.getSensors).toHaveBeenCalled();
+			expect(sensorListComponent.connectedDevices.length).toBe(1);
 		});
 	});
 

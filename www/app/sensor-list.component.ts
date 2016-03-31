@@ -29,7 +29,7 @@ export class SensorListComponent implements OnInit {
 
         this.statusPercentage = 0;
 
-		this.resetDeviceLists();
+        this.connectedDevices = this._sensorService.getSensors();
 
         // IoT Foundation object..
         this.objIOT = this._iotfoundationlib.createInstance();
@@ -53,7 +53,7 @@ export class SensorListComponent implements OnInit {
 
     connectToNearestDevice() {
         var self = this;
-        var sensortag: Sensor = this.initSensorTag();
+        var sensortag = this.initSensorTag();
 
         sensortag
             .statusCallback(function(status) {
@@ -181,10 +181,6 @@ export class SensorListComponent implements OnInit {
         this.status = 'Press Connect to find a SensorTag';
     }
 
-
-    resetDeviceLists() {
-        this.connectedDevices = [];
-    }
 
     goToSensorDetails(index) {
 		this._router.navigate(['SensorDetail', { index: index }]);
