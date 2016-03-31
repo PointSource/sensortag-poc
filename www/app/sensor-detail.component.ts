@@ -5,12 +5,12 @@ import {RouteParams} from 'angular2/router';
     templateUrl: 'app/sensor-detail.component.html'
 })
 export class SensorDetailComponent implements OnInit {
+    device: any;
 
-    constructor() {
-    }
+    constructor(private _routeParams: RouteParams) {}
 
     ngOnInit() {
-        
+        this.device = this._routeParams.get('device');
     }
 
     goBack() {
