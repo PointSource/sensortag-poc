@@ -170,8 +170,7 @@ export class SensorListComponent implements OnInit {
         this.connectedDevices = [];
     }
 
-    goToSensorDetails() {
-
-		this._router.navigate(['SensorDetail', {  }]);
+    goToSensorDetails(device) {
+		this._router.navigate(['SensorDetail', { device: device }]);
     }
 }

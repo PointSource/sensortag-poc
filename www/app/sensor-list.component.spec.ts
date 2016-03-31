@@ -54,7 +54,9 @@ describe('Sensor List Component', () => {
 	let sensorListComponent;
 
 	beforeEach(() => {
-		sensorListComponent = new SensorListComponent(iotFoundationLib, evothings, ngZone, router);
+		sensorListComponent = new SensorListComponent(iotFoundationLib, evothings, ngZone, {
+			navigate: () => {}
+		});
 	})
 
 	describe('on create', () => {
@@ -241,6 +243,15 @@ describe('Sensor List Component', () => {
 
 	});
 
+	describe('on opening details', () => {
 
+		it('should route to SensorDetail', () => {
+			spyOn(sensorListComponent._router, "navigate");
+			sensorListComponent.goToSensorDetails(sensortag);
+			expect(sensorListComponent._router.navigate).toHaveBeenCalledWith([
+				'SensorDetail', { 'device': sensortag }
+			]);
+		})
+	});
 
 });
