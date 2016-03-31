@@ -2,6 +2,13 @@
 	{{device.name}}
 </h2>
 
+<h5>Humidity Data: </h5>
+
+<chart-component [data]="device.data.humidityData.relativeHumidity"></chart-component>
+
 <div>
-	Sensor Details
+    {{device.data.humidityData.humidityTemperature}} C
+</div>
+<div>
+    {{device.data.humidityData.relativeHumidity}}% rH
 </div>

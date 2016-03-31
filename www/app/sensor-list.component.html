@@ -1,3 +1,5 @@
+
+
   <div *ngIf="status" class="callout secondary" [ngClass]="{warning: status === 'SENSORTAG_NOT_FOUND'}">
 
         <h5 *ngIf="status === 'SCANNING'">Scanning for devices</h5>
@@ -35,12 +37,8 @@
         <div *ngIf="device.isNamed === true" class="callout">
             <h4 class="sensorName">{{device.name}} <small>{{device.address}}</small></h4>
             <div *ngIf="device.data.humidityData">
-                <h5>Humidity Data: </h5>
                 <div>
-                    {{device.data.humidityData.humidityTemperature}} C
-                </div>
-                <div>
-                    {{device.data.humidityData.relativeHumidity}}% rH
+                    Humidity: {{device.data.humidityData.relativeHumidity}}% rH
                 </div>
             </div>
 

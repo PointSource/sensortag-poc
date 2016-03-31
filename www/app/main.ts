@@ -6,11 +6,13 @@ import {SensorService} from './sensor.service';
 
 declare var evothings: any;
 declare var IoTFoundationLib: any;
+declare var Chart: any;
 
 bootstrap(AppComponent, [
 	ROUTER_PROVIDERS,
 	SensorService,
 	provide('Evothings', { useValue: evothings }),
 	provide('IoTFoundationLib', { useValue: IoTFoundationLib }),
+	provide('ChartJS', { useValue: Chart }),
 	provide(LocationStrategy, { useClass: HashLocationStrategy })
 ]);
