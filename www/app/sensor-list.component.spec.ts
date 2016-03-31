@@ -115,7 +115,8 @@ describe('Sensor List Component', () => {
 				.toEqual(sensortag);
 			expect(sensorListComponent.connectedDevices[0].isNamed)
 				.toBe(false);
-
+			expect(sensorListComponent.connectedDevices[0].data.humidityData.lastTenValues)
+				.toEqual([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
 		})
 
 		it('sets humidity callback on sensortag', () => {
@@ -246,10 +247,15 @@ describe('Sensor List Component', () => {
 			expect(sensorListComponent.connectedDevices[0].data.humidityData)
 				.toEqual({
 					humidityTemperature: '75.0',
-					relativeHumidity: '90.0'
+					relativeHumidity: '90.0',
+					lastTenValues: [0, 0, 0, 0, 0, 0, 0, 0, 0, 90]
 				});
 		});
 
+		it('should update last 10 humidity data for this device', () => {
+			expect(sensorListComponent.connectedDevices[0].data.humidityData.lastTenValues)
+				.toEqual([0, 0, 0, 0, 0, 0, 0, 0, 0, 90]);
+		});
 
 		it('should send sensor data to the service', () => {
 			expect(sensorListComponent.objIOT.publishToFoundationCloud).toHaveBeenCalled();

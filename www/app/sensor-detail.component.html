@@ -4,7 +4,7 @@
 
 <h5>Humidity Data: </h5>
 
-<chart-component [data]="device.data.humidityData.relativeHumidity"></chart-component>
+<chart-component [data]="device.data.humidityData.lastTenValues"></chart-component>
 
 <div>
     {{device.data.humidityData.humidityTemperature}} C

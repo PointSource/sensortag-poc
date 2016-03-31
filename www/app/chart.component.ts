@@ -7,6 +7,7 @@ import {Component, Inject, OnInit, OnChanges, Input, SimpleChange} from 'angular
 })
 export class ChartComponent implements OnInit, OnChanges {
     chart: any;
+    data: any;
 
     constructor(
         @Inject('ChartJS') private _chartJS
@@ -24,7 +25,7 @@ export class ChartComponent implements OnInit, OnChanges {
                     pointStrokeColor: "#fff",
                     pointHighlightFill: "#fff",
                     pointHighlightStroke: "rgba(220,220,220,1)",
-                    data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                    data: this.data
                 }
             ]
         }
@@ -32,17 +33,23 @@ export class ChartComponent implements OnInit, OnChanges {
         var ctx = document.getElementById("canvas").getContext("2d");
         this.chart = new this._chartJS(ctx).Line(lineChartData, {
             responsive: true,
-            bezierCurve: false
+            bezierCurve: false,
+            scaleOverride: true,
+            scaleSteps: 10,
+            scaleStepWidth: 10,
+            scaleStartValue: 0 
         });
 
     }
 
     ngOnChanges(changes: { [propName: string]: SimpleChange }) {
-        console.log('ngOnChanges - myProp = ' + changes['data'].currentValue);
-
         if (this.chart) {
-            this.chart.addData([changes['data'].currentValue]);
-            this.chart.removeData();
+            var index = 0;
+            for (var point of this.chart.datasets[0].points) {
+                point.value = this.data[index];
+                index++;
+            }
+            this.chart.update();
         }
     }
 

@@ -108,7 +108,13 @@ export class SensorListComponent implements OnInit {
         var connectedDevice: ConnectedDevice = {
             status: "initializing",
             sensortag: sensortag,
-            data: {},
+            data: {
+                humidityData: {
+                    lastTenValues: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                },
+                relativeHumidity: 0,
+                humidityTemperature: 0
+            },
             address: sensortag.getDeviceAddress(),
             name: "",
             isNamed: false
@@ -152,16 +158,19 @@ export class SensorListComponent implements OnInit {
         // Calculate the relative humidity.
         var h = values.relativeHumidity;
 
-        var humidityData = {
-            humidityTemperature: tc.toFixed(1),
-            relativeHumidity: h.toFixed(1)
-        }
-
-        this.connectedDevices[index].data.humidityData = humidityData;
+        this.connectedDevices[index].data.humidityData.humidityTemperature = tc.toFixed(1);
+        this.connectedDevices[index].data.humidityData.relativeHumidity = h.toFixed(1)
+        var lastTenValues = this.connectedDevices[index].data.humidityData.lastTenValues.slice();
+        lastTenValues.push(h);
+        lastTenValues.shift();
+        this.connectedDevices[index].data.humidityData.lastTenValues = lastTenValues;
 
         // Publish event to the IoTF
         this.objIOT.publishToFoundationCloud({
-            humidityData: humidityData
+            humidityData: {
+                humidityTemperature: tc.toFixed(1),
+                relativeHumidity: h.toFixed(1)
+            }
         });
     }
 
