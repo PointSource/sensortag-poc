@@ -1,4 +1,5 @@
 import {Component, OnInit} from 'angular2/core';
+import {SensorService} from './sensor.service';
 import {RouteParams} from 'angular2/router';
 
 @Component({
@@ -7,10 +8,13 @@ import {RouteParams} from 'angular2/router';
 export class SensorDetailComponent implements OnInit {
     device: any;
 
-    constructor(private _routeParams: RouteParams) {}
+    constructor(
+    	private _routeParams: RouteParams,
+    	private _sensorService: SensorService) {}
 
     ngOnInit() {
-        this.device = this._routeParams.get('device');
+		var index = this._routeParams.get('index');
+        this.device = this._sensorService.getSensor(index);
     }
 
     goBack() {

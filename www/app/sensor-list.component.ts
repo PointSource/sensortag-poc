@@ -1,5 +1,7 @@
 import {Component, OnInit, Inject, NgZone} from 'angular2/core';
 import {Router} from 'angular2/router';
+import {SensorService} from './sensor.service';
+import {ConnectedDevice} from './connected-device';
 
 @Component({
     templateUrl: 'app/sensor-list.component.html'
@@ -18,7 +20,8 @@ export class SensorListComponent implements OnInit {
         @Inject('IoTFoundationLib') private _iotfoundationlib,
         @Inject('Evothings') private _evothings,
         private _ngZone: NgZone,
-		private _router: Router
+		private _router: Router,
+        private _sensorService: SensorService
 	) { }
 
 	ngOnInit() {
@@ -50,7 +53,7 @@ export class SensorListComponent implements OnInit {
 
     connectToNearestDevice() {
         var self = this;
-        var sensortag = this.initSensorTag();
+        var sensortag: Sensor = this.initSensorTag();
 
         sensortag
             .statusCallback(function(status) {
@@ -102,14 +105,27 @@ export class SensorListComponent implements OnInit {
             }, 1000);
 
 
-        this.connectedDevices.push({
+        var connectedDevice: ConnectedDevice = {
             status: "initializing",
             sensortag: sensortag,
             data: {},
             address: sensortag.getDeviceAddress(),
             name: "",
             isNamed: false
-        });
+        };
+
+        this._sensorService.addSensor(connectedDevice);
+        this.connectedDevices = this._sensorService.getSensors();
+        console.log(this.connectedDevices);
+
+        // this.connectedDevices.push({
+        //     status: "initializing",
+        //     sensortag: sensortag,
+        //     data: {},
+        //     address: sensortag.getDeviceAddress(),
+        //     name: "",
+        //     isNamed: false
+        // });
     }
 
     nameDevice(connectedDevice, name) {
@@ -170,7 +186,7 @@ export class SensorListComponent implements OnInit {
         this.connectedDevices = [];
     }
 
-    goToSensorDetails(device) {
-		this._router.navigate(['SensorDetail', { device: device }]);
+    goToSensorDetails(index) {
+		this._router.navigate(['SensorDetail', { index: index }]);
     }
 }
