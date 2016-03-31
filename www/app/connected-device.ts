@@ -1,7 +1,7 @@
 export interface ConnectedDevice {
 	status: string;
 	sensortag: any;
-	data: {};
+	data: any;
 	address: string;
 	name: string;
 	isNamed: boolean;

@@ -1,6 +1,7 @@
 
 
   <div *ngIf="status" class="callout secondary" [ngClass]="{warning: status === 'SENSORTAG_NOT_FOUND'}">
+        <h5>{{status}}</h5>
 
         <h5 *ngIf="status === 'SCANNING'">Scanning for devices</h5>
         <h5 *ngIf="status === 'SENSORTAG_FOUND'">Found a Sensor</h5>
@@ -34,7 +35,11 @@
             <p class="help-text" id="passwordHelpText">Enter a name to identify this sensor. You can use the location of the sensor, etc</p>
         </div>
 
-        <div *ngIf="device.isNamed === true" class="callout" [ngClass]="{alert: device.status === 'DISCONNECTED', warning: device.status === 'CONNECTING' || device.status === 'CONNECTED' || device.status === 'READING_DEVICE_INFO'}">
+        <div *ngIf="device.isNamed === true" class="callout" [ngClass]="{
+            alert: device.status === 'DISCONNECTED', 
+            warning: device.status === 'CONNECTING' || device.status === 'CONNECTED' || device.status === 'READING_DEVICE_INFO',
+            success: device.data.keypressData !== 0
+        }">
             <h4 class="sensorName">{{device.name}} <small>{{device.address}}</small></h4>
             <div *ngIf="device.data.humidityData">
                 <div>

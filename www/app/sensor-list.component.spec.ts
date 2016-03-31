@@ -129,6 +129,13 @@ describe('Sensor List Component', () => {
 			sensorListComponent.deviceConnectedHandler(sensortag);
 			expect(sensortag.humidityCallback).toHaveBeenCalled();
 		})
+
+		it('sets keypress callback on sensortag', () => {
+			spyOn(sensortag, "keypressCallback").and.returnValue(sensortag);
+			sensorListComponent.deviceConnectedHandler(sensortag);
+			expect(sensortag.keypressCallback).toHaveBeenCalled();
+		})
+
 	});
 
 	describe('on initial status update', () => {
@@ -214,12 +221,19 @@ describe('Sensor List Component', () => {
 
 		beforeEach(() => {
 			sensorListComponent.ngOnInit();
-			sensorListComponent.connectedDevices = [{}]
+			sensorListComponent.connectedDevices = [{
+				isConnected: false
+			}]
 		})
 
 		it('should update device status', () => {
 			sensorListComponent.statusHandler(0, "SCANNING");
 			expect(sensorListComponent.connectedDevices[0].status).toBe("SCANNING");
+		});
+
+		it('if status is DEVICE_INFO_AVAILABLE, should set isConnected to true', () => {
+			sensorListComponent.statusHandler(0, "DEVICE_INFO_AVAILABLE");
+			expect(sensorListComponent.connectedDevices[0].isConnected).toBe(true);
 		});
 	});
 
@@ -283,6 +297,20 @@ describe('Sensor List Component', () => {
 		});
 
 
+	});
+
+	describe('on keypress callback', () => {
+
+		beforeEach(() => {
+			sensorListComponent.ngOnInit();
+			sensorListComponent.deviceConnectedHandler(sensortag, 0);
+			sensorListComponent.keypressHandler(0, [1]);
+		})
+
+		it('should update keypressData for this device', () => {
+			expect(sensorListComponent.connectedDevices[0].data.keypressData)
+				.toEqual(1);
+		});
 	});
 
 	describe('on opening details', () => {

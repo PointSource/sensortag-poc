@@ -101,6 +101,11 @@ export class SensorListComponent implements OnInit {
                 self._ngZone.run(function() {
                     self.humidityHandler(index, data);
                 });
+            }, 1000)
+            .keypressCallback(function(data) {
+                self._ngZone.run(function() {
+                    self.keypressHandler(index, data);
+                });
             }, 1000);
 
 
@@ -109,10 +114,11 @@ export class SensorListComponent implements OnInit {
             sensortag: sensortag,
             data: {
                 humidityData: {
-                    lastTenValues: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                    lastTenValues: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    relativeHumidity: 0,
+                    humidityTemperature: 0
                 },
-                relativeHumidity: 0,
-                humidityTemperature: 0
+                keypressData: 0
             },
             address: sensortag.getDeviceAddress(),
             device: sensortag.getDevice(),
@@ -181,6 +187,10 @@ export class SensorListComponent implements OnInit {
                 relativeHumidity: h.toFixed(1)
             }
         });
+    }
+
+    keypressHandler(index, data) {
+        this.connectedDevices[index].data.keypressData = data[0];
     }
 
     resetSensorDisplayValues() {
