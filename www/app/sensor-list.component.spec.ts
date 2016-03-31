@@ -22,6 +22,11 @@ beforeEach(() => {
 		},
 		getDeviceAddress: () => {
 			return "address123"
+		},
+		getDevice: () => {
+			return {
+				address: "address123"
+			}
 		}
 	};
 
@@ -170,21 +175,37 @@ describe('Sensor List Component', () => {
 
 	});
 
-	xdescribe('on click disconnectFromDevice', () => {
+	describe('on toggleDeviceConnection', () => {
 
 		beforeEach(() => {
 			sensorListComponent.connectedDevices = [{
 				sensortag: {
-					disconnectDevice: () => { }
-				}
+					disconnectDevice: () => { },
+					connectToDevice: () => { }
+				},
+				isConnected: true
 			}];
 		})
 
-		it('calls disconnectDevice', () => {
+		it('if device is connected, calls disconnectDevice', () => {
 			spyOn(sensorListComponent.connectedDevices[0].sensortag, "disconnectDevice");
-			sensorListComponent.disconnectFromDevice(0);
+			sensorListComponent.toggleDeviceConnection(0);
 			expect(sensorListComponent.connectedDevices[0].sensortag.disconnectDevice).toHaveBeenCalled();
 		});
+
+		it('if device is connected, sets isConnected to false', () => {
+			sensorListComponent.toggleDeviceConnection(0);
+			expect(sensorListComponent.connectedDevices[0].isConnected).toBe(false);
+		})
+
+		it('if device is disconnected, calls connectToDevice', () => {
+			spyOn(sensorListComponent.connectedDevices[0].sensortag, "connectToDevice");
+			// Disconnect
+			sensorListComponent.toggleDeviceConnection(0);
+			// Connect
+			sensorListComponent.toggleDeviceConnection(0);
+			expect(sensorListComponent.connectedDevices[0].sensortag.connectToDevice).toHaveBeenCalled();
+		})
 
 	});
 

@@ -5,4 +5,6 @@ export interface ConnectedDevice {
 	address: string;
 	name: string;
 	isNamed: boolean;
+	isConnected: boolean;
+	device: any;
 }

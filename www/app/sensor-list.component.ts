@@ -14,7 +14,7 @@ export class SensorListComponent implements OnInit {
     statusPercentage: number;
 
 	// List of devices
-	connectedDevices;
+	connectedDevices: ConnectedDevice[];
 
 	constructor(
         @Inject('IoTFoundationLib') private _iotfoundationlib,
@@ -71,7 +71,6 @@ export class SensorListComponent implements OnInit {
     }
 
     initialStatusHandler(sensortag, status) {
-		;
         if ('SCANNING' == status) {
             this.statusPercentage = 20
         } else if ('SENSORTAG_FOUND' == status) {
@@ -116,8 +115,10 @@ export class SensorListComponent implements OnInit {
                 humidityTemperature: 0
             },
             address: sensortag.getDeviceAddress(),
+            device: sensortag.getDevice(),
             name: "",
-            isNamed: false
+            isNamed: false,
+            isConnected: true
         };
 
         this._sensorService.addSensor(connectedDevice);
@@ -130,13 +131,21 @@ export class SensorListComponent implements OnInit {
         this.status = "";
     }
 
-    disconnectFromDevice(index) {
-        this.connectedDevices[index].sensortag.disconnectDevice();
-        this.connectedDevices[index].status = "DISCONNECTED";
+    toggleDeviceConnection(index) {
+        if (this.connectedDevices[index].isConnected) {
+            this.connectedDevices[index].sensortag.disconnectDevice();
+            this.connectedDevices[index].status = "DISCONNECTED";
+            this.connectedDevices[index].isConnected = false;
+        } else {
+            this.connectedDevices[index].sensortag.connectToDevice(this.connectedDevices[index].device);
+        }
     }
 
     statusHandler(index, status) {
         this.connectedDevices[index].status = status;
+        if (status === "DEVICE_INFO_AVAILABLE") {
+            this.connectedDevices[index].isConnected = true;
+        }
     }
 
     errorHandler(error) {
@@ -179,7 +188,6 @@ export class SensorListComponent implements OnInit {
         var blank = '[Waiting for value]'
         this.status = 'Press Connect to find a SensorTag';
     }
-
 
     goToSensorDetails(index) {
 		this._router.navigate(['SensorDetail', { index: index }]);
