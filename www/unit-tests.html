@@ -5,6 +5,8 @@
   <title>Ng App Unit Tests</title>
   <link rel="stylesheet" href="../node_modules/jasmine-core/lib/jasmine-core/jasmine.css">
 
+</head>
+<body>
   <!-- #1. add the system.js and angular libraries -->
   <script src="../node_modules/es6-shim/es6-shim.min.js"></script>
   <script src="../node_modules/systemjs/dist/system-polyfills.js"></script>
@@ -18,8 +20,6 @@
   <script src="../node_modules/jasmine-core/lib/jasmine-core/jasmine.js"></script>
   <script src="../node_modules/jasmine-core/lib/jasmine-core/jasmine-html.js"></script>
   <script src="../node_modules/jasmine-core/lib/jasmine-core/boot.js"></script>
-</head>
-<body>
   <script>
 
         // #2. Configure SystemJS to use the .js extension
@@ -30,14 +30,17 @@
           }
         });
 
-        System.import('app/sensor-list.component.spec')
+        Promise.all([
+          System.import('app/sensor-detail.component.spec'),
+          System.import('app/sensor-list.component.spec'),
+        ])
+        // #4. wait for all imports to load ...
+        //     then re-execute `window.onload` which
+        //     triggers the Jasmine test-runner start
+        //     or explain what went wrong.
 
-      // #4. wait for all imports to load ...
-      //     then re-execute `window.onload` which
-      //     triggers the Jasmine test-runner start
-      //     or explain what went wrong.
-      .then(window.onload)
-      .catch(console.error.bind(console));
+            .then(window.onload)
+            .catch(console.error.bind(console));
 
   </script>
 

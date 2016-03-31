@@ -116,16 +116,6 @@ export class SensorListComponent implements OnInit {
 
         this._sensorService.addSensor(connectedDevice);
         this.connectedDevices = this._sensorService.getSensors();
-        console.log(this.connectedDevices);
-
-        // this.connectedDevices.push({
-        //     status: "initializing",
-        //     sensortag: sensortag,
-        //     data: {},
-        //     address: sensortag.getDeviceAddress(),
-        //     name: "",
-        //     isNamed: false
-        // });
     }
 
     nameDevice(connectedDevice, name) {
