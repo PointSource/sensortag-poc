@@ -1,3 +1,4 @@
 {
-  "server": { "baseDir": "./www" }
+  "server": { "baseDir": "./www" },
+  "startPath": "dev-index.html" 
 }
