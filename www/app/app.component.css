@@ -1,3 +1,7 @@
 .sensorName {
 	color: #ec5840;
 }
+
+a.router-link-active {
+	background-color: white;
+}

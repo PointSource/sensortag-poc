@@ -7,4 +7,5 @@ export interface ConnectedDevice {
 	isNamed: boolean;
 	isConnected: boolean;
 	device: any;
+	job: string;
 }

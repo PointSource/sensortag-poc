@@ -1,5 +1,6 @@
 import {NgZone} from 'angular2/core';
 import {Router} from 'angular2/router';
+import {Http} from 'angular2/http';
 import {SensorService} from './sensor.service';
 import {SensorListComponent} from "./sensor-list.component"
 
@@ -57,14 +58,21 @@ beforeEach(() => {
 describe('Sensor List Component', () => {
 	let ngZone: NgZone;
 	let router: Router;
+	let _http: Http;
 	let sensorService: SensorService;
 	let sensorListComponent;
 
 	beforeEach(() => {
-		sensorService = new SensorService();
-		sensorListComponent = new SensorListComponent(iotFoundationLib, evothings, ngZone, {
-			navigate: () => {}
-		}, sensorService);
+		sensorService = new SensorService(_http);
+		sensorListComponent = new SensorListComponent(
+			sensorService,
+			iotFoundationLib, 
+			evothings, 
+			ngZone, 
+			{
+				navigate: () => {}
+			}
+		);
 	})
 
 	describe('on init', () => {

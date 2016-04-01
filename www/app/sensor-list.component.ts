@@ -1,12 +1,10 @@
 import {Component, OnInit, Inject, NgZone} from 'angular2/core';
-import {Http, Headers, HTTP_PROVIDERS} from 'angular2/http';
 import {Router} from 'angular2/router';
 import {SensorService} from './sensor.service';
 import {ConnectedDevice} from './connected-device';
 
 @Component({
-    templateUrl: 'app/sensor-list.component.html',
-    viewProviders: [HTTP_PROVIDERS]
+    templateUrl: 'app/sensor-list.component.html'
 })
 export class SensorListComponent implements OnInit {
 	public title: string = "SensorTag Demo";
@@ -19,12 +17,11 @@ export class SensorListComponent implements OnInit {
 	connectedDevices: ConnectedDevice[];
 
 	constructor(
+        private _sensorService: SensorService,
         @Inject('IoTFoundationLib') private _iotfoundationlib,
         @Inject('Evothings') private _evothings,
         private _ngZone: NgZone,
-		private _router: Router,
-        private _http: Http,
-        private _sensorService: SensorService
+        private _router: Router
 	) { }
 
 	ngOnInit() {
@@ -198,7 +195,6 @@ export class SensorListComponent implements OnInit {
 
     resetSensorDisplayValues() {
         // Clear current values.
-        var blank = '[Waiting for value]'
         this.status = 'Press Connect to find a SensorTag';
     }
 
@@ -207,18 +203,6 @@ export class SensorListComponent implements OnInit {
     }
 
     saveDevices() {
-        // http://10.128.64.62:1337/devices
-        this._http.get('http://10.128.64.62:1337/devices').subscribe((res) => console.log(res));
-
-        var headers = new Headers();
-        headers.append('Content-Type', 'application/json');
-
-        var device = {
-            address: 'address999'
-        }
-        this._http.post('http://10.128.64.62:1337/devices/add', JSON.stringify(device), {
-                headers: headers
-            }).subscribe((res) => console.log(res));
-    }
+        this._sensorService.saveSensors();
     }
 }

@@ -16,6 +16,7 @@
   <script src="../node_modules/rxjs/bundles/Rx.js"></script>
   <script src="../node_modules/angular2/bundles/angular2.dev.js"></script>
   <script src="../node_modules/angular2/bundles/router.dev.js"></script>
+  <script src="../node_modules/angular2/bundles/http.dev.js"></script>
 
   <script src="../node_modules/jasmine-core/lib/jasmine-core/jasmine.js"></script>
   <script src="../node_modules/jasmine-core/lib/jasmine-core/jasmine-html.js"></script>
@@ -33,6 +34,7 @@
         Promise.all([
           System.import('app/sensor-detail.component.spec'),
           System.import('app/sensor-list.component.spec'),
+          System.import('app/sensor.service.spec'),
         ])
         // #4. wait for all imports to load ...
         //     then re-execute `window.onload` which
