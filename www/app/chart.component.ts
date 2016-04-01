@@ -1,7 +1,8 @@
 import {Component, Inject, OnInit, OnChanges, Input, SimpleChange} from 'angular2/core';
 
 
-@Component({selector: 'chart-component',
+@Component({
+    selector: 'chart-component',
     templateUrl: 'app/chart.component.html',
     inputs: ['data']
 })
@@ -15,7 +16,7 @@ export class ChartComponent implements OnInit, OnChanges {
 
     ngOnInit() {
         var lineChartData = {
-            labels: ["-", "-", "-", "-", "-", "-", "-", "-", "-", "-"],
+            labels: ["", "", "", "", "", "", "", "", "", ""],
             datasets: [
                 {
                     label: "My First dataset",

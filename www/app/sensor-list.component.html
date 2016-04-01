@@ -23,38 +23,6 @@
         Add a Sensor
     </button>
 
-
     <div *ngFor="#device of connectedDevices; #i = index">
-        <div *ngIf="device.isNamed === false" class="row columns">
-            <div class="input-group">
-                <input class="input-group-field" type="text" placeholder="Sensor name" [(ngModel)]="device.name" />
-                <div class="input-group-button">
-                    <input type="submit" class="button" value="Submit" (click)="nameDevice(device, device.name)">
-                </div>
-            </div>
-            <p class="help-text" id="passwordHelpText">Enter a name to identify this sensor. You can use the location of the sensor, etc</p>
-        </div>
-
-        <div *ngIf="device.isNamed === true" class="callout" [ngClass]="{
-            alert: device.status === 'DISCONNECTED', 
-            warning: device.status === 'CONNECTING' || device.status === 'CONNECTED' || device.status === 'READING_DEVICE_INFO',
-            success: device.data.keypressData !== 0
-        }">
-            <h4 class="sensorName">{{device.name}} <small>{{device.address}}</small></h4>
-            <div *ngIf="device.data.humidityData">
-                <div>
-                    Humidity: {{device.data.humidityData.relativeHumidity}}% rH
-                </div>
-            </div>
-
-            <h4 *ngIf="device.status === 'CONNECTING' || device.status === 'CONNECTED' || device.status === 'READING_DEVICE_INFO'">CONNECTING</h4>
-            <div  *ngIf="!(device.status === 'CONNECTING' || device.status === 'CONNECTED' || device.status === 'READING_DEVICE_INFO')" class="button-group">
-                <button (click)="toggleDeviceConnection(i)" class="button" [ngClass]="{secondary: device.isConnected, success: !device.isConnected}">
-                    {{device.isConnected ? 'Disconnect' : 'Connect'}}
-                </button>
-
-                <button *ngIf="device.isConnected" (click)="device.isNamed = false" class="button secondary">Rename</button>
-                <button *ngIf="device.isConnected" (click)="goToSensorDetails(i)"class="button">Details</button>
-            </div>
-        </div>
+        <sensor [device]="device" [dindex]="i"></sensor>
     </div>

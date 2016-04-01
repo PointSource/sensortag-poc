@@ -93,6 +93,9 @@
                                 advertisementData: {
                                     kCBAdvDataLocalName: 'CC2650 SensorTag'
                                 },
+                                close: () => {
+                                    console.log('device.close');
+                                },
                                 rssi: 1000,
                                 connect: (callback) => {
                                     callback();

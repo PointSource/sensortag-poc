@@ -1,10 +1,11 @@
 import {Component, OnInit, Inject, NgZone} from 'angular2/core';
-import {Router} from 'angular2/router';
 import {SensorService} from './sensor.service';
 import {ConnectedDevice} from './connected-device';
+import {SensorComponent} from './sensor.component';
 
 @Component({
-    templateUrl: 'app/sensor-list.component.html'
+    templateUrl: 'app/sensor-list.component.html',
+    directives: [SensorComponent]
 })
 export class SensorListComponent implements OnInit {
 	public title: string = "SensorTag Demo";
@@ -21,7 +22,6 @@ export class SensorListComponent implements OnInit {
         @Inject('IoTFoundationLib') private _iotfoundationlib,
         @Inject('Evothings') private _evothings,
         private _ngZone: NgZone,
-        private _router: Router
 	) { }
 
 	ngOnInit() {
@@ -124,27 +124,17 @@ export class SensorListComponent implements OnInit {
             device: sensortag.getDevice(),
             name: "",
             isNamed: false,
-            isConnected: true
+            isConnected: true,
+            job: ""
         };
+
+        // Reset status after a timeout
+        setTimeout(() => {
+            this.status = ""
+        }, 2000);
 
         this._sensorService.addSensor(connectedDevice);
         this.connectedDevices = this._sensorService.getSensors();
-    }
-
-    nameDevice(connectedDevice, name) {
-        connectedDevice.isNamed = true;
-        connectedDevice.name = name;
-        this.status = "";
-    }
-
-    toggleDeviceConnection(index) {
-        if (this.connectedDevices[index].isConnected) {
-            this.connectedDevices[index].sensortag.disconnectDevice();
-            this.connectedDevices[index].status = "DISCONNECTED";
-            this.connectedDevices[index].isConnected = false;
-        } else {
-            this.connectedDevices[index].sensortag.connectToDevice(this.connectedDevices[index].device);
-        }
     }
 
     statusHandler(index, status) {
@@ -198,9 +188,7 @@ export class SensorListComponent implements OnInit {
         this.status = 'Press Connect to find a SensorTag';
     }
 
-    goToSensorDetails(index) {
-		this._router.navigate(['SensorDetail', { index: index }]);
-    }
+
 
     saveDevices() {
         this._sensorService.saveSensors();
