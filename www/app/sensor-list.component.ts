@@ -1,10 +1,12 @@
 import {Component, OnInit, Inject, NgZone} from 'angular2/core';
+import {Http, Headers, HTTP_PROVIDERS} from 'angular2/http';
 import {Router} from 'angular2/router';
 import {SensorService} from './sensor.service';
 import {ConnectedDevice} from './connected-device';
 
 @Component({
-    templateUrl: 'app/sensor-list.component.html'
+    templateUrl: 'app/sensor-list.component.html',
+    viewProviders: [HTTP_PROVIDERS]
 })
 export class SensorListComponent implements OnInit {
 	public title: string = "SensorTag Demo";
@@ -21,6 +23,7 @@ export class SensorListComponent implements OnInit {
         @Inject('Evothings') private _evothings,
         private _ngZone: NgZone,
 		private _router: Router,
+        private _http: Http,
         private _sensorService: SensorService
 	) { }
 
@@ -201,5 +204,21 @@ export class SensorListComponent implements OnInit {
 
     goToSensorDetails(index) {
 		this._router.navigate(['SensorDetail', { index: index }]);
+    }
+
+    saveDevices() {
+        // http://10.128.64.62:1337/devices
+        this._http.get('http://10.128.64.62:1337/devices').subscribe((res) => console.log(res));
+
+        var headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+
+        var device = {
+            address: 'address999'
+        }
+        this._http.post('http://10.128.64.62:1337/devices/add', JSON.stringify(device), {
+                headers: headers
+            }).subscribe((res) => console.log(res));
+    }
     }
 }
