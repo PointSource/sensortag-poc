@@ -29,11 +29,8 @@ export class SensorService {
 		var headers = new Headers();
         headers.append('Content-Type', 'application/json');
 
-        var device = {
-            address: 'address999'
-        }
 
-		this._http.post('http://10.0.1.7:1337/devices/add', JSON.stringify(device), {
+		this._http.post('http://10.0.1.7:1337/devices/sync', JSON.stringify(this.sensors), {
 			headers: headers
 		}).subscribe((res) => console.log(res));
 
