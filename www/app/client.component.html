@@ -1,10 +1,9 @@
-<div>
-	Client view
+
+<button class="expanded large button" (click)="loadSensors()" *ngIf="!sensors || sensors.length === 0">Load Sensors</button>
+
+<button class="expanded large button" (click)="sendData()" *ngIf="sensors && sensors.length > 0">Send Sensor Data</button>
+
+
+<div *ngFor="#device of sensors; #i = index">
+    <sensor [device]="device" [dindex]="i"></sensor>
 </div>
-
-<button class="button" (click)="loadSensors()">Load Sensors</button>
-
-
-   <div *ngFor="#device of sensors; #i = index">
-        <sensor [device]="device" [dindex]="i"></sensor>
-    </div>

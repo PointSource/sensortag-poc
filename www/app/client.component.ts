@@ -21,4 +21,8 @@ export class ClientComponent {
         });
     }
 
+    sendData() {
+		console.log('send sensor data');
+    }
+
 }
