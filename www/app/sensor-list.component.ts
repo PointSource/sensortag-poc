@@ -8,7 +8,7 @@ import {SensorComponent} from './sensor.component';
     directives: [SensorComponent]
 })
 export class SensorListComponent implements OnInit {
-	public title: string = "SensorTag Demo";
+	title: string = "SensorTag Demo";
     objIOT: any;
     chart: any;
 	status: string;
@@ -21,7 +21,7 @@ export class SensorListComponent implements OnInit {
         private _sensorService: SensorService,
         @Inject('IoTFoundationLib') private _iotfoundationlib,
         @Inject('Evothings') private _evothings,
-        private _ngZone: NgZone,
+        private _ngZone: NgZone
 	) { }
 
 	ngOnInit() {
@@ -188,9 +188,7 @@ export class SensorListComponent implements OnInit {
         this.status = 'Press Connect to find a SensorTag';
     }
 
-
-
     saveDevices() {
-        this._sensorService.saveSensors();
+        this._sensorService.sync();
     }
 }

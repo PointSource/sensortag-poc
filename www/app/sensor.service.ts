@@ -19,6 +19,16 @@ export class SensorService {
 			});
 	}
 
+	sync() {
+		var headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+
+		this._http.post('http://10.0.1.7:1337/devices/sync', JSON.stringify(this.sensors), {
+			headers: headers
+		}).subscribe((res) => console.log(res));
+
+	}
+
 	getSensors(): any {
 		return this.sensors;
 	}
@@ -31,16 +41,6 @@ export class SensorService {
 			}
 		}
 		return sensorsForJob;
-	}
-
-	saveSensors() {
-		var headers = new Headers();
-        headers.append('Content-Type', 'application/json');
-
-		this._http.post('http://10.0.1.7:1337/devices/sync', JSON.stringify(this.sensors), {
-			headers: headers
-		}).subscribe((res) => console.log(res));
-
 	}
 
 	addSensor(sensor: ConnectedDevice): void {

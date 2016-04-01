@@ -1,3 +1,10 @@
 <div>
 	Client view
 </div>
+
+<button class="button" (click)="loadSensors()">Load Sensors</button>
+
+
+   <div *ngFor="#device of sensors; #i = index">
+        <sensor [device]="device" [dindex]="i"></sensor>
+    </div>
