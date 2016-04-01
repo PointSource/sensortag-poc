@@ -1,15 +1,15 @@
-import {Component} from 'angular2/core';
+import {Component, Output, EventEmitter} from 'angular2/core';
 import {Router} from 'angular2/router';
 
 @Component({
     selector: 'sensor',
     templateUrl: 'app/sensor.component.html',
     inputs: ['device', 'dindex']
-
 })
 export class SensorComponent {
 	device;
 	dindex;
+    @Output() onDeviceNamed = new EventEmitter();
 
     constructor(
         private _router: Router
@@ -18,6 +18,7 @@ export class SensorComponent {
     nameDevice(name) {
         this.device.isNamed = true;
         this.device.name = name;
+        this.onDeviceNamed.emit("event");
     }
 
     toggleDeviceConnection() {

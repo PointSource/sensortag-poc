@@ -5,6 +5,7 @@ import {SensorComponent} from './sensor.component';
 
 @Component({
     templateUrl: 'app/sensor-list.component.html',
+    styleUrls: ['app/sensor-list.component.css'],
     directives: [SensorComponent]
 })
 export class SensorListComponent implements OnInit {
@@ -128,11 +129,6 @@ export class SensorListComponent implements OnInit {
             job: ""
         };
 
-        // Reset status after a timeout
-        setTimeout(() => {
-            this.status = ""
-        }, 2000);
-
         this._sensorService.addSensor(connectedDevice);
         this.connectedDevices = this._sensorService.getSensors();
     }
@@ -190,5 +186,10 @@ export class SensorListComponent implements OnInit {
 
     saveDevices() {
         this._sensorService.sync();
+    }
+
+    // Reset status after device was named
+    deviceNamedHandler() {
+        this.status = ""
     }
 }
