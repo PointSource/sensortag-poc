@@ -1,7 +1,7 @@
 import {Injectable} from 'angular2/core';
 import {ConnectedDevice} from './connected-device';
-import {Http, Headers} from 'angular2/http';
-
+import {Http, Headers, Response} from 'angular2/http';
+import 'rxjs/Rx';
 
 @Injectable()
 export class SensorService {
@@ -11,7 +11,15 @@ export class SensorService {
         private _http: Http
 	) {}
 
-	getSensors(): ConnectedDevice[] {
+	fetch() {
+		return this._http.get('http://10.0.1.7:1337/devices')
+			.map(res => res.json())
+			.subscribe((res) => {
+				this.sensors = res;
+			});
+	}
+
+	getSensors(): any {
 		return this.sensors;
 	}
 
@@ -28,7 +36,6 @@ export class SensorService {
 	saveSensors() {
 		var headers = new Headers();
         headers.append('Content-Type', 'application/json');
-
 
 		this._http.post('http://10.0.1.7:1337/devices/sync', JSON.stringify(this.sensors), {
 			headers: headers
