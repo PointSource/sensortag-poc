@@ -1,17 +1,19 @@
-import {Component, Inject, OnInit, OnChanges, Input, SimpleChange} from 'angular2/core';
+import {Component, Inject, OnInit, OnChanges, Input, SimpleChange, ElementRef} from 'angular2/core';
 
 
 @Component({
     selector: 'chart-component',
     templateUrl: 'app/chart.component.html',
-    inputs: ['data']
+    inputs: ['data', 'ispercentage']
 })
 export class ChartComponent implements OnInit, OnChanges {
     chart: any;
     data: any;
+    ispercentage: boolean;
 
     constructor(
-        @Inject('ChartJS') private _chartJS
+        @Inject('ChartJS') private _chartJS,
+        private myElement: ElementRef
     ) { }
 
     ngOnInit() {
@@ -31,16 +33,26 @@ export class ChartComponent implements OnInit, OnChanges {
             ]
         }
 
-        var ctx = document.getElementById("canvas").getContext("2d");
-        this.chart = new this._chartJS(ctx).Line(lineChartData, {
-            responsive: true,
-            bezierCurve: false,
-            scaleOverride: true,
-            scaleSteps: 10,
-            scaleStepWidth: 10,
-            scaleStartValue: 0 
-        });
+        var ctx = this.myElement.nativeElement.children[0].children[0].getContext("2d");
 
+        if (this.ispercentage) {
+
+            this.chart = new this._chartJS(ctx).Line(lineChartData, {
+                responsive: true,
+                bezierCurve: false,
+                scaleOverride: true,
+                scaleSteps: 10,
+                scaleStepWidth: 10,
+                scaleStartValue: 0 
+            });
+        } else {
+            this.chart = new this._chartJS(ctx).Line(lineChartData, {
+                responsive: true,
+                bezierCurve: false,
+                scaleBeginAtZero : true
+            });
+        }
+            
     }
 
     ngOnChanges(changes: { [propName: string]: SimpleChange }) {

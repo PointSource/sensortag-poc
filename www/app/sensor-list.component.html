@@ -21,10 +21,10 @@
     </div>
 </div>
 
-
-
 <button *ngIf="!status" (click)="connectToNearestDevice()" class="expanded large button">
-    <span class="button-icon">&#x02295;</span> Add a Sensor
+    <span class="button-icon">&#x02295;</span>Add a Sensor
 </button>
 
-<button *ngIf="!status && sensors && sensors.length > 0" class="expanded large button success" (click)="saveDevices()">Save Sensors</button>
+<button *ngIf="!status && sensors && sensors.length > 0" class="expanded large button" (click)="saveDevices()">Save Sensors</button>
+
+<!-- <button *ngIf="!status && sensors && sensors.length > 0" class="expanded large button" (click)="saveDevices()"><span class="button-icon">&#x021E5;</span>Send Report</button> -->

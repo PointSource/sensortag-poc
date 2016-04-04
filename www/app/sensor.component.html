@@ -21,6 +21,14 @@
                     Humidity: {{sensor.data.humidityData.relativeHumidity}}% rH
                 </div>
             </div>
+            <div *ngIf="sensor.data.temperatureData">
+                <div>
+                    Target Temp: {{sensor.data.temperatureData.targetTemperature}}&#x000B0; F
+                </div>
+                <div>
+                    Ambient Temp: {{sensor.data.temperatureData.ambientTemperature}}&#x000B0; F
+                </div>
+            </div>
 
             <h4 *ngIf="sensor.status === 'CONNECTING' || sensor.status === 'CONNECTED' || sensor.status === 'READING_DEVICE_INFO'">CONNECTING</h4>
             <div  *ngIf="!(sensor.status === 'CONNECTING' || sensor.status === 'CONNECTED' || sensor.status === 'READING_DEVICE_INFO')" class="button-group">

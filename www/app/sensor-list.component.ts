@@ -10,7 +10,7 @@ import {SensorComponent} from './sensor.component';
 })
 export class SensorListComponent implements OnInit {
 	title: string = "SensorTag Demo";
-    objIOT: any;
+    objIOT: any = {};
     chart: any;
 	status: string;
     statusPercentage: number;
@@ -31,9 +31,36 @@ export class SensorListComponent implements OnInit {
         this.sensors = this._sensorService.getSensors();
 
         // IoT Foundation object..
-        this.objIOT = this._iotfoundationlib.createInstance();
+        this.objIOT['b0b448d31202'] = this._iotfoundationlib.createInstance('b0b448d31202', 'b4KBCvZ*ivr9cVhpPg');
 
-        this.objIOT
+        this.objIOT['b0b448d31202']
+            .onConnectSuccessCallback(() => {
+                // alert("connect success")
+            })
+            .onConnectFailureCallback(() => {
+                // alert("connect fail")
+            })
+            .connectToFoundationCloud()
+
+
+        // IoT Foundation object..
+        this.objIOT['b0b448c9d807'] = this._iotfoundationlib.createInstance('b0b448c9d807', '2?Q7s4DL-_3L4LKKIM');
+
+        this.objIOT['b0b448c9d807']
+            .onConnectSuccessCallback(() => {
+                // alert("connect success")
+            })
+            .onConnectFailureCallback(() => {
+                // alert("connect fail")
+            })
+            .connectToFoundationCloud()
+
+
+
+        // IoT Foundation object..
+        this.objIOT['b0b448c8b807'] = this._iotfoundationlib.createInstance('b0b448c8b807', 'GXpLWf_ge1qX5z-BNO');
+
+        this.objIOT['b0b448c8b807']
             .onConnectSuccessCallback(() => {
                 // alert("connect success")
             })
@@ -97,11 +124,16 @@ export class SensorListComponent implements OnInit {
                     self.humidityHandler(index, data);
                 });
             }, 1000)
+            .temperatureCallback(function(data) {
+                self._ngZone.run(function() {
+                    self.temperatureHandler(index, data);
+                });
+            }, 1000)
             .keypressCallback(function(data) {
                 self._ngZone.run(function() {
                     self.keypressHandler(index, data);
                 });
-            }, 1000);
+            });
 
 
         var connectedDevice: Sensor = {
@@ -113,6 +145,12 @@ export class SensorListComponent implements OnInit {
                     relativeHumidity: 0,
                     humidityTemperature: 0
                 },
+                temperatureData: {
+                    lastTenAmbient: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    lastTenTarget: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    ambientTemperature: 0,
+                    targetTemperature: 0
+                },
                 keypressData: 0
             },
             address: sensortag.getDeviceAddress(),
@@ -122,6 +160,10 @@ export class SensorListComponent implements OnInit {
             isConnected: true,
             job: ""
         };
+
+        setInterval(() => {
+            self.sendReport();
+        }, 1000);
 
         this._sensorService.addSensor(connectedDevice);
         this.sensors = this._sensorService.getSensors();
@@ -143,6 +185,26 @@ export class SensorListComponent implements OnInit {
         }
     }
 
+    temperatureHandler(index, data) {
+        var values = this.sensors[index].sensortag.getTemperatureValues(data);
+        var ac = values.ambientTemperature;
+        var af = this.sensors[index].sensortag.celsiusToFahrenheit(ac);
+        var tc = values.targetTemperature;
+        var tf = this.sensors[index].sensortag.celsiusToFahrenheit(tc);
+
+        this.sensors[index].data.temperatureData.ambientTemperature = af.toFixed(1);
+        this.sensors[index].data.temperatureData.targetTemperature = tf.toFixed(1)
+        var lastTenAmbient = this.sensors[index].data.temperatureData.lastTenAmbient.slice();
+        lastTenAmbient.push(af);
+        lastTenAmbient.shift();
+        this.sensors[index].data.temperatureData.lastTenAmbient = lastTenAmbient;
+
+        var lastTenTarget = this.sensors[index].data.temperatureData.lastTenTarget.slice();
+        lastTenTarget.push(tf);
+        lastTenTarget.shift();
+        this.sensors[index].data.temperatureData.lastTenTarget = lastTenTarget;
+    }
+
     humidityHandler(index, data) {
         var values = this.sensors[index].sensortag.getHumidityValues(data)
 
@@ -159,14 +221,6 @@ export class SensorListComponent implements OnInit {
         lastTenValues.push(h);
         lastTenValues.shift();
         this.sensors[index].data.humidityData.lastTenValues = lastTenValues;
-
-        // Publish event to the IoTF
-        this.objIOT.publishToFoundationCloud({
-            humidityData: {
-                humidityTemperature: tc.toFixed(1),
-                relativeHumidity: h.toFixed(1)
-            }
-        });
     }
 
     keypressHandler(index, data) {
@@ -180,6 +234,53 @@ export class SensorListComponent implements OnInit {
 
     saveDevices() {
         this._sensorService.sync();
+    }
+
+    sendReport() {
+
+        for (let sensor of this.sensors) {
+            var formattedAddress = sensor.device.address.replace(new RegExp(":", "g"), "").toLowerCase()
+            this.objIOT[formattedAddress].publishToFoundationCloud({
+                d: {
+                    humidityData: {
+                        relativeHumidity: sensor.data.humidityData.relativeHumidity
+                    },
+                    temperatureData: {
+                        ambientTemperature: sensor.data.temperatureData.ambientTemperature,
+                        targetTemperature: sensor.data.temperatureData.targetTemperature
+                    }
+                }
+            });
+        }
+
+        // if (this.sensors.length > 0) {
+        //     // Publish event to the IoTF
+        //     this.objIOT_1202.publishToFoundationCloud({
+        //         d: {
+        //             humidityData: {
+        //                 relativeHumidity: this.sensors[0].data.humidityData.relativeHumidity
+        //             },
+        //             temperatureData: {
+        //                 ambientTemperature: this.sensors[0].data.temperatureData.ambientTemperature,
+        //                 targetTemperature: this.sensors[0].data.temperatureData.targetTemperature
+        //             }
+        //         }
+        //     });
+        // }
+
+        // if (this.sensors.length > 1) {
+        //     this.objIOT_d807.publishToFoundationCloud({
+        //         d: {
+        //             humidityData: {
+        //                 relativeHumidity: this.sensors[1].data.humidityData.relativeHumidity
+        //             },
+        //             temperatureData: {
+        //                 ambientTemperature: this.sensors[1].data.temperatureData.ambientTemperature,
+        //                 targetTemperature: this.sensors[1].data.temperatureData.targetTemperature
+        //             }
+        //         }
+        //     });
+        // }
     }
 
     // Reset status after device was named

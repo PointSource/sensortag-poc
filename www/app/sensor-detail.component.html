@@ -2,13 +2,15 @@
 	{{device.name}}
 </h2>
 
-<h5>Humidity Data: </h5>
+<h5>Humidity: {{device.data.humidityData.relativeHumidity}}% rH</h5>
 
-<chart-component [data]="device.data.humidityData.lastTenValues"></chart-component>
+<chart-component [data]="device.data.humidityData.lastTenValues" [ispercentage]="true"></chart-component>
 
-<div>
-    {{device.data.humidityData.humidityTemperature}} C
-</div>
-<div>
-    {{device.data.humidityData.relativeHumidity}}% rH
-</div>
+<h5>Target Temperature: {{device.data.temperatureData.targetTemperature}}&#x000B0; F</h5>
+
+<chart-component [data]="device.data.temperatureData.lastTenTarget" [ispercentage]="false"></chart-component>
+
+
+<h5>Ambient Temperature: {{device.data.temperatureData.ambientTemperature}}&#x000B0; F</h5>
+
+<chart-component [data]="device.data.temperatureData.lastTenAmbient" [ispercentage]="false"></chart-component>

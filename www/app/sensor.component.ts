@@ -27,7 +27,7 @@ export class SensorComponent {
             this.sensor.status = "DISCONNECTED";
             this.sensor.isConnected = false;
         } else {
-            this.sensor.sensortag.connectToDevice(this.device.device);
+            this.sensor.sensortag.connectToDevice(this.sensor.device);
         }
     }
 
