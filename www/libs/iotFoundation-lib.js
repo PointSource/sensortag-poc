@@ -45,8 +45,15 @@ var IoTFoundationLib = (function()
 	/**
      * Public. Create tag instance.
      */
-    iotFoundation.createInstance = function()
+    iotFoundation.createInstance = function(configDeviceId, configDeviceToken)
     {
+
+        if (configDeviceId !== undefined) {
+            iotFoundation.CLIENT_ID = 'd:'+config.org+':'+config.deviceType+':'+configDeviceId;
+        }
+        if (configDeviceToken !== undefined) {
+            iotFoundation.IOT_PASS = configDeviceToken;
+        }
 
 		/**
 		* Variable holding the IOT foundation instance object.
