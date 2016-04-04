@@ -1,11 +1,8 @@
-<button *ngIf="connectedDevices && connectedDevices.length > 0" class="expanded large button success" (click)="saveDevices()">Save Sensors</button>
-
-
-<div *ngFor="#device of connectedDevices; #i = index">
-    <sensor [device]="device" [dindex]="i" (onDeviceNamed)="deviceNamedHandler()"></sensor>
+<div *ngFor="#sensor of sensors; #i = index">
+    <sensor [sensor]="sensor" [dindex]="i" (onDeviceNamed)="deviceNamedHandler()"></sensor>
 </div>
 
-<div *ngIf="status" class="callout secondary" [ngClass]="{warning: status === 'SENSORTAG_NOT_FOUND'}">
+<div *ngIf="status && status !== 'DEVICE_INFO_AVAILABLE'" class="callout secondary" [ngClass]="{warning: status === 'SENSORTAG_NOT_FOUND'}">
     <h5>{{status}}</h5>
 
     <h5 *ngIf="status === 'SCANNING'">Scanning for devices</h5>
@@ -29,3 +26,5 @@
 <button *ngIf="!status" (click)="connectToNearestDevice()" class="expanded large button">
     <span class="button-icon">&#x02295;</span> Add a Sensor
 </button>
+
+<button *ngIf="!status && sensors && sensors.length > 0" class="expanded large button success" (click)="saveDevices()">Save Sensors</button>

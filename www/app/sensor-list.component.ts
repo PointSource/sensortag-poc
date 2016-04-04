@@ -1,6 +1,6 @@
 import {Component, OnInit, Inject, NgZone} from 'angular2/core';
 import {SensorService} from './sensor.service';
-import {ConnectedDevice} from './connected-device';
+import {Sensor} from './sensor';
 import {SensorComponent} from './sensor.component';
 
 @Component({
@@ -16,7 +16,7 @@ export class SensorListComponent implements OnInit {
     statusPercentage: number;
 
 	// List of devices
-	connectedDevices: ConnectedDevice[];
+	sensors: Sensor[];
 
 	constructor(
         private _sensorService: SensorService,
@@ -26,11 +26,9 @@ export class SensorListComponent implements OnInit {
 	) { }
 
 	ngOnInit() {
-		var self = this;
-
         this.statusPercentage = 0;
 
-        this.connectedDevices = this._sensorService.getSensors();
+        this.sensors = this._sensorService.getSensors();
 
         // IoT Foundation object..
         this.objIOT = this._iotfoundationlib.createInstance();
@@ -45,16 +43,12 @@ export class SensorListComponent implements OnInit {
             .connectToFoundationCloud()
     }
 
-    initSensorTag() {
+    connectToNearestDevice() {
+        var self = this;
+
         // Create SensorTag CC2650 instance.
         var sensortag = this._evothings.tisensortag.createInstance(
             this._evothings.tisensortag.CC2650_BLUETOOTH_SMART)
-        return sensortag;
-    }
-
-    connectToNearestDevice() {
-        var self = this;
-        var sensortag = this.initSensorTag();
 
         sensortag
             .statusCallback(function(status) {
@@ -82,7 +76,7 @@ export class SensorListComponent implements OnInit {
             this.statusPercentage = 80
         } else if ('DEVICE_INFO_AVAILABLE' == status) {
             this.statusPercentage = 100;
-            this.deviceConnectedHandler(sensortag, this.connectedDevices.length);
+            this.deviceConnectedHandler(sensortag, this.sensors.length);
         } else if ('SENSORTAG_NOT_FOUND' == status) {
             this.statusPercentage = 0;
         }
@@ -110,7 +104,7 @@ export class SensorListComponent implements OnInit {
             }, 1000);
 
 
-        var connectedDevice: ConnectedDevice = {
+        var connectedDevice: Sensor = {
             status: "initializing",
             sensortag: sensortag,
             data: {
@@ -130,13 +124,13 @@ export class SensorListComponent implements OnInit {
         };
 
         this._sensorService.addSensor(connectedDevice);
-        this.connectedDevices = this._sensorService.getSensors();
+        this.sensors = this._sensorService.getSensors();
     }
 
     statusHandler(index, status) {
-        this.connectedDevices[index].status = status;
+        this.sensors[index].status = status;
         if (status === "DEVICE_INFO_AVAILABLE") {
-            this.connectedDevices[index].isConnected = true;
+            this.sensors[index].isConnected = true;
         }
     }
 
@@ -150,21 +144,21 @@ export class SensorListComponent implements OnInit {
     }
 
     humidityHandler(index, data) {
-        var values = this.connectedDevices[index].sensortag.getHumidityValues(data)
+        var values = this.sensors[index].sensortag.getHumidityValues(data)
 
         // Calculate the humidity temperature (C and F).
         var tc = values.humidityTemperature
-        var tf = this.connectedDevices[index].sensortag.celsiusToFahrenheit(tc)
+        var tf = this.sensors[index].sensortag.celsiusToFahrenheit(tc)
 
         // Calculate the relative humidity.
         var h = values.relativeHumidity;
 
-        this.connectedDevices[index].data.humidityData.humidityTemperature = tc.toFixed(1);
-        this.connectedDevices[index].data.humidityData.relativeHumidity = h.toFixed(1)
-        var lastTenValues = this.connectedDevices[index].data.humidityData.lastTenValues.slice();
+        this.sensors[index].data.humidityData.humidityTemperature = tc.toFixed(1);
+        this.sensors[index].data.humidityData.relativeHumidity = h.toFixed(1)
+        var lastTenValues = this.sensors[index].data.humidityData.lastTenValues.slice();
         lastTenValues.push(h);
         lastTenValues.shift();
-        this.connectedDevices[index].data.humidityData.lastTenValues = lastTenValues;
+        this.sensors[index].data.humidityData.lastTenValues = lastTenValues;
 
         // Publish event to the IoTF
         this.objIOT.publishToFoundationCloud({
@@ -176,7 +170,7 @@ export class SensorListComponent implements OnInit {
     }
 
     keypressHandler(index, data) {
-        this.connectedDevices[index].data.keypressData = data[0];
+        this.sensors[index].data.keypressData = data[0];
     }
 
     resetSensorDisplayValues() {

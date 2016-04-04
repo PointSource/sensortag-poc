@@ -4,10 +4,10 @@ import {Router} from 'angular2/router';
 @Component({
     selector: 'sensor',
     templateUrl: 'app/sensor.component.html',
-    inputs: ['device', 'dindex']
+    inputs: ['sensor', 'dindex']
 })
 export class SensorComponent {
-	device;
+	sensor;
 	dindex;
     @Output() onDeviceNamed = new EventEmitter();
 
@@ -16,18 +16,18 @@ export class SensorComponent {
 	) { }
 
     nameDevice(name) {
-        this.device.isNamed = true;
-        this.device.name = name;
+        this.sensor.isNamed = true;
+        this.sensor.name = name;
         this.onDeviceNamed.emit("event");
     }
 
     toggleDeviceConnection() {
-        if (this.device.isConnected) {
-            this.device.sensortag.disconnectDevice();
-            this.device.status = "DISCONNECTED";
-            this.device.isConnected = false;
+        if (this.sensor.isConnected) {
+            this.sensor.sensortag.disconnectDevice();
+            this.sensor.status = "DISCONNECTED";
+            this.sensor.isConnected = false;
         } else {
-            this.device.sensortag.connectToDevice(this.device.device);
+            this.sensor.sensortag.connectToDevice(this.device.device);
         }
     }
 

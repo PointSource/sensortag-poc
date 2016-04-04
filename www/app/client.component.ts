@@ -1,6 +1,6 @@
-import {Component} from 'angular2/core';
+import {Component, Inject, NgZone} from 'angular2/core';
 import {SensorService} from './sensor.service';
-import {ConnectedDevice} from './connected-device';
+import {Sensor} from './sensor';
 import {SensorComponent} from './sensor.component';
 
 @Component({
@@ -8,17 +8,59 @@ import {SensorComponent} from './sensor.component';
     directives: [SensorComponent]
 })
 export class ClientComponent {
-    sensors: ConnectedDevice[];
+    sensors: Sensor[];
 
     constructor(
-        private _sensorService: SensorService
+        private _sensorService: SensorService,
+        @Inject('Evothings') private _evothings,
+        private _ngZone: NgZone
     ) { }
 
     loadSensors() {
         this._sensorService.fetch().add(() => {
             this.sensors = this._sensorService.getSensors();
-            console.log('got sensors', this.sensors);
+
+            let index = 0;
+            for (let sensor of this.sensors) {
+                sensor.isConnected = false;
+                this.initSensorTag(sensor, index);
+                index++;
+            }
         });
+    }
+
+    initSensorTag(sensor, index) {
+        var self = this;
+
+        // Create SensorTag CC2650 instance.
+        sensor.sensortag = this._evothings.tisensortag.createInstance(
+            this._evothings.tisensortag.CC2650_BLUETOOTH_SMART)
+
+        sensor.sensortag
+            .statusCallback(function(status) {
+                self._ngZone.run(function() {
+                    self.statusHandler(index, status)
+                });
+            })
+            // .humidityCallback(function(data) {
+            //     self._ngZone.run(function() {
+            //         self.humidityHandler(index, data);
+            //     });
+            // }, 1000)
+            // .keypressCallback(function(data) {
+            //     self._ngZone.run(function() {
+            //         self.keypressHandler(index, data);
+            //     });
+            // }, 1000);
+
+        // sensor.sensortag.connectToDevice(sensor.device);
+    }
+
+    statusHandler(index, status) {
+        this.sensors[index].status = status;
+        if (status === "DEVICE_INFO_AVAILABLE") {
+            this.sensors[index].isConnected = true;
+        }
     }
 
     sendData() {

@@ -1,4 +1,4 @@
-export interface ConnectedDevice {
+export interface Sensor {
 	status: string;
 	sensortag: any;
 	data: any;
