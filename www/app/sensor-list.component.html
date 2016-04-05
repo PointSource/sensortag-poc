@@ -2,7 +2,7 @@
     <sensor [sensor]="sensor" [dindex]="i" (onDeviceNamed)="deviceNamedHandler()"></sensor>
 </div>
 
-<div *ngIf="status && status !== 'DEVICE_INFO_AVAILABLE'" class="callout secondary" [ngClass]="{warning: status === 'SENSORTAG_NOT_FOUND'}">
+<div *ngIf="status && status !== 'DEVICE_INFO_AVAILABLE'" class="callout" [ngClass]="{warning: status === 'SENSORTAG_NOT_FOUND'}">
     <h5>{{status}}</h5>
 
     <h5 *ngIf="status === 'SCANNING'">Scanning for devices</h5>
