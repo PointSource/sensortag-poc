@@ -5,6 +5,7 @@ import {SensorListComponent} from './sensor-list.component';
 import {ClientComponent} from './client.component';
 import {LandingComponent} from './landing.component';
 import {JobListComponent} from './technician/job-list.component';
+import {NavService} from './nav.service';
 
 @Component({
     selector: 'my-app',
@@ -19,10 +20,17 @@ import {JobListComponent} from './technician/job-list.component';
 	{ path: '/client', name: 'Client', component: ClientComponent },
 	{ path: '/sensor', name: 'SensorDetail', component: SensorDetailComponent }
 ])
-export class AppComponent {
+export class AppComponent implements OnInit {
 
 	private title = "Sensor Demo";
 
+    constructor(
+        private _navService: NavService
+    ) {}
+
+    ngOnInit() {
+        this._navService.titleChanged$.subscribe(title => this.title = title);
+    }
 
     goBack() {
         window.history.back();

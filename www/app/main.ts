@@ -4,6 +4,7 @@ import {ROUTER_PROVIDERS, LocationStrategy, HashLocationStrategy} from 'angular2
 import {HTTP_PROVIDERS} from 'angular2/http';
 import {AppComponent} from './app.component';
 import {SensorService} from './sensor.service';
+import {NavService} from './nav.service';
 
 declare var evothings: any;
 declare var IoTFoundationLib: any;
@@ -13,6 +14,7 @@ bootstrap(AppComponent, [
 	ROUTER_PROVIDERS,
 	HTTP_PROVIDERS,
 	SensorService,
+	NavService,
 	provide('Evothings', { useValue: evothings }),
 	provide('IoTFoundationLib', { useValue: IoTFoundationLib }),
 	provide('ChartJS', { useValue: Chart }),

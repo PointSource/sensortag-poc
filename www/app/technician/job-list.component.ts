@@ -1,4 +1,5 @@
 import {Component, OnInit, ElementRef} from 'angular2/core';
+import {NavService} from '../nav.service'
 import {Job} from './job'
 import {Router} from 'angular2/router';
 
@@ -13,10 +14,13 @@ export class JobListComponent implements OnInit {
 
     constructor(
         private _router: Router,
+        private _navService: NavService,
         private myElement: ElementRef
     ) { }
 
     ngOnInit() {
+        this._navService.setTitle("My Jobs");
+
         this.newJob = {
             name: "",
             policyNumber: ""
@@ -37,8 +41,6 @@ export class JobListComponent implements OnInit {
     }
 
     addJob() {
-        console.log('addJob');
-
         this.modalElement.foundation('open');
     }
 
