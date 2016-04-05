@@ -250,6 +250,8 @@ export class ConfigureJobComponent implements OnInit {
 
     saveDevices() {
         this._sensorService.sync();
+
+        window.history.back();
     }
 
     sendReport() {

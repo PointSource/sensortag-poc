@@ -26,7 +26,8 @@ export class JobListComponent implements OnInit {
 
         this.newJob = {
             name: "",
-            policyNumber: ""
+            policyNumber: "",
+            numSensors: 0
         }
 
         this.jobList = this._jobService.getJobs();
@@ -42,14 +43,16 @@ export class JobListComponent implements OnInit {
         let policyNumber = this.newJob.policyNumber;
         this._jobService.addJob({
             name: this.newJob.name,
-            policyNumber: this.newJob.policyNumber
+            policyNumber: this.newJob.policyNumber,
+            numSensors: 0
         });
 
         this.jobList = this._jobService.getJobs();
 
         this.newJob = {
             name: "",
-            policyNumber: ""
+            policyNumber: "",
+            numSensors: 0
         }
 
         this.modalElement.foundation('close');
@@ -58,7 +61,7 @@ export class JobListComponent implements OnInit {
     }
 
     goToJob(policyNumber: string) {
-        this._router.navigate(['ConfigureJob', { policyNumber: policyNumber }]);
+        this._router.navigate(['JobDetails', { policyNumber: policyNumber }]);
 
     }
 
