@@ -1,4 +1,4 @@
-import {Component, OnInit} from 'angular2/core';
+import {Component, OnInit, ElementRef} from 'angular2/core';
 import {Job} from './job'
 import {Router} from 'angular2/router';
 
@@ -8,9 +8,11 @@ import {Router} from 'angular2/router';
 })
 export class JobListComponent implements OnInit {
 	private jobList: Job[];
+    private modalElement: any;
 
     constructor(
-        private _router: Router
+        private _router: Router,
+        private myElement: ElementRef
     ) { }
 
     ngOnInit() {
@@ -24,10 +26,13 @@ export class JobListComponent implements OnInit {
     		name: "Peterson, Jared",
     		policyNumber: "01929"
     	}]
+        this.modalElement = $(this.myElement.nativeElement.children[0]);
+        var elem = new Foundation.Reveal(this.modalElement);
     }
 
-    goToTechnician() {
-        this._router.navigate(['JobList', {}]);
-    }
+    addJob() {
+        console.log('addJob');
 
+        this.modalElement.foundation('open');
+    }
 }
