@@ -1,7 +1,6 @@
 <div>
     <div class="callout" [ngClass]="{
-        alert: sensor.status === 'DISCONNECTED', 
-        warning: sensor.status === 'CONNECTING' || sensor.status === 'CONNECTED' || sensor.status === 'READING_DEVICE_INFO',
+        disconnected: sensor.status === 'DISCONNECTED' || sensor.status === 'CONNECTING' || sensor.status === 'CONNECTED' || sensor.status === 'READING_DEVICE_INFO',
         highlight: sensor.data.keypressData !== 0
     }">
         <div *ngIf="sensor.isNamed === false">

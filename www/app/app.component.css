@@ -21,5 +21,15 @@ a.router-link-active {
 }
 
 .app-content {
-	padding-top: 4rem
+	padding-top: 4rem;
+}
+
+.back-arrow {
+    font-size: 1.5rem;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.menu-text {
+	padding-left: 0;
 }

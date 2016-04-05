@@ -1,8 +1,22 @@
+
+@font-face {
+	font-family: 'OpenSans';
+    src: url('./OpenSans.tff') format('truetype');
+}
+
 body {
     background-color: #eeeeee;
+    font-family: "OpenSans", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
 }
 
 .callout {
 	border: none;
 	box-shadow: #b2b2b2 0px 0px 8px;
+}
+
+.button-icon {
+	font-size: 30px;
+	line-height: 18px;
+	position: absolute;
+	left: 25px;
 }

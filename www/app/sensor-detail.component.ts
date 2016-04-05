@@ -19,8 +19,4 @@ export class SensorDetailComponent implements OnInit {
 		var index = this._routeParams.get('index');
         this.device = this._sensorService.getSensor(index);
     }
-
-    goBack() {
-        window.history.back();
-    }
 }

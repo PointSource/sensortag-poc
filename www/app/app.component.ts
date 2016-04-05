@@ -3,6 +3,8 @@ import {RouteConfig, ROUTER_DIRECTIVES} from 'angular2/router';
 import {SensorDetailComponent} from './sensor-detail.component';
 import {SensorListComponent} from './sensor-list.component';
 import {ClientComponent} from './client.component';
+import {LandingComponent} from './landing.component';
+import {JobListComponent} from './technician/job-list.component';
 
 @Component({
     selector: 'my-app',
@@ -10,16 +12,20 @@ import {ClientComponent} from './client.component';
     styleUrls: ['app/app.component.css'],
     directives: [ROUTER_DIRECTIVES]
 })
-@RouteConfig(
-	[
-		{ path: '/sensorList', name: 'SensorList', component: SensorListComponent, useAsDefault: true },
-		{ path: '/client', name: 'Client', component: ClientComponent },
-    	{ path: '/sensor', name: 'SensorDetail', component: SensorDetailComponent }
-	]
-)
+@RouteConfig([
+	{ path: '/landing', name: 'Landing', component: LandingComponent, useAsDefault: true },
+	{ path: '/jobList', name: 'JobList', component: JobListComponent },
+	{ path: '/sensorList', name: 'SensorList', component: SensorListComponent },
+	{ path: '/client', name: 'Client', component: ClientComponent },
+	{ path: '/sensor', name: 'SensorDetail', component: SensorDetailComponent }
+])
 export class AppComponent {
 
+	private title = "Sensor Demo";
 
 
+    goBack() {
+        window.history.back();
+    }
 }
 

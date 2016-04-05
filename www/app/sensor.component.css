@@ -11,3 +11,8 @@ h4 small {
     background-color: #FEFFC8;
     box-shadow: #b2b2b2 0px 2px 10px;
 }
+
+.disconnected {
+	background-color: #b2b2b2;
+	color: #777777;
+}
