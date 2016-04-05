@@ -1,15 +1,21 @@
 import {Component, OnInit, Inject, NgZone} from 'angular2/core';
-import {SensorService} from './sensor.service';
-import {Sensor} from './sensor';
-import {SensorComponent} from './sensor.component';
+import {RouteParams} from 'angular2/router';
+
+import {SensorService} from '../sensor.service';
+import {NavService} from '../nav.service';
+import {JobService} from './job.service';
+
+import {Sensor} from '../sensor';
+import {Job} from './job';
+import {SensorComponent} from '../sensor.component';
 
 @Component({
-    templateUrl: 'app/sensor-list.component.html',
-    styleUrls: ['app/sensor-list.component.css'],
+    templateUrl: 'app/technician/configure-job.component.html',
+    styleUrls: ['app/technician/configure-job.component.css'],
     directives: [SensorComponent]
 })
-export class SensorListComponent implements OnInit {
-	title: string = "SensorTag Demo";
+export class ConfigureJobComponent implements OnInit {
+    private job: Job;    
     objIOT: any = {};
     chart: any;
 	status: string;
@@ -20,12 +26,23 @@ export class SensorListComponent implements OnInit {
 
 	constructor(
         private _sensorService: SensorService,
+        private _jobService: JobService,
+        private _navService: NavService,
+        private _routeParams: RouteParams,
         @Inject('IoTFoundationLib') private _iotfoundationlib,
         @Inject('Evothings') private _evothings,
         private _ngZone: NgZone
 	) { }
 
 	ngOnInit() {
+        var policyNumber = this._routeParams.get('policyNumber');
+
+        this.job = this._jobService.getJob(policyNumber);
+        if (this.job === null) {
+            window.history.back();
+        }
+        this._navService.setTitle(this.job.name);
+
         this.statusPercentage = 0;
 
         this.sensors = this._sensorService.getSensors();

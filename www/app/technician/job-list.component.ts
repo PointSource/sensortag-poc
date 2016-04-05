@@ -1,4 +1,4 @@
-import {Component, OnInit, ElementRef} from 'angular2/core';
+import {Component, OnInit, ElementRef, Inject} from 'angular2/core';
 import {NavService} from '../nav.service';
 import {JobService} from './job.service';
 import {Job} from './job';
@@ -17,7 +17,8 @@ export class JobListComponent implements OnInit {
         private _router: Router,
         private _navService: NavService,
         private _jobService: JobService,
-        private myElement: ElementRef
+        private myElement: ElementRef,
+        @Inject('Foundation') private _foundation,
     ) { }
 
     ngOnInit() {
@@ -30,7 +31,7 @@ export class JobListComponent implements OnInit {
 
         this.jobList = this._jobService.getJobs();
         this.modalElement = $(this.myElement.nativeElement.children[0]);
-        var elem = new Foundation.Reveal(this.modalElement);
+        var elem = new this._foundation.Reveal(this.modalElement);
     }
 
     addJob() {
@@ -38,6 +39,7 @@ export class JobListComponent implements OnInit {
     }
 
     addJobToList() {
+        let policyNumber = this.newJob.policyNumber;
         this._jobService.addJob({
             name: this.newJob.name,
             policyNumber: this.newJob.policyNumber
@@ -51,6 +53,13 @@ export class JobListComponent implements OnInit {
         }
 
         this.modalElement.foundation('close');
+
+        this.goToJob(policyNumber);
+    }
+
+    goToJob(policyNumber: string) {
+        this._router.navigate(['ConfigureJob', { policyNumber: policyNumber }]);
+
     }
 
 
