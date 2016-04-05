@@ -4,6 +4,7 @@ import {Router} from 'angular2/router';
 @Component({
     selector: 'sensor',
     templateUrl: 'app/sensor.component.html',
+    styleUrls: ['app/sensor.component.css'],
     inputs: ['sensor', 'dindex']
 })
 export class SensorComponent {
