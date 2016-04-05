@@ -237,7 +237,6 @@ export class SensorListComponent implements OnInit {
     }
 
     sendReport() {
-
         for (let sensor of this.sensors) {
             var formattedAddress = sensor.device.address.replace(new RegExp(":", "g"), "").toLowerCase()
             this.objIOT[formattedAddress].publishToFoundationCloud({
@@ -252,35 +251,6 @@ export class SensorListComponent implements OnInit {
                 }
             });
         }
-
-        // if (this.sensors.length > 0) {
-        //     // Publish event to the IoTF
-        //     this.objIOT_1202.publishToFoundationCloud({
-        //         d: {
-        //             humidityData: {
-        //                 relativeHumidity: this.sensors[0].data.humidityData.relativeHumidity
-        //             },
-        //             temperatureData: {
-        //                 ambientTemperature: this.sensors[0].data.temperatureData.ambientTemperature,
-        //                 targetTemperature: this.sensors[0].data.temperatureData.targetTemperature
-        //             }
-        //         }
-        //     });
-        // }
-
-        // if (this.sensors.length > 1) {
-        //     this.objIOT_d807.publishToFoundationCloud({
-        //         d: {
-        //             humidityData: {
-        //                 relativeHumidity: this.sensors[1].data.humidityData.relativeHumidity
-        //             },
-        //             temperatureData: {
-        //                 ambientTemperature: this.sensors[1].data.temperatureData.ambientTemperature,
-        //                 targetTemperature: this.sensors[1].data.temperatureData.targetTemperature
-        //             }
-        //         }
-        //     });
-        // }
     }
 
     // Reset status after device was named
