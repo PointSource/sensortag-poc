@@ -14,7 +14,6 @@ export class LandingComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-
         this._navService.setTitle("Sensor Demo");
     }
 

@@ -1,6 +1,7 @@
 import {Component, OnInit, ElementRef} from 'angular2/core';
-import {NavService} from '../nav.service'
-import {Job} from './job'
+import {NavService} from '../nav.service';
+import {JobService} from './job.service';
+import {Job} from './job';
 import {Router} from 'angular2/router';
 
 @Component({
@@ -15,6 +16,7 @@ export class JobListComponent implements OnInit {
     constructor(
         private _router: Router,
         private _navService: NavService,
+        private _jobService: JobService,
         private myElement: ElementRef
     ) { }
 
@@ -26,16 +28,7 @@ export class JobListComponent implements OnInit {
             policyNumber: ""
         }
 
-		this.jobList = [{
-			name: "Williams, Randy",
-			policyNumber: "95916"
-		}, {
-    		name: "Gartland, JP",
-			policyNumber: "00012"
-		}, {
-    		name: "Peterson, Jared",
-    		policyNumber: "01929"
-    	}]
+        this.jobList = this._jobService.getJobs();
         this.modalElement = $(this.myElement.nativeElement.children[0]);
         var elem = new Foundation.Reveal(this.modalElement);
     }
@@ -45,10 +38,12 @@ export class JobListComponent implements OnInit {
     }
 
     addJobToList() {
-        this.jobList.push({
+        this._jobService.addJob({
             name: this.newJob.name,
             policyNumber: this.newJob.policyNumber
         });
+
+        this.jobList = this._jobService.getJobs();
 
         this.newJob = {
             name: "",

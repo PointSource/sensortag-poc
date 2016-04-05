@@ -5,6 +5,7 @@ import {HTTP_PROVIDERS} from 'angular2/http';
 import {AppComponent} from './app.component';
 import {SensorService} from './sensor.service';
 import {NavService} from './nav.service';
+import {JobService} from './technician/job.service';
 
 declare var evothings: any;
 declare var IoTFoundationLib: any;
@@ -15,6 +16,7 @@ bootstrap(AppComponent, [
 	HTTP_PROVIDERS,
 	SensorService,
 	NavService,
+	JobService,
 	provide('Evothings', { useValue: evothings }),
 	provide('IoTFoundationLib', { useValue: IoTFoundationLib }),
 	provide('ChartJS', { useValue: Chart }),
