@@ -33,14 +33,24 @@ export class SensorService {
 		return this.sensors;
 	}
 
-	getSensorsForJob(jobName): Sensor[] {
-		var sensorsForJob = [];
+	getSensorsForPolicy(policyNumber): Sensor[] {
+		var sensorsForPolicy = [];
 		for (let sensor of this.sensors) {
-			if (sensor.job === jobName) {
-				sensorsForJob.push(sensor);
+			if (sensor.policyNumber === policyNumber) {
+				sensorsForPolicy.push(sensor);
 			}
 		}
-		return sensorsForJob;
+		return sensorsForPolicy;
+	}
+
+	countSensorsForPolicy(policyNumber): number {
+		var count = 0
+		for (let sensor of this.sensors) {
+			if (sensor.policyNumber === policyNumber) {
+				count++;
+			}
+		}
+		return count;
 	}
 
 	addSensor(sensor: Sensor): void {

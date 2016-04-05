@@ -14,7 +14,14 @@
 </div>
 
 <div *ngFor="#job of jobList" class="callout" (click)="goToJob(job.policyNumber)">
-	{{job.name}}
+	<div class="row">
+		<div class="columns small-6">
+			{{job.name}}
+		</div>
+		<div class="columns small-6 text-right">
+			{{job.numSensors}} {{job.numSensors === 1 ? "Sensor" : "Sensors"}}
+		</div>
+	</div>
 </div>
 
 <button class="button expanded large" (click)="addJob()">

@@ -45,7 +45,7 @@ export class ConfigureJobComponent implements OnInit {
 
         this.statusPercentage = 0;
 
-        this.sensors = this._sensorService.getSensors();
+        this.sensors = this._sensorService.getSensorsForPolicy(policyNumber);
 
         // IoT Foundation object..
         this.objIOT['b0b448d31202'] = this._iotfoundationlib.createInstance('b0b448d31202', 'b4KBCvZ*ivr9cVhpPg');
@@ -170,12 +170,11 @@ export class ConfigureJobComponent implements OnInit {
                 },
                 keypressData: 0
             },
-            address: sensortag.getDeviceAddress(),
             device: sensortag.getDevice(),
             name: "",
             isNamed: false,
             isConnected: true,
-            job: ""
+            policyNumber: this.job.policyNumber
         };
 
         setInterval(() => {
@@ -183,7 +182,7 @@ export class ConfigureJobComponent implements OnInit {
         }, 1000);
 
         this._sensorService.addSensor(connectedDevice);
-        this.sensors = this._sensorService.getSensors();
+        this.sensors = this._sensorService.getSensorsForPolicy(this.job.policyNumber);
     }
 
     statusHandler(index, status) {
