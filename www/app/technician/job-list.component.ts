@@ -9,6 +9,7 @@ import {Router} from 'angular2/router';
 export class JobListComponent implements OnInit {
 	private jobList: Job[];
     private modalElement: any;
+    private newJob: Job;
 
     constructor(
         private _router: Router,
@@ -16,6 +17,11 @@ export class JobListComponent implements OnInit {
     ) { }
 
     ngOnInit() {
+        this.newJob = {
+            name: "",
+            policyNumber: ""
+        }
+
 		this.jobList = [{
 			name: "Williams, Randy",
 			policyNumber: "95916"
@@ -35,4 +41,20 @@ export class JobListComponent implements OnInit {
 
         this.modalElement.foundation('open');
     }
+
+    addJobToList() {
+        this.jobList.push({
+            name: this.newJob.name,
+            policyNumber: this.newJob.policyNumber
+        });
+
+        this.newJob = {
+            name: "",
+            policyNumber: ""
+        }
+
+        this.modalElement.foundation('close');
+    }
+
+
 }
