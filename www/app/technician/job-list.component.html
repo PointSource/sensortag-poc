@@ -13,7 +13,7 @@
 	</button>
 </div>
 
-<div *ngFor="#job of jobList" class="callout" (click)="goToJob(job.policyNumber)">
+<div *ngFor="#job of jobList" class="callout" (click)="goToJob(job)">
 	<div class="row">
 		<div class="columns small-6">
 			{{job.name}}

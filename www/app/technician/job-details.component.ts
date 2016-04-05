@@ -3,8 +3,10 @@ import {RouteParams} from 'angular2/router';
 import {Router} from 'angular2/router';
 
 import {JobService} from './job.service';
+import {SensorService} from '../sensor.service';
 import {NavService} from '../nav.service';
 import {Job} from './job';
+import {Sensor} from '../sensor';
 
 @Component({
     templateUrl: 'app/technician/job-details.component.html',
@@ -12,11 +14,13 @@ import {Job} from './job';
 })
 export class JobDetailsComponent implements OnInit {
     private job: Job;
+    private sensors: Sensor[];
 
     constructor(
         private _router: Router,
         private _routeParams: RouteParams,
         private _jobService: JobService,
+        private _sensorService: SensorService,
         private _navService: NavService
     ) { }
 
@@ -28,6 +32,9 @@ export class JobDetailsComponent implements OnInit {
             window.history.back();
         }
         this._navService.setTitle(this.job.name);
+
+        this.sensors = this._sensorService.getSensorsForPolicy(this.job.policyNumber);
+
     }
 
     goToConfigureJob(policyNumber: string) {

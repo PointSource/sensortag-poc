@@ -1,5 +1,9 @@
-<div>
-	Job Details
+<div class="callout" *ngIf="sensors.length > 0">
+	<h3>Humidity</h3>
+
+	<div *ngFor="#sensor of sensors">
+		{{sensor.name}} {{sensor.data.humidityData.relativeHumidity}}% rH
+	</div>
 </div>
 
 <button class="button large expanded secondary" (click)="goToConfigureJob()"><i class="fa fa-cog button-icon"></i>Configure Job</button>

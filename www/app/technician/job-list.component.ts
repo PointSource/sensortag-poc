@@ -60,8 +60,13 @@ export class JobListComponent implements OnInit {
         this.goToJob(policyNumber);
     }
 
-    goToJob(policyNumber: string) {
-        this._router.navigate(['JobDetails', { policyNumber: policyNumber }]);
+    goToJob(job: Job) {
+        if (job.numSensors > 0) {
+            this._router.navigate(['JobDetails', { policyNumber: job.policyNumber }]);
+        } else {
+            this._router.navigate(['ConfigureJob', { policyNumber: job.policyNumber }]);
+
+        }
 
     }
 
