@@ -61,4 +61,9 @@ export class SensorService {
 		return this.sensors[index];
 	}
 
+	removeSensor(index) {
+		console.log('remove sensor at ' + index);
+		this.sensors.splice(index, 1);
+	}
+
 }

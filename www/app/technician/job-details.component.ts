@@ -57,7 +57,11 @@ export class JobDetailsComponent implements OnInit {
                 reading.sensorData.push({
                     name: sensor.name,
                     address: sensor.device.address,
-                    data: sensor.data
+                    data: {
+                        humidityData: {
+                            relativeHumidity: sensor.data.humidityData.relativeHumidity
+                        }
+                    }
                 });
             }
 

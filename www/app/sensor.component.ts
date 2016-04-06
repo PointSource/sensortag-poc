@@ -11,6 +11,7 @@ export class SensorComponent {
 	sensor;
 	dindex;
     @Output() onDeviceNamed = new EventEmitter();
+    @Output() onDeviceDisconnected = new EventEmitter();
 
     constructor(
         private _router: Router
@@ -22,14 +23,11 @@ export class SensorComponent {
         this.onDeviceNamed.emit("event");
     }
 
-    toggleDeviceConnection() {
-        if (this.sensor.isConnected) {
-            this.sensor.sensortag.disconnectDevice();
-            this.sensor.status = "DISCONNECTED";
-            this.sensor.isConnected = false;
-        } else {
-            this.sensor.sensortag.connectToDevice(this.sensor.device);
-        }
+    disconnect() {
+        this.sensor.sensortag.disconnectDevice();
+        this.sensor.status = "DISCONNECTED";
+        this.sensor.isConnected = false;
+        this.onDeviceDisconnected.emit("event");
     }
 
     goToSensorDetails() {

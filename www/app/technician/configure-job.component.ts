@@ -204,7 +204,7 @@ export class ConfigureJobComponent implements OnInit {
             this.resetSensorDisplayValues()
         }
         else {
-			this.status = 'Error: ' + error;
+			this.status = 'ERROR';
         }
     }
 
@@ -257,7 +257,6 @@ export class ConfigureJobComponent implements OnInit {
 
     saveDevices() {
         this._sensorService.sync();
-
         window.history.back();
     }
 
@@ -289,4 +288,11 @@ export class ConfigureJobComponent implements OnInit {
     deviceNamedHandler() {
         this.status = ""
     }
+
+    // Handle device disconnected
+    deviceDisconnectedHandler(i) {
+        this._sensorService.removeSensor(i);
+        this.sensors = this._sensorService.getSensorsForPolicy(this.job.policyNumber);
+    }
+
 }

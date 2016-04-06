@@ -30,13 +30,12 @@
             </div>
 
             <h4 *ngIf="sensor.status === 'CONNECTING' || sensor.status === 'CONNECTED' || sensor.status === 'READING_DEVICE_INFO'">CONNECTING</h4>
-            <div  *ngIf="!(sensor.status === 'CONNECTING' || sensor.status === 'CONNECTED' || sensor.status === 'READING_DEVICE_INFO')" class="button-group">
-                <button (click)="toggleDeviceConnection()" class="button" [ngClass]="{secondary: sensor.isConnected, success: !sensor.isConnected}">
-                    {{sensor.isConnected ? 'Disconnect' : 'Connect'}}
+            <div  *ngIf="!(sensor.status === 'CONNECTING' || sensor.status === 'CONNECTED' || sensor.status === 'READING_DEVICE_INFO')" class="text-right">
+                <button (click)="disconnect()" class="button alert hollow">
+                    Delete
                 </button>
 
-                <button *ngIf="sensor.isConnected" (click)="sensor.isNamed = false" class="button secondary">Rename</button>
-                <button *ngIf="sensor.isConnected" (click)="goToSensorDetails()"class="button">Details</button>
+                <button *ngIf="sensor.isConnected" (click)="sensor.isNamed = false" class="button secondary hollow">Edit</button>
             </div>
         </div>
     </div>
