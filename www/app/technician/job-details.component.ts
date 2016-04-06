@@ -4,9 +4,11 @@ import {Router} from 'angular2/router';
 
 import {JobService} from './job.service';
 import {SensorService} from '../sensor.service';
+import {ReadingService} from './reading.service';
 import {NavService} from '../nav.service';
 import {Job} from './job';
 import {Sensor} from '../sensor';
+import {Reading} from './reading'
 
 @Component({
     templateUrl: 'app/technician/job-details.component.html',
@@ -15,12 +17,14 @@ import {Sensor} from '../sensor';
 export class JobDetailsComponent implements OnInit {
     private job: Job;
     private sensors: Sensor[];
+    private readings: Reading[] = [];
 
     constructor(
         private _router: Router,
         private _routeParams: RouteParams,
         private _jobService: JobService,
         private _sensorService: SensorService,
+        private _readingService: ReadingService,
         private _navService: NavService
     ) { }
 
@@ -35,10 +39,32 @@ export class JobDetailsComponent implements OnInit {
 
         this.sensors = this._sensorService.getSensorsForPolicy(this.job.policyNumber);
 
+        this.readings = this._readingService.getReadingsForPolicy(this.job.policyNumber);
     }
 
     goToConfigureJob(policyNumber: string) {
         this._router.navigate(['ConfigureJob', { policyNumber: this.job.policyNumber }]);
+    }
+
+    takeReading() {
+        if (this.sensors.length > 0) {
+            let reading: Reading = {
+                policyNumber: this.job.policyNumber,
+                date: new Date().getTime(),
+                sensorData: []
+            };
+            for (let sensor of this.sensors) {
+                reading.sensorData.push({
+                    name: sensor.name,
+                    address: sensor.device.address,
+                    data: sensor.data
+                });
+            }
+
+            this._readingService.addReading(reading);
+            this.readings = this._readingService.getReadingsForPolicy(this.job.policyNumber);
+            console.log(this.readings);
+        }
     }
 
 }

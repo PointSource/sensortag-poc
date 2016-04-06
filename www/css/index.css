@@ -14,7 +14,7 @@ body {
 	box-shadow: #b2b2b2 0px 0px 8px;
 }
 
-.button-icon {
+.button .fa {
 	font-size: 30px;
 	line-height: 18px;
 	position: absolute;

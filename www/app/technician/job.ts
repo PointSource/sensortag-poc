@@ -1,5 +1,5 @@
 export interface Job {
-	policyNumber: string;
+	policyNumber: number;
 	name: string;
 	numSensors: number;
 }

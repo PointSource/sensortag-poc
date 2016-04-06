@@ -1,3 +1,7 @@
+<div class="callout" *ngIf="readings.length > 0">
+	Last Reading: {{readings[readings.length - 1].date | date:"MMM d yyyy h:mm"}}
+</div>
+
 <div class="callout" *ngIf="sensors.length > 0">
 	<h3>Humidity</h3>
 
@@ -6,4 +10,6 @@
 	</div>
 </div>
 
-<button class="button large expanded secondary" (click)="goToConfigureJob()"><i class="fa fa-cog button-icon"></i>Configure Job</button>
+<button class="button large expanded" (click)="takeReading()"><i class="fa fa-tachometer"></i>Take a Reading</button>
+
+<button class="button large expanded secondary" (click)="goToConfigureJob()"><i class="fa fa-cog"></i>Configure Job</button>
