@@ -36,17 +36,17 @@ export class ReadingHistoryComponent implements OnInit {
                         data: []
                     };
                 }
+                let dataPoint = 0;
                 if (this.type === "humidity") {
-                    readingsBySensor[sensorData.address].data.push({
-                        x: new Date(reading.date),
-                        y: sensorData.data.humidityData.relativeHumidity
-                    });
+                    dataPoint = sensorData.data.humidityData.relativeHumidity;
                 } else if (this.type === "targetTemperature") {
-                    readingsBySensor[sensorData.address].data.push({
-                        x: new Date(reading.date),
-                        y: sensorData.data.temperatureData.targetTemperature
-                    });
+                    dataPoint = sensorData.data.temperatureData.targetTemperature;
                 }
+                
+                readingsBySensor[sensorData.address].data.push({
+                    x: new Date(reading.date),
+                    y: dataPoint
+                });
             }
         }
 
