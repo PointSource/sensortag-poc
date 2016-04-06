@@ -12,7 +12,7 @@ export class SensorDetailComponent implements OnInit {
 
     constructor(
     	private _routeParams: RouteParams,
-    	private _sensorService: SensorService,
+    	private _sensorService: SensorService
 	) { }
 
     ngOnInit() {

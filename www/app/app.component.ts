@@ -6,6 +6,7 @@ import {LandingComponent} from './landing.component';
 import {JobListComponent} from './technician/job-list.component';
 import {JobDetailsComponent} from './technician/job-details.component';
 import {ConfigureJobComponent} from './technician/configure-job.component';
+import {ReadingHistoryComponent} from './technician/reading-history.component'
 import {NavService} from './nav.service';
 
 @Component({
@@ -19,6 +20,7 @@ import {NavService} from './nav.service';
     { path: '/jobDetails', name: 'JobDetails', component: JobDetailsComponent },
     { path: '/jobList', name: 'JobList', component: JobListComponent },
     { path: '/configureJob', name: 'ConfigureJob', component: ConfigureJobComponent },
+    { path: '/readingHistory', name: 'ReadingHistory', component: ReadingHistoryComponent },
 	{ path: '/client', name: 'Client', component: ClientComponent },
 	{ path: '/sensor', name: 'SensorDetail', component: SensorDetailComponent }
 ])

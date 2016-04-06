@@ -15,7 +15,8 @@ export class ReadingService {
 		this.readings.push(reading);
 	}
 
-	getReadingsForPolicy(policyNumber: number): Reading[] {
+	getReadingsForPolicy(policyNumber: string): Reading[] {
+
 		let readingsForPolicy: Reading[] = [];
 		for (let reading of this.readings) {
 			if (reading.policyNumber === policyNumber) {

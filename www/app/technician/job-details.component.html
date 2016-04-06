@@ -2,6 +2,15 @@
 	Last Reading: {{readings[readings.length - 1].date | date:"MMM d yyyy h:mm"}}
 </div>
 
+<div class="callout" *ngIf="sensors.length > 0 && readings.length === 0">
+	No readings yet. Please click "Take a Reading" in order to get your first reading.
+</div>
+
+<div class="callout" *ngIf="sensors.length === 0">
+	No sensors added to this job yet. Please configure the sensors for this job in order to take readings.
+</div>
+
+
 <div class="callout" *ngIf="readings.length > 0">
 	<h3>Humidity</h3>
 
@@ -9,9 +18,7 @@
 		{{sensorData.name}} {{sensorData.data.humidityData.relativeHumidity}}% rH
 	</div>
 
-	<div class="text-right">
-		<button class="button hollow">Details</button>
-	</div>
+	<a class="chart-link" (click)="goToHumidityDetails()"><i class="fa fa-line-chart"></i></a>
 </div>
 
 <button *ngIf="sensors.length > 0" class="button large expanded" (click)="takeReading()"><i class="fa fa-tachometer"></i>Take a Reading</button>

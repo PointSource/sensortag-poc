@@ -4,11 +4,12 @@ import {Component, Inject, OnInit, OnChanges, Input, SimpleChange, ElementRef} f
 @Component({
     selector: 'chart-component',
     templateUrl: 'app/chart.component.html',
-    inputs: ['data', 'ispercentage']
+    inputs: ['data', 'ispercentage', 'multipledata']
 })
 export class ChartComponent implements OnInit, OnChanges {
     chart: any;
     data: any;
+    multipledata: boolean;
     ispercentage: boolean;
 
     constructor(
@@ -17,40 +18,87 @@ export class ChartComponent implements OnInit, OnChanges {
     ) { }
 
     ngOnInit() {
-        var lineChartData = {
-            labels: ["", "", "", "", "", "", "", "", "", ""],
-            datasets: [
-                {
+        var colors = ["#49a7f7", "#ff7258", "#ffaa4b", "#327fbb", "#d0f100", "#9ad275"];
+
+        if (this.multipledata) {
+            let lineChartData = {
+                datasets: []
+            }
+
+            let i = 0;
+            for (let subData of this.data) {
+                lineChartData.datasets.push({
                     label: "Data",
-                    fillColor: "rgba(151,187,205,0.2)",
-                    strokeColor: "rgba(151,187,205,1)",
-                    pointColor: "rgba(151,187,205,1)",
-                    pointStrokeColor: "#fff",
-                    pointHighlightFill: "#fff",
-                    pointHighlightStroke: "rgba(220,220,220,1)",
-                    data: this.data
-                }
-            ]
+                    strokeColor: colors[i],
+                    pointColor: colors[i],
+                    data: subData
+                })
+
+                i++;
+            }
+
+
+            var ctx = this.myElement.nativeElement.children[0].children[0].getContext("2d");
+
+            if (this.ispercentage) {
+
+                this.chart = new this._chartJS(ctx).Scatter(lineChartData, {
+                    responsive: true,
+                    bezierCurve: false,
+                    scaleOverride: true,
+                    scaleSteps: 10,
+                    scaleStepWidth: 10,
+                    scaleStartValue: 0,
+                    scaleType: "date",
+                    useUtc: false
+                });
+            } else {
+                this.chart = new this._chartJS(ctx).Scatter(lineChartData, {
+                    responsive: true,
+                    bezierCurve: false,
+                    scaleBeginAtZero: true,
+                    scaleType: "date",
+                    useUtc: false
+                });
+            }
         }
 
-        var ctx = this.myElement.nativeElement.children[0].children[0].getContext("2d");
+        else {
+            let lineChartData = {
+                labels: ["", "", "", "", "", "", "", "", "", ""],
+                datasets: [
+                    {
+                        label: "Data",
+                        fillColor: "rgba(151,187,205,0.2)",
+                        strokeColor: "rgba(151,187,205,1)",
+                        pointColor: "rgba(151,187,205,1)",
+                        pointStrokeColor: "#fff",
+                        pointHighlightFill: "#fff",
+                        pointHighlightStroke: "rgba(220,220,220,1)",
+                        data: this.data
+                    }
+                ]
+            }
 
-        if (this.ispercentage) {
+            var ctx = this.myElement.nativeElement.children[0].children[0].getContext("2d");
 
-            this.chart = new this._chartJS(ctx).Line(lineChartData, {
-                responsive: true,
-                bezierCurve: false,
-                scaleOverride: true,
-                scaleSteps: 10,
-                scaleStepWidth: 10,
-                scaleStartValue: 0 
-            });
-        } else {
-            this.chart = new this._chartJS(ctx).Line(lineChartData, {
-                responsive: true,
-                bezierCurve: false,
-                scaleBeginAtZero : true
-            });
+            if (this.ispercentage) {
+
+                this.chart = new this._chartJS(ctx).Line(lineChartData, {
+                    responsive: true,
+                    bezierCurve: false,
+                    scaleOverride: true,
+                    scaleSteps: 10,
+                    scaleStepWidth: 10,
+                    scaleStartValue: 0 
+                });
+            } else {
+                this.chart = new this._chartJS(ctx).Line(lineChartData, {
+                    responsive: true,
+                    bezierCurve: false,
+                    scaleBeginAtZero : true
+                });
+            }
         }
             
     }

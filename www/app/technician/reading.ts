@@ -1,5 +1,5 @@
 export interface Reading {
-	policyNumber: number;
+	policyNumber: string;
 	date: number;
 	sensorData: [{
 		name: string,

@@ -12,7 +12,7 @@ import {Reading} from './reading'
 
 @Component({
     templateUrl: 'app/technician/job-details.component.html',
-    // styleUrls: ['app/job-list.component.css']
+    styleUrls: ['app/technician/job-details.component.css']
 })
 export class JobDetailsComponent implements OnInit {
     private job: Job;
@@ -67,8 +67,11 @@ export class JobDetailsComponent implements OnInit {
 
             this._readingService.addReading(reading);
             this.readings = this._readingService.getReadingsForPolicy(this.job.policyNumber);
-            console.log(this.readings);
         }
+    }
+
+    goToHumidityDetails() {
+        this._router.navigate(['ReadingHistory', { policyNumber: this.job.policyNumber }]);
     }
 
 }

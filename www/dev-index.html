@@ -95,7 +95,7 @@
                     evothings.easyble.startScan = (success, fail) => {
                         success({
                                 device: 123,
-                                address: "1234",
+                                address: "1234" + Math.floor(Math.random() * 12) + 12,
                                 advertisementData: {
                                     kCBAdvDataLocalName: 'CC2650 SensorTag'
                                 },
