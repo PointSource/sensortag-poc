@@ -21,4 +21,9 @@ export class LandingComponent implements OnInit {
         this._router.navigate(['JobList', { }]);
     }
 
+    goToClient() {
+        this._router.navigate(['Client', {}]);
+    }
+
+
 }

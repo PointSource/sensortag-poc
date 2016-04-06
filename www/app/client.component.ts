@@ -1,5 +1,6 @@
-import {Component, Inject, NgZone} from 'angular2/core';
+import {Component, OnInit, Inject, NgZone} from 'angular2/core';
 import {SensorService} from './sensor.service';
+import {NavService} from './nav.service';
 import {Sensor} from './sensor';
 import {SensorComponent} from './sensor.component';
 
@@ -7,14 +8,19 @@ import {SensorComponent} from './sensor.component';
     templateUrl: 'app/client.component.html',
     directives: [SensorComponent]
 })
-export class ClientComponent {
+export class ClientComponent implements OnInit {
     sensors: Sensor[];
 
     constructor(
         private _sensorService: SensorService,
+        private _navService: NavService,
         @Inject('Evothings') private _evothings,
         private _ngZone: NgZone
     ) { }
+
+    ngOnInit() {
+        this._navService.setTitle("Get Account");
+    }
 
     loadSensors() {
         this._sensorService.fetch().add(() => {
