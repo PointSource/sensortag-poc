@@ -47,6 +47,6 @@
 </button>
 
 <div *ngFor="#sensor of sensors; #i = index">
-    <sensor [sensor]="sensor" [dindex]="i" (onDeviceNamed)="deviceNamedHandler()" (onDeviceDisconnected)="deviceDisconnectedHandler(i)"></sensor>
+    <sensor [sensor]="sensor" [dindex]="i" (onDeviceDisconnected)="deviceDisconnectedHandler(i)"></sensor>
 </div>
 

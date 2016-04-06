@@ -13,6 +13,7 @@ import {ChartComponent} from '../chart.component';
 export class ReadingHistoryComponent implements OnInit {
     readings: Reading[];
     lastTenReadings: any = [];
+    type: string;
 
     constructor(
         private _routeParams: RouteParams,
@@ -21,20 +22,28 @@ export class ReadingHistoryComponent implements OnInit {
 
     ngOnInit() {
         var policyNumber = this._routeParams.get('policyNumber');
+        this.type = this._routeParams.get('type');
+
         this.readings = this._readingService.getReadingsForPolicy(policyNumber);
 
         var readingsBySensor = {};
 
         for (let reading of this.readings) {
-            // this.lastTenReadings.push([]);
             for (let sensorData of reading.sensorData) {
                 if (!readingsBySensor[sensorData.address]) {
                     readingsBySensor[sensorData.address] = [];
                 }
-                readingsBySensor[sensorData.address].push({
-                    x: new Date(reading.date),
-                    y: sensorData.data.humidityData.relativeHumidity
-                });
+                if (this.type === "humidity") {
+                    readingsBySensor[sensorData.address].push({
+                        x: new Date(reading.date),
+                        y: sensorData.data.humidityData.relativeHumidity
+                    });
+                } else if (this.type === "targetTemperature") {
+                    readingsBySensor[sensorData.address].push({
+                        x: new Date(reading.date),
+                        y: sensorData.data.temperatureData.targetTemperature
+                    });
+                }
             }
         }
 

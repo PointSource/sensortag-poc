@@ -54,7 +54,7 @@ export class SensorService {
 	}
 
 	addSensor(sensor: Sensor): void {
-		this.sensors.unshift(sensor);
+		this.sensors.push(sensor);
 	}
 
 	getSensor(index): Sensor {
@@ -62,7 +62,6 @@ export class SensorService {
 	}
 
 	removeSensor(index) {
-		console.log('remove sensor at ' + index);
 		this.sensors.splice(index, 1);
 	}
 

@@ -60,6 +60,10 @@ export class JobDetailsComponent implements OnInit {
                     data: {
                         humidityData: {
                             relativeHumidity: sensor.data.humidityData.relativeHumidity
+                        },
+                        temperatureData: {
+                            targetTemperature: sensor.data.temperatureData.targetTemperature,
+                            ambientTemperature: sensor.data.temperatureData.ambientTemperature
                         }
                     }
                 });
@@ -70,8 +74,8 @@ export class JobDetailsComponent implements OnInit {
         }
     }
 
-    goToHumidityDetails() {
-        this._router.navigate(['ReadingHistory', { policyNumber: this.job.policyNumber }]);
+    goToReadingDetails(type) {
+        this._router.navigate(['ReadingHistory', { policyNumber: this.job.policyNumber, type: type }]);
     }
 
 }

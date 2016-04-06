@@ -279,13 +279,7 @@ export class ConfigureJobComponent implements OnInit {
 
     nameSensor(sensorName) {
         this.modalElement.foundation('close');
-        this.sensors[0].name = sensorName;
-        this.sensors[0].isNamed = true;
-        this.status = ""
-    }
-
-    // Reset status after device was named
-    deviceNamedHandler() {
+        this.sensors[this.sensors.length - 1].name = sensorName;
         this.status = ""
     }
 

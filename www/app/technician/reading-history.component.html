@@ -2,4 +2,4 @@
 	Reading history
 </div>
 
-<chart-component [data]="lastTenReadings" [ispercentage]="true" [multipledata]="true"></chart-component>
+<chart-component [data]="lastTenReadings" [ispercentage]="type === 'humidity'" [multipledata]="true"></chart-component>
