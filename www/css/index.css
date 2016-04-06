@@ -36,7 +36,9 @@ ul.scatter-legend {
 .scatter-legend-marker {
     width: 20px;
     height: 20px;
+    border-radius: 10px;
     display: block;
-    position: absolute;
-    left: 0;
+    float: left;
+    margin-right: 6px;
+    border: solid 2px white;
 }
