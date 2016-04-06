@@ -1,4 +1,4 @@
-import {Component, OnInit, Inject, NgZone} from 'angular2/core';
+import {Component, OnInit, Inject, NgZone, ElementRef} from 'angular2/core';
 import {RouteParams} from 'angular2/router';
 
 import {SensorService} from '../sensor.service';
@@ -20,6 +20,8 @@ export class ConfigureJobComponent implements OnInit {
     chart: any;
 	status: string;
     statusPercentage: number;
+    private modalElement: any;
+    private newSensorName: string;
 
 	// List of devices
 	sensors: Sensor[];
@@ -29,12 +31,17 @@ export class ConfigureJobComponent implements OnInit {
         private _jobService: JobService,
         private _navService: NavService,
         private _routeParams: RouteParams,
+        private _elementRef: ElementRef,
         @Inject('IoTFoundationLib') private _iotfoundationlib,
+        @Inject('Foundation') private _foundation,
         @Inject('Evothings') private _evothings,
         private _ngZone: NgZone
 	) { }
 
 	ngOnInit() {
+        this.modalElement = $(this._elementRef.nativeElement.children[0]);
+        var elem = new this._foundation.Reveal(this.modalElement, { closeOnClick: false });
+
         var policyNumber = this._routeParams.get('policyNumber');
 
         this.job = this._jobService.getJob(policyNumber);
@@ -110,6 +117,7 @@ export class ConfigureJobComponent implements OnInit {
     }
 
     initialStatusHandler(sensortag, status) {
+        this.modalElement.foundation('open');
         if ('SCANNING' == status) {
             this.statusPercentage = 20
         } else if ('SENSORTAG_FOUND' == status) {
@@ -171,8 +179,8 @@ export class ConfigureJobComponent implements OnInit {
                 keypressData: 0
             },
             device: sensortag.getDevice(),
-            name: "",
-            isNamed: false,
+            name: "Untitled "+index,
+            isNamed: true,
             isConnected: true,
             policyNumber: this.job.policyNumber
         };
@@ -269,6 +277,13 @@ export class ConfigureJobComponent implements OnInit {
                 }
             });
         }
+    }
+
+    nameSensor(sensorName) {
+        this.modalElement.foundation('close');
+        this.sensors[0].name = sensorName;
+        this.sensors[0].isNamed = true;
+        this.status = ""
     }
 
     // Reset status after device was named

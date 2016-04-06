@@ -18,7 +18,7 @@ export class JobListComponent implements OnInit {
         private _navService: NavService,
         private _jobService: JobService,
         private myElement: ElementRef,
-        @Inject('Foundation') private _foundation,
+        @Inject('Foundation') private _foundation
     ) { }
 
     ngOnInit() {
@@ -31,6 +31,7 @@ export class JobListComponent implements OnInit {
         }
 
         this.jobList = this._jobService.getJobs();
+
         this.modalElement = $(this.myElement.nativeElement.children[0]);
         var elem = new this._foundation.Reveal(this.modalElement);
     }
@@ -57,7 +58,7 @@ export class JobListComponent implements OnInit {
 
         this.modalElement.foundation('close');
 
-        this.goToJob(policyNumber);
+        this._router.navigate(['ConfigureJob', { policyNumber: policyNumber }]);
     }
 
     goToJob(job: Job) {
@@ -65,9 +66,7 @@ export class JobListComponent implements OnInit {
             this._router.navigate(['JobDetails', { policyNumber: job.policyNumber }]);
         } else {
             this._router.navigate(['ConfigureJob', { policyNumber: job.policyNumber }]);
-
         }
-
     }
 
 

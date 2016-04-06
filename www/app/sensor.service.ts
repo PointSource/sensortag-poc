@@ -54,7 +54,7 @@ export class SensorService {
 	}
 
 	addSensor(sensor: Sensor): void {
-		this.sensors.push(sensor);
+		this.sensors.unshift(sensor);
 	}
 
 	getSensor(index): Sensor {
