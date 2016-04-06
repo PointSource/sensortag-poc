@@ -34,6 +34,10 @@
     </div>
 </div>
 
+<div class="callout" *ngIf="sensors.length === 0">
+    No sensors added to this job yet. Please click "Add a Sensor" to add a sensor to this job.
+</div>
+
 <button (click)="connectToNearestDevice()" class="expanded large button">
     <i class="fa fa-plus-circle button-icon"></i>Add a Sensor
 </button>
