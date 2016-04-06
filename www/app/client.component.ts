@@ -1,5 +1,7 @@
 import {Component, OnInit, Inject, NgZone} from 'angular2/core';
+import {RouteParams} from 'angular2/router';
 import {SensorService} from './sensor.service';
+import {JobService} from './technician/job.service';
 import {NavService} from './nav.service';
 import {Sensor} from './sensor';
 import {SensorComponent} from './sensor.component';
@@ -13,18 +15,22 @@ export class ClientComponent implements OnInit {
 
     constructor(
         private _sensorService: SensorService,
+        private _jobService: JobService,
         private _navService: NavService,
+        private _routeParams: RouteParams,
         @Inject('Evothings') private _evothings,
         private _ngZone: NgZone
     ) { }
 
     ngOnInit() {
+        var policyNumber = this._routeParams.get('policyNumber');
+        this.job = this._jobService.getJob(policyNumber);
         this._navService.setTitle("Get Account");
     }
 
     loadSensors() {
-        this._sensorService.fetch().add(() => {
-            this.sensors = this._sensorService.getSensors();
+        // this._sensorService.fetch().add(() => {
+            this.sensors = this._sensorService.getSensorsForPolicy(this.job.policyNumber);
 
             let index = 0;
             for (let sensor of this.sensors) {
@@ -32,7 +38,7 @@ export class ClientComponent implements OnInit {
                 this.initSensorTag(sensor, index);
                 index++;
             }
-        });
+        // });
     }
 
     initSensorTag(sensor, index) {

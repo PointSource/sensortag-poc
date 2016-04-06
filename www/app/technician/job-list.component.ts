@@ -5,8 +5,7 @@ import {Job} from './job';
 import {Router} from 'angular2/router';
 
 @Component({
-    templateUrl: 'app/technician/job-list.component.html',
-    // styleUrls: ['app/job-list.component.css']
+    templateUrl: 'app/technician/job-list.component.html'
 })
 export class JobListComponent implements OnInit {
 	private jobList: Job[];

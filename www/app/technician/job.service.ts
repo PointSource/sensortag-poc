@@ -40,12 +40,9 @@ export class JobService {
 	}
 
 	getJob(policyNumber: string): Job {
-		for(let job of this.jobs) {
-			if (job.policyNumber === policyNumber) {
-				return job;
-			}
-		}
-		return null;
+		return this.jobs.find(
+			(job) => job.policyNumber === policyNumber
+		);
 	}
 
 }

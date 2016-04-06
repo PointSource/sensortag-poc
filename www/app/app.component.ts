@@ -1,13 +1,15 @@
 import {Component, OnInit, Inject, NgZone} from 'angular2/core';
 import {RouteConfig, ROUTER_DIRECTIVES} from 'angular2/router';
 import {SensorDetailComponent} from './sensor-detail.component';
-import {ClientComponent} from './client.component';
 import {LandingComponent} from './landing.component';
 import {JobListComponent} from './technician/job-list.component';
 import {JobDetailsComponent} from './technician/job-details.component';
 import {ConfigureJobComponent} from './technician/configure-job.component';
 import {ReadingHistoryComponent} from './technician/reading-history.component'
 import {NavService} from './nav.service';
+
+import {ClientComponent} from './client.component';
+import {FindAccountComponent} from './client/find-account.component';
 
 @Component({
     selector: 'my-app',
@@ -21,7 +23,8 @@ import {NavService} from './nav.service';
     { path: '/jobList', name: 'JobList', component: JobListComponent },
     { path: '/configureJob', name: 'ConfigureJob', component: ConfigureJobComponent },
     { path: '/readingHistory', name: 'ReadingHistory', component: ReadingHistoryComponent },
-	{ path: '/client', name: 'Client', component: ClientComponent },
+    { path: '/findAccount', name: 'FindAccount', component: FindAccountComponent },
+    { path: '/client', name: 'Client', component: ClientComponent },
 	{ path: '/sensor', name: 'SensorDetail', component: SensorDetailComponent }
 ])
 export class AppComponent implements OnInit {
