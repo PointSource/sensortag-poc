@@ -11,6 +11,7 @@ export class ChartComponent implements OnInit, OnChanges {
     data: any;
     multipledata: boolean;
     ispercentage: boolean;
+    legendHtml: string;
 
     constructor(
         @Inject('ChartJS') private _chartJS,
@@ -26,12 +27,12 @@ export class ChartComponent implements OnInit, OnChanges {
             }
 
             let i = 0;
-            for (let subData of this.data) {
+            for (let entry of this.data) {
                 lineChartData.datasets.push({
-                    label: "Data",
+                    label: entry.label,
                     strokeColor: colors[i],
                     pointColor: colors[i],
-                    data: subData
+                    data: entry.data
                 })
 
                 i++;
@@ -100,7 +101,8 @@ export class ChartComponent implements OnInit, OnChanges {
                 });
             }
         }
-            
+        
+        this.legendHtml = this.chart.generateLegend();
     }
 
     ngOnChanges(changes: { [propName: string]: SimpleChange }) {

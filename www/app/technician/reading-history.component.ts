@@ -31,15 +31,18 @@ export class ReadingHistoryComponent implements OnInit {
         for (let reading of this.readings) {
             for (let sensorData of reading.sensorData) {
                 if (!readingsBySensor[sensorData.address]) {
-                    readingsBySensor[sensorData.address] = [];
+                    readingsBySensor[sensorData.address] = {
+                        label: sensorData.name,
+                        data: []
+                    };
                 }
                 if (this.type === "humidity") {
-                    readingsBySensor[sensorData.address].push({
+                    readingsBySensor[sensorData.address].data.push({
                         x: new Date(reading.date),
                         y: sensorData.data.humidityData.relativeHumidity
                     });
                 } else if (this.type === "targetTemperature") {
-                    readingsBySensor[sensorData.address].push({
+                    readingsBySensor[sensorData.address].data.push({
                         x: new Date(reading.date),
                         y: sensorData.data.temperatureData.targetTemperature
                     });
