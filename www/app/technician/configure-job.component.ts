@@ -177,10 +177,10 @@ export class ConfigureJobComponent implements OnInit {
                 },
                 keypressData: 0
             },
-            device: sensortag.getDevice(),
-            name: "Untitled "+index,
+            name: "Sensor "+index,
             isNamed: true,
             isConnected: true,
+            device: sensortag.getDevice(),
             policyNumber: this.job.policyNumber
         };
 
