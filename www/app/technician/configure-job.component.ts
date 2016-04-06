@@ -16,7 +16,7 @@ import {SensorComponent} from '../sensor.component';
 })
 export class ConfigureJobComponent implements OnInit {
     private job: Job;    
-    objIOT: any = {};
+    // objIOT: any = {};
     chart: any;
 	status: string;
     statusPercentage: number;
@@ -53,44 +53,44 @@ export class ConfigureJobComponent implements OnInit {
 
         this.sensors = this._sensorService.getSensorsForPolicy(policyNumber);
 
-        // IoT Foundation object..
-        this.objIOT['b0b448d31202'] = this._iotfoundationlib.createInstance('b0b448d31202', 'b4KBCvZ*ivr9cVhpPg');
+        // // IoT Foundation object..
+        // this.objIOT['b0b448d31202'] = this._iotfoundationlib.createInstance('b0b448d31202', 'b4KBCvZ*ivr9cVhpPg');
 
-        this.objIOT['b0b448d31202']
-            .onConnectSuccessCallback(() => {
-                // alert("connect success")
-            })
-            .onConnectFailureCallback(() => {
-                // alert("connect fail")
-            })
-            .connectToFoundationCloud()
-
-
-        // IoT Foundation object..
-        this.objIOT['b0b448c9d807'] = this._iotfoundationlib.createInstance('b0b448c9d807', '2?Q7s4DL-_3L4LKKIM');
-
-        this.objIOT['b0b448c9d807']
-            .onConnectSuccessCallback(() => {
-                // alert("connect success")
-            })
-            .onConnectFailureCallback(() => {
-                // alert("connect fail")
-            })
-            .connectToFoundationCloud()
+        // this.objIOT['b0b448d31202']
+        //     .onConnectSuccessCallback(() => {
+        //         // alert("connect success")
+        //     })
+        //     .onConnectFailureCallback(() => {
+        //         // alert("connect fail")
+        //     })
+        //     .connectToFoundationCloud()
 
 
+        // // IoT Foundation object..
+        // this.objIOT['b0b448c9d807'] = this._iotfoundationlib.createInstance('b0b448c9d807', '2?Q7s4DL-_3L4LKKIM');
 
-        // IoT Foundation object..
-        this.objIOT['b0b448c8b807'] = this._iotfoundationlib.createInstance('b0b448c8b807', 'GXpLWf_ge1qX5z-BNO');
+        // this.objIOT['b0b448c9d807']
+        //     .onConnectSuccessCallback(() => {
+        //         // alert("connect success")
+        //     })
+        //     .onConnectFailureCallback(() => {
+        //         // alert("connect fail")
+        //     })
+        //     .connectToFoundationCloud()
 
-        this.objIOT['b0b448c8b807']
-            .onConnectSuccessCallback(() => {
-                // alert("connect success")
-            })
-            .onConnectFailureCallback(() => {
-                // alert("connect fail")
-            })
-            .connectToFoundationCloud()
+
+
+        // // IoT Foundation object..
+        // this.objIOT['b0b448c8b807'] = this._iotfoundationlib.createInstance('b0b448c8b807', 'GXpLWf_ge1qX5z-BNO');
+
+        // this.objIOT['b0b448c8b807']
+        //     .onConnectSuccessCallback(() => {
+        //         // alert("connect success")
+        //     })
+        //     .onConnectFailureCallback(() => {
+        //         // alert("connect fail")
+        //     })
+        //     .connectToFoundationCloud()
     }
 
     connectToNearestDevice() {
@@ -256,25 +256,25 @@ export class ConfigureJobComponent implements OnInit {
     }
 
     saveDevices() {
-        this._sensorService.sync();
+        // this._sensorService.sync();
         window.history.back();
     }
 
     sendReport() {
-        for (let sensor of this.sensors) {
-            var formattedAddress = sensor.device.address.replace(new RegExp(":", "g"), "").toLowerCase()
-            this.objIOT[formattedAddress].publishToFoundationCloud({
-                d: {
-                    humidityData: {
-                        relativeHumidity: sensor.data.humidityData.relativeHumidity
-                    },
-                    temperatureData: {
-                        ambientTemperature: sensor.data.temperatureData.ambientTemperature,
-                        targetTemperature: sensor.data.temperatureData.targetTemperature
-                    }
-                }
-            });
-        }
+        // for (let sensor of this.sensors) {
+        //     var formattedAddress = sensor.device.address.replace(new RegExp(":", "g"), "").toLowerCase()
+        //     this.objIOT[formattedAddress].publishToFoundationCloud({
+        //         d: {
+        //             humidityData: {
+        //                 relativeHumidity: sensor.data.humidityData.relativeHumidity
+        //             },
+        //             temperatureData: {
+        //                 ambientTemperature: sensor.data.temperatureData.ambientTemperature,
+        //                 targetTemperature: sensor.data.temperatureData.targetTemperature
+        //             }
+        //         }
+        //     });
+        // }
     }
 
     nameSensor(sensorName) {

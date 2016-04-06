@@ -32,6 +32,17 @@
 	<a class="chart-link" (click)="goToReadingDetails('targetTemperature')"><i class="fa fa-line-chart"></i></a>
 </div>
 
+
+<div class="callout" *ngIf="readings.length > 0">
+	<h3>Ambient Temperature</h3>
+
+	<div *ngFor="#sensorData of readings[readings.length - 1].sensorData">
+		{{sensorData.name}} {{sensorData.data.temperatureData.ambientTemperature}}&#x000B0; F
+	</div>
+
+	<a class="chart-link" (click)="goToReadingDetails('ambientTemperature')"><i class="fa fa-line-chart"></i></a>
+</div>
+
 <button *ngIf="sensors.length > 0" class="button large expanded" (click)="takeReading()"><i class="fa fa-tachometer"></i>Take a Reading</button>
 
 <button class="button large expanded secondary" (click)="goToConfigureJob()"><i class="fa fa-cog"></i>Configure Sensors</button>
