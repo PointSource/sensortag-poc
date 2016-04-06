@@ -21,7 +21,7 @@ export class ChartComponent implements OnInit, OnChanges {
             labels: ["", "", "", "", "", "", "", "", "", ""],
             datasets: [
                 {
-                    label: "My First dataset",
+                    label: "Data",
                     fillColor: "rgba(151,187,205,0.2)",
                     strokeColor: "rgba(151,187,205,1)",
                     pointColor: "rgba(151,187,205,1)",
