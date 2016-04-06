@@ -21,7 +21,6 @@ export class ConfigureJobComponent implements OnInit {
 	status: string;
     statusPercentage: number;
     private modalElement: any;
-    private newSensorName: string;
 
 	// List of devices
 	sensors: Sensor[];
