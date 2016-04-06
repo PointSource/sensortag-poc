@@ -137,28 +137,6 @@ export class ConfigureJobComponent implements OnInit {
 
     deviceConnectedHandler(sensortag, index) {
         var self = this;
-        sensortag
-            .statusCallback(function(status) {
-                self._ngZone.run(function() {
-                    self.statusHandler(index, status)
-                });
-            })
-            .humidityCallback(function(data) {
-                self._ngZone.run(function() {
-                    self.humidityHandler(index, data);
-                });
-            }, 1000)
-            .temperatureCallback(function(data) {
-                self._ngZone.run(function() {
-                    self.temperatureHandler(index, data);
-                });
-            }, 1000)
-            .keypressCallback(function(data) {
-                self._ngZone.run(function() {
-                    self.keypressHandler(index, data);
-                });
-            });
-
 
         var connectedDevice: Sensor = {
             status: "initializing",
@@ -184,18 +162,40 @@ export class ConfigureJobComponent implements OnInit {
             policyNumber: this.job.policyNumber
         };
 
-        setInterval(() => {
-            self.sendReport();
-        }, 1000);
+        connectedDevice.sensortag
+            .statusCallback(function(status) {
+                self._ngZone.run(function() {
+                    self.statusHandler(connectedDevice, status)
+                });
+            })
+            .humidityCallback(function(data) {
+                self._ngZone.run(function() {
+                    self.humidityHandler(connectedDevice, data);
+                });
+            }, 1000)
+            .temperatureCallback(function(data) {
+                self._ngZone.run(function() {
+                    self.temperatureHandler(connectedDevice, data);
+                });
+            }, 1000)
+            .keypressCallback(function(data) {
+                self._ngZone.run(function() {
+                    self.keypressHandler(connectedDevice, data);
+                });
+            });
+
+        // setInterval(() => {
+        //     self.sendReport();
+        // }, 1000);
 
         this._sensorService.addSensor(connectedDevice);
         this.sensors = this._sensorService.getSensorsForPolicy(this.job.policyNumber);
     }
 
-    statusHandler(index, status) {
-        this.sensors[index].status = status;
+    statusHandler(sensor, status) {
+        sensor.status = status;
         if (status === "DEVICE_INFO_AVAILABLE") {
-            this.sensors[index].isConnected = true;
+            sensor.isConnected = true;
         }
     }
 
@@ -208,46 +208,46 @@ export class ConfigureJobComponent implements OnInit {
         }
     }
 
-    temperatureHandler(index, data) {
-        var values = this.sensors[index].sensortag.getTemperatureValues(data);
+    temperatureHandler(sensor, data) {
+        var values = sensor.sensortag.getTemperatureValues(data);
         var ac = values.ambientTemperature;
-        var af = this.sensors[index].sensortag.celsiusToFahrenheit(ac);
+        var af = sensor.sensortag.celsiusToFahrenheit(ac);
         var tc = values.targetTemperature;
-        var tf = this.sensors[index].sensortag.celsiusToFahrenheit(tc);
+        var tf = sensor.sensortag.celsiusToFahrenheit(tc);
 
-        this.sensors[index].data.temperatureData.ambientTemperature = af.toFixed(1);
-        this.sensors[index].data.temperatureData.targetTemperature = tf.toFixed(1)
-        var lastTenAmbient = this.sensors[index].data.temperatureData.lastTenAmbient.slice();
+        sensor.data.temperatureData.ambientTemperature = af.toFixed(1);
+        sensor.data.temperatureData.targetTemperature = tf.toFixed(1)
+        var lastTenAmbient = sensor.data.temperatureData.lastTenAmbient.slice();
         lastTenAmbient.push(af);
         lastTenAmbient.shift();
-        this.sensors[index].data.temperatureData.lastTenAmbient = lastTenAmbient;
+        sensor.data.temperatureData.lastTenAmbient = lastTenAmbient;
 
-        var lastTenTarget = this.sensors[index].data.temperatureData.lastTenTarget.slice();
+        var lastTenTarget = sensor.data.temperatureData.lastTenTarget.slice();
         lastTenTarget.push(tf);
         lastTenTarget.shift();
-        this.sensors[index].data.temperatureData.lastTenTarget = lastTenTarget;
+        sensor.data.temperatureData.lastTenTarget = lastTenTarget;
     }
 
-    humidityHandler(index, data) {
-        var values = this.sensors[index].sensortag.getHumidityValues(data)
+    humidityHandler(sensor, data) {
+        var values = sensor.sensortag.getHumidityValues(data)
 
         // Calculate the humidity temperature (C and F).
         var tc = values.humidityTemperature
-        var tf = this.sensors[index].sensortag.celsiusToFahrenheit(tc)
+        var tf = sensor.sensortag.celsiusToFahrenheit(tc)
 
         // Calculate the relative humidity.
         var h = values.relativeHumidity;
 
-        this.sensors[index].data.humidityData.humidityTemperature = tc.toFixed(1);
-        this.sensors[index].data.humidityData.relativeHumidity = h.toFixed(1)
-        var lastTenValues = this.sensors[index].data.humidityData.lastTenValues.slice();
+        sensor.data.humidityData.humidityTemperature = tc.toFixed(1);
+        sensor.data.humidityData.relativeHumidity = h.toFixed(1)
+        var lastTenValues = sensor.data.humidityData.lastTenValues.slice();
         lastTenValues.push(h);
         lastTenValues.shift();
-        this.sensors[index].data.humidityData.lastTenValues = lastTenValues;
+        sensor.data.humidityData.lastTenValues = lastTenValues;
     }
 
-    keypressHandler(index, data) {
-        this.sensors[index].data.keypressData = data[0];
+    keypressHandler(sensor, data) {
+        sensor.data.keypressData = data[0];
     }
 
     resetSensorDisplayValues() {
@@ -284,8 +284,8 @@ export class ConfigureJobComponent implements OnInit {
     }
 
     // Handle device disconnected
-    deviceDisconnectedHandler(i) {
-        this._sensorService.removeSensor(i);
+    deviceDisconnectedHandler(sensor) {
+        this._sensorService.removeSensor(sensor.device.address);
         this.sensors = this._sensorService.getSensorsForPolicy(this.job.policyNumber);
     }
 

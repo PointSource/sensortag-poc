@@ -5,11 +5,10 @@ import {Router} from 'angular2/router';
     selector: 'sensor',
     templateUrl: 'app/sensor.component.html',
     styleUrls: ['app/sensor.component.css'],
-    inputs: ['sensor', 'dindex']
+    inputs: ['sensor']
 })
 export class SensorComponent {
 	sensor;
-	dindex;
     @Output() onDeviceDisconnected = new EventEmitter();
 
     constructor(
@@ -29,7 +28,7 @@ export class SensorComponent {
     }
 
     goToSensorDetails() {
-		this._router.navigate(['SensorDetail', { index: this.dindex }]);
+		this._router.navigate(['SensorDetail', { address: this.sensor.device.address }]);
     }
 
 }

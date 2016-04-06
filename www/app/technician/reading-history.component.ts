@@ -41,8 +41,10 @@ export class ReadingHistoryComponent implements OnInit {
                     dataPoint = sensorData.data.humidityData.relativeHumidity;
                 } else if (this.type === "targetTemperature") {
                     dataPoint = sensorData.data.temperatureData.targetTemperature;
+                } else if (this.type === "ambientTemperature") {
+                    dataPoint = sensorData.data.temperatureData.ambientTemperature;
                 }
-                
+
                 readingsBySensor[sensorData.address].data.push({
                     x: new Date(reading.date),
                     y: dataPoint

@@ -16,7 +16,7 @@ export class SensorDetailComponent implements OnInit {
 	) { }
 
     ngOnInit() {
-		var index = this._routeParams.get('index');
-        this.device = this._sensorService.getSensor(index);
+		var address = this._routeParams.get('address');
+        this.device = this._sensorService.getSensor(address);
     }
 }

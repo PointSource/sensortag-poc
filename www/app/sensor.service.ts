@@ -57,11 +57,16 @@ export class SensorService {
 		this.sensors.push(sensor);
 	}
 
-	getSensor(index): Sensor {
-		return this.sensors[index];
+	getSensor(address): Sensor {
+		return this.sensors.find(
+			(sensor) => sensor.device.address === address
+		);
 	}
 
-	removeSensor(index) {
+	removeSensor(address: string) {
+		var index = this.sensors.findIndex(
+			(sensor) => sensor.device.address === address
+		);
 		this.sensors.splice(index, 1);
 	}
 
