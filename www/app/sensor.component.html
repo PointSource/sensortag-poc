@@ -14,7 +14,7 @@
         </div>
 
         <div *ngIf="sensor.isNamed === true">
-            <h4 class="sensorName">{{sensor.name}} <small>{{sensor.device.address}}</small></h4>
+            <h4 class="sensorName">{{sensor.name}}</h4>
             <div *ngIf="sensor.data.humidityData">
                 <div>
                     Humidity: {{sensor.data.humidityData.relativeHumidity}}% rH

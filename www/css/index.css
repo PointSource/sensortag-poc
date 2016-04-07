@@ -25,8 +25,12 @@ body {
 	width: auto;
     margin-left: 30px;
     margin-right: 30px;
-    min-height: auto;
+    min-height: 100px;
     height: auto;
+}
+
+div.reveal.is-ios {
+    top: 105px;
 }
 
 ul.scatter-legend {

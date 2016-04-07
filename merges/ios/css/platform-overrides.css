@@ -1,0 +1,11 @@
+/* Top Bar */
+
+.top-bar {
+    border-top: solid 20px #606060;
+}
+
+
+
+.app-content {
+    padding-top: 85px !important;
+}

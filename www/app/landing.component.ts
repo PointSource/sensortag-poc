@@ -3,8 +3,7 @@ import {Router} from 'angular2/router';
 import {NavService} from './nav.service';
 
 @Component({
-    templateUrl: 'app/landing.component.html',
-    styleUrls: ['app/landing.component.css']
+    templateUrl: 'app/landing.component.html'
 })
 export class LandingComponent implements OnInit {
 
