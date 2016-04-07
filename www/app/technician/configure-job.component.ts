@@ -183,10 +183,6 @@ export class ConfigureJobComponent implements OnInit {
                 });
             });
 
-        // setInterval(() => {
-        //     self.sendReport();
-        // }, 1000);
-
         this._sensorService.addSensor(connectedDevice);
         this.sensors = this._sensorService.getSensorsForPolicy(this.job.policyNumber);
     }
@@ -209,10 +205,8 @@ export class ConfigureJobComponent implements OnInit {
 
     temperatureHandler(sensor, data) {
         var values = sensor.sensortag.getTemperatureValues(data);
-        var ac = values.ambientTemperature;
-        var af = sensor.sensortag.celsiusToFahrenheit(ac);
-        var tc = values.targetTemperature;
-        var tf = sensor.sensortag.celsiusToFahrenheit(tc);
+        var af = sensor.sensortag.celsiusToFahrenheit(values.ambientTemperature);
+        var tf = sensor.sensortag.celsiusToFahrenheit(values.targetTemperature);
 
         sensor.data.temperatureData.ambientTemperature = af.toFixed(1);
         sensor.data.temperatureData.targetTemperature = tf.toFixed(1)
@@ -230,14 +224,9 @@ export class ConfigureJobComponent implements OnInit {
     humidityHandler(sensor, data) {
         var values = sensor.sensortag.getHumidityValues(data)
 
-        // Calculate the humidity temperature (C and F).
-        var tc = values.humidityTemperature
-        var tf = sensor.sensortag.celsiusToFahrenheit(tc)
-
         // Calculate the relative humidity.
         var h = values.relativeHumidity;
 
-        sensor.data.humidityData.humidityTemperature = tc.toFixed(1);
         sensor.data.humidityData.relativeHumidity = h.toFixed(1)
         var lastTenValues = sensor.data.humidityData.lastTenValues.slice();
         lastTenValues.push(h);
@@ -257,23 +246,6 @@ export class ConfigureJobComponent implements OnInit {
     saveDevices() {
         // this._sensorService.sync();
         window.history.back();
-    }
-
-    sendReport() {
-        // for (let sensor of this.sensors) {
-        //     var formattedAddress = sensor.device.address.replace(new RegExp(":", "g"), "").toLowerCase()
-        //     this.objIOT[formattedAddress].publishToFoundationCloud({
-        //         d: {
-        //             humidityData: {
-        //                 relativeHumidity: sensor.data.humidityData.relativeHumidity
-        //             },
-        //             temperatureData: {
-        //                 ambientTemperature: sensor.data.temperatureData.ambientTemperature,
-        //                 targetTemperature: sensor.data.temperatureData.targetTemperature
-        //             }
-        //         }
-        //     });
-        // }
     }
 
     nameSensor(sensorName) {
