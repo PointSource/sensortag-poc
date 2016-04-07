@@ -75,7 +75,7 @@ describe('Sensor List Component', () => {
 	let _ngZone: NgZone;
 	let _foundation = jasmine.createSpyObj("_foundation", ['Reveal']);
 	let _http: Http;
-	let sensorListComponent;
+	let configureJob;
 
 	beforeEach(() => {
 		_sensorService = new SensorService(_http);
@@ -86,7 +86,7 @@ describe('Sensor List Component', () => {
 			name: "Andrew Mortensen",
 			numSensors: 0
 		})
-		sensorListComponent = new ConfigureJobComponent(
+		configureJob = new ConfigureJobComponent(
 			_sensorService,
 			_jobService,
 			_navService,
@@ -102,26 +102,26 @@ describe('Sensor List Component', () => {
 	describe('on init', () => {
 
 		it('fills list with any devices that were saved', () => {
-			sensorListComponent._sensorService.addSensor({
+			configureJob._sensorService.addSensor({
 				address: "address123"
 			});
-			spyOn(sensorListComponent._sensorService, "getSensorsForPolicy").and.callThrough();
-			sensorListComponent.ngOnInit();
-			expect(sensorListComponent._sensorService.getSensorsForPolicy).toHaveBeenCalled();
-			expect(sensorListComponent.sensors.length).toBe(1);
+			spyOn(configureJob._sensorService, "getSensorsForPolicy").and.callThrough();
+			configureJob.ngOnInit();
+			expect(configureJob._sensorService.getSensorsForPolicy).toHaveBeenCalled();
+			expect(configureJob.sensors.length).toBe(1);
 		});
 	});
 
 	describe('on connectToNearestDevice', () => {
 		it('creates a sensorTag instance to track device information', () => {
 			spyOn(evothings.tisensortag, "createInstance").and.callThrough();
-			sensorListComponent.connectToNearestDevice();
+			configureJob.connectToNearestDevice();
 			expect(evothings.tisensortag.createInstance).toHaveBeenCalled();
 		});
 
 		it('calls sensortag.connectToNearestDevice', () => {
 			spyOn(sensortag, "connectToNearestDevice");
-			sensorListComponent.connectToNearestDevice();
+			configureJob.connectToNearestDevice();
 			expect(sensortag.connectToNearestDevice).toHaveBeenCalled();
 		});
 	});
@@ -129,30 +129,30 @@ describe('Sensor List Component', () => {
 	describe('when device is connected', () => {
 
 		beforeEach(() => {
-			sensorListComponent.ngOnInit();
+			configureJob.ngOnInit();
 		})
 
 		it('adds the sensortag to the list of connected devices', () => {
-			spyOn(sensorListComponent._sensorService, "addSensor").and.callThrough();
-			sensorListComponent.deviceConnectedHandler(sensortag);
-			expect(sensorListComponent._sensorService.addSensor).toHaveBeenCalled();
-			expect(sensorListComponent.sensors[0].sensortag)
+			spyOn(configureJob._sensorService, "addSensor").and.callThrough();
+			configureJob.deviceConnectedHandler(sensortag);
+			expect(configureJob._sensorService.addSensor).toHaveBeenCalled();
+			expect(configureJob.sensors[0].sensortag)
 				.toEqual(sensortag);
-			expect(sensorListComponent.sensors[0].isNamed)
+			expect(configureJob.sensors[0].isNamed)
 				.toBe(true);
-			expect(sensorListComponent.sensors[0].data.humidityData.lastTenValues)
+			expect(configureJob.sensors[0].data.humidityData.lastTenValues)
 				.toEqual([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
 		})
 
 		it('sets humidity callback on sensortag', () => {
 			spyOn(sensortag, "humidityCallback").and.returnValue(sensortag);
-			sensorListComponent.deviceConnectedHandler(sensortag);
+			configureJob.deviceConnectedHandler(sensortag);
 			expect(sensortag.humidityCallback).toHaveBeenCalled();
 		})
 
 		it('sets keypress callback on sensortag', () => {
 			spyOn(sensortag, "keypressCallback").and.returnValue(sensortag);
-			sensorListComponent.deviceConnectedHandler(sensortag);
+			configureJob.deviceConnectedHandler(sensortag);
 			expect(sensortag.keypressCallback).toHaveBeenCalled();
 		})
 
@@ -163,32 +163,32 @@ describe('Sensor List Component', () => {
 
 
 		it('should update main status', () => {
-			sensorListComponent.ngOnInit();
-			spyOn(sensorListComponent.modalElement, "foundation");
-			sensorListComponent.initialStatusHandler(sensortag, "SCANNING");
-			expect(sensorListComponent.status).toBe("SCANNING");
+			configureJob.ngOnInit();
+			spyOn(configureJob.modalElement, "foundation");
+			configureJob.initialStatusHandler(sensortag, "SCANNING");
+			expect(configureJob.status).toBe("SCANNING");
 		});
 
 
 		it('should update status percentage', () => {
-			sensorListComponent.ngOnInit();
-			sensorListComponent.initialStatusHandler(sensortag, "SCANNING");
-			expect(sensorListComponent.statusPercentage).toBe(20);
-			sensorListComponent.initialStatusHandler(sensortag, "SENSORTAG_FOUND");
-			expect(sensorListComponent.statusPercentage).toBe(40);
-			sensorListComponent.initialStatusHandler(sensortag, "CONNECTING");
-			expect(sensorListComponent.statusPercentage).toBe(60);
-			sensorListComponent.initialStatusHandler(sensortag, "READING_DEVICE_INFO");
-			expect(sensorListComponent.statusPercentage).toBe(80);
-			sensorListComponent.initialStatusHandler(sensortag, "DEVICE_INFO_AVAILABLE");
-			expect(sensorListComponent.statusPercentage).toBe(100);
+			configureJob.ngOnInit();
+			configureJob.initialStatusHandler(sensortag, "SCANNING");
+			expect(configureJob.statusPercentage).toBe(20);
+			configureJob.initialStatusHandler(sensortag, "SENSORTAG_FOUND");
+			expect(configureJob.statusPercentage).toBe(40);
+			configureJob.initialStatusHandler(sensortag, "CONNECTING");
+			expect(configureJob.statusPercentage).toBe(60);
+			configureJob.initialStatusHandler(sensortag, "READING_DEVICE_INFO");
+			expect(configureJob.statusPercentage).toBe(80);
+			configureJob.initialStatusHandler(sensortag, "DEVICE_INFO_AVAILABLE");
+			expect(configureJob.statusPercentage).toBe(100);
 		});
 
 		it('if status is DEVICE_INFO_AVAILABLE add sensortag to connected devices', () => {
-			sensorListComponent.ngOnInit();
-			spyOn(sensorListComponent, "deviceConnectedHandler");
-			sensorListComponent.initialStatusHandler(sensortag, "DEVICE_INFO_AVAILABLE");
-			expect(sensorListComponent.deviceConnectedHandler).toHaveBeenCalled();
+			configureJob.ngOnInit();
+			spyOn(configureJob, "deviceConnectedHandler");
+			configureJob.initialStatusHandler(sensortag, "DEVICE_INFO_AVAILABLE");
+			expect(configureJob.deviceConnectedHandler).toHaveBeenCalled();
 		});
 
 	});
@@ -196,11 +196,11 @@ describe('Sensor List Component', () => {
 
 	describe('when device is named', () => {
 		it('sets device.isNamed to true', () => {
-			sensorListComponent.ngOnInit();
-			sensorListComponent.deviceConnectedHandler(sensortag);
-			sensorListComponent.nameSensor("new name");
-			expect(sensorListComponent.sensors[0].isNamed).toBe(true);
-			expect(sensorListComponent.sensors[0].name).toBe("new name");
+			configureJob.ngOnInit();
+			configureJob.deviceConnectedHandler(sensortag);
+			configureJob.nameSensor("new name");
+			expect(configureJob.sensors[0].isNamed).toBe(true);
+			expect(configureJob.sensors[0].name).toBe("new name");
 		});
 
 	});
@@ -208,7 +208,7 @@ describe('Sensor List Component', () => {
 	xdescribe('on toggleDeviceConnection', () => {
 
 		beforeEach(() => {
-			sensorListComponent.sensors = [{
+			configureJob.sensors = [{
 				sensortag: {
 					disconnectDevice: () => { },
 					connectToDevice: () => { }
@@ -218,23 +218,23 @@ describe('Sensor List Component', () => {
 		})
 
 		it('if device is connected, calls disconnectDevice', () => {
-			spyOn(sensorListComponent.sensors[0].sensortag, "disconnectDevice");
-			sensorListComponent.toggleDeviceConnection(0);
-			expect(sensorListComponent.sensors[0].sensortag.disconnectDevice).toHaveBeenCalled();
+			spyOn(configureJob.sensors[0].sensortag, "disconnectDevice");
+			configureJob.toggleDeviceConnection(0);
+			expect(configureJob.sensors[0].sensortag.disconnectDevice).toHaveBeenCalled();
 		});
 
 		it('if device is connected, sets isConnected to false', () => {
-			sensorListComponent.toggleDeviceConnection(0);
-			expect(sensorListComponent.sensors[0].isConnected).toBe(false);
+			configureJob.toggleDeviceConnection(0);
+			expect(configureJob.sensors[0].isConnected).toBe(false);
 		})
 
 		it('if device is disconnected, calls connectToDevice', () => {
-			spyOn(sensorListComponent.sensors[0].sensortag, "connectToDevice");
+			spyOn(configureJob.sensors[0].sensortag, "connectToDevice");
 			// Disconnect
-			sensorListComponent.toggleDeviceConnection(0);
+			configureJob.toggleDeviceConnection(0);
 			// Connect
-			sensorListComponent.toggleDeviceConnection(0);
-			expect(sensorListComponent.sensors[0].sensortag.connectToDevice).toHaveBeenCalled();
+			configureJob.toggleDeviceConnection(0);
+			expect(configureJob.sensors[0].sensortag.connectToDevice).toHaveBeenCalled();
 		})
 
 	});
@@ -243,20 +243,20 @@ describe('Sensor List Component', () => {
 	describe('on status update', () => {
 
 		beforeEach(() => {
-			sensorListComponent.ngOnInit();
-			sensorListComponent.sensors = [{
+			configureJob.ngOnInit();
+			configureJob.sensors = [{
 				isConnected: false
 			}]
 		})
 
 		it('should update device status', () => {
-			sensorListComponent.statusHandler(sensorListComponent.sensors[0], "SCANNING");
-			expect(sensorListComponent.sensors[0].status).toBe("SCANNING");
+			configureJob.statusHandler(configureJob.sensors[0], "SCANNING");
+			expect(configureJob.sensors[0].status).toBe("SCANNING");
 		});
 
 		it('if status is DEVICE_INFO_AVAILABLE, should set isConnected to true', () => {
-			sensorListComponent.statusHandler(sensorListComponent.sensors[0], "DEVICE_INFO_AVAILABLE");
-			expect(sensorListComponent.sensors[0].isConnected).toBe(true);
+			configureJob.statusHandler(configureJob.sensors[0], "DEVICE_INFO_AVAILABLE");
+			expect(configureJob.sensors[0].isConnected).toBe(true);
 		});
 	});
 
@@ -273,22 +273,22 @@ describe('Sensor List Component', () => {
 		})
 
 		it('should update status to display error', () => {
-			sensorListComponent.errorHandler("OOPS");
-			expect(sensorListComponent.status).toBe("ERROR");
+			configureJob.errorHandler("OOPS");
+			expect(configureJob.status).toBe("ERROR");
 		});
 
 		it('if device is disconnected, clear the display values', () => {
-			spyOn(sensorListComponent, "resetSensorDisplayValues");
-			sensorListComponent.errorHandler("EASYBLE_ERROR_DISCONNECTED");
-			expect(sensorListComponent.resetSensorDisplayValues).toHaveBeenCalled();
+			spyOn(configureJob, "resetSensorDisplayValues");
+			configureJob.errorHandler("EASYBLE_ERROR_DISCONNECTED");
+			expect(configureJob.resetSensorDisplayValues).toHaveBeenCalled();
 		});
 	});
 
 	describe('on humidity callback', () => {
 
 		beforeEach(() => {
-			sensorListComponent.ngOnInit();
-			sensorListComponent.deviceConnectedHandler(sensortag, 0);
+			configureJob.ngOnInit();
+			configureJob.deviceConnectedHandler(sensortag, 0);
 
 			sensortag.getHumidityValues = function() {
 				return {
@@ -297,11 +297,11 @@ describe('Sensor List Component', () => {
 				}
 			}
 
-			sensorListComponent.humidityHandler(sensorListComponent.sensors[0]);
+			configureJob.humidityHandler(configureJob.sensors[0]);
 		})
 
 		it('should update humidityData for this device', () => {
-			expect(sensorListComponent.sensors[0].data.humidityData)
+			expect(configureJob.sensors[0].data.humidityData)
 				.toEqual({
 					lastTenValues: [0, 0, 0, 0, 0, 0, 0, 0, 0, 90],
 					relativeHumidity: '90.0'
@@ -309,7 +309,7 @@ describe('Sensor List Component', () => {
 		});
 
 		it('should update last 10 humidity data for this device', () => {
-			expect(sensorListComponent.sensors[0].data.humidityData.lastTenValues)
+			expect(configureJob.sensors[0].data.humidityData.lastTenValues)
 				.toEqual([0, 0, 0, 0, 0, 0, 0, 0, 0, 90]);
 		});
 
@@ -319,13 +319,13 @@ describe('Sensor List Component', () => {
 	describe('on keypress callback', () => {
 
 		beforeEach(() => {
-			sensorListComponent.ngOnInit();
-			sensorListComponent.deviceConnectedHandler(sensortag, 0);
-			sensorListComponent.keypressHandler(sensorListComponent.sensors[0], [1]);
+			configureJob.ngOnInit();
+			configureJob.deviceConnectedHandler(sensortag, 0);
+			configureJob.keypressHandler(configureJob.sensors[0], [1]);
 		})
 
 		it('should update keypressData for this device', () => {
-			expect(sensorListComponent.sensors[0].data.keypressData)
+			expect(configureJob.sensors[0].data.keypressData)
 				.toEqual(1);
 		});
 	});

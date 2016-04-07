@@ -33,42 +33,15 @@ export class AccountDetailsComponent implements OnInit {
     loadSensors() {
         // this._sensorService.fetch().add(() => {
             this.sensors = this._sensorService.getSensorsForPolicy(this.job.policyNumber);
-
-            // let index = 0;
-            // for (let sensor of this.sensors) {
-            //     sensor.isConnected = false;
-            //     this.initSensorTag(sensor, index);
-            //     index++;
-            // }
+            this.scanForSensors();
         // });
+
     }
 
-    initSensorTag(sensor, index) {
-        // var self = this;
+    scanForSensors() {
 
-        // // Create SensorTag CC2650 instance.
-        // sensor.sensortag = this._evothings.tisensortag.createInstance(
-        //     this._evothings.tisensortag.CC2650_BLUETOOTH_SMART)
-
-        // sensor.sensortag
-        //     .statusCallback(function(status) {
-        //         self._ngZone.run(function() {
-        //             self.statusHandler(index, status)
-        //         });
-        //     })
-            // .humidityCallback(function(data) {
-            //     self._ngZone.run(function() {
-            //         self.humidityHandler(index, data);
-            //     });
-            // }, 1000)
-            // .keypressCallback(function(data) {
-            //     self._ngZone.run(function() {
-            //         self.keypressHandler(index, data);
-            //     });
-            // }, 1000);
-
-        // sensor.sensortag.connectToDevice(sensor.device);
     }
+
 
     statusHandler(index, status) {
         this.sensors[index].status = status;
