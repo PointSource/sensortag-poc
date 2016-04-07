@@ -124,6 +124,7 @@
 		instance.DEVICEINFO_SERVICE = '0000180a-0000-1000-8000-00805f9b34fb'
 		instance.FIRMWARE_DATA = '00002a26-0000-1000-8000-00805f9b34fb'
 		instance.MODELNUMBER_DATA = '00002a24-0000-1000-8000-00805f9b34fb'
+		instance.SYSTEM_ID = '00002a23-0000-1000-8000-00805f9b34fb'
 
 		instance.TEMPERATURE = {
 			SERVICE: 'f000aa00-0451-4000-b000-000000000000',
@@ -522,7 +523,7 @@
 				// Reading of model is disabled. See comment below.
 				//readModelNumber()
 				readDeviceAddress();
-				readFirmwareVersion();
+				readSystemId();
 			}
 
 			/*
@@ -565,6 +566,32 @@
 				instance.deviceAddress = instance.device.address;
 			}
 
+			function readSystemId()
+			{
+				instance.device.readServiceCharacteristic(
+					instance.DEVICEINFO_SERVICE,
+					instance.SYSTEM_ID,
+					gotSystemId,
+					instance.errorFun)
+			}
+
+			function gotSystemId(data)
+			{
+				// Set firmware string.
+				var data_uint8  = new Uint8Array(data);
+
+				var systemId = "";
+
+				for (var i = 0; i < data_uint8.length; i++) {
+					var hexValue = evothings.util.toHexString(data_uint8[i]);
+					systemId += hexValue + ":";
+				}
+				instance.systemId = systemId;
+
+				// Read services requested by the application.
+				readFirmwareVersion()
+			}
+
 			function readFirmwareVersion()
 			{
 				instance.device.readServiceCharacteristic(
@@ -586,6 +613,8 @@
 				// Read services requested by the application.
 				readRequestedServices()
 			}
+
+
 
 			function readRequestedServices()
 			{

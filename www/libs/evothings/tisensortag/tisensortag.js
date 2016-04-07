@@ -265,6 +265,16 @@ evothings.tisensortag.createGenericInstance = function()
 	}
 
 	/**
+	 * Public. Get System ID.
+	 * @instance
+	 * @public
+	 */
+	instance.getSystemId = function()
+	{
+		return instance.systemId
+	}
+
+	/**
 	 * Public. Get firmware string.
 	 * @instance
 	 * @public
