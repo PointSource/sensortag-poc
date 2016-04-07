@@ -11,7 +11,6 @@ import {SensorComponent} from '../sensor.component';
 
 @Component({
     templateUrl: 'app/technician/configure-job.component.html',
-    styleUrls: ['app/technician/configure-job.component.css'],
     directives: [SensorComponent]
 })
 export class ConfigureJobComponent implements OnInit {
