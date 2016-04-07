@@ -29,13 +29,14 @@ export class ConfigureJobComponent implements OnInit {
         private _navService: NavService,
         private _routeParams: RouteParams,
         private _elementRef: ElementRef,
+        @Inject('jQuery') private _jquery,
         @Inject('Foundation') private _foundation,
         @Inject('Evothings') private _evothings,
         private _ngZone: NgZone
 	) { }
 
 	ngOnInit() {
-        this.modalElement = $(this._elementRef.nativeElement.children[0]);
+        this.modalElement = this._jquery(this._elementRef.nativeElement.children[0]);
         var elem = new this._foundation.Reveal(this.modalElement, { closeOnClick: false });
 
         var policyNumber = this._routeParams.get('policyNumber');
@@ -74,8 +75,8 @@ export class ConfigureJobComponent implements OnInit {
     }
 
     initialStatusHandler(sensortag, status) {
-        this.modalElement.foundation('open');
         if ('SCANNING' == status) {
+            this.modalElement.foundation('open');
             this.statusPercentage = 20
         } else if ('SENSORTAG_FOUND' == status) {
             this.statusPercentage = 40
@@ -102,8 +103,7 @@ export class ConfigureJobComponent implements OnInit {
             data: {
                 humidityData: {
                     lastTenValues: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    relativeHumidity: 0,
-                    humidityTemperature: 0
+                    relativeHumidity: 0
                 },
                 temperatureData: {
                     lastTenAmbient: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],

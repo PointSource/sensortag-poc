@@ -12,6 +12,7 @@ declare var evothings: any;
 declare var IoTFoundationLib: any;
 declare var Chart: any;
 declare var Foundation: any;
+declare var $: any;
 
 bootstrap(AppComponent, [
 	ROUTER_PROVIDERS,
@@ -24,5 +25,6 @@ bootstrap(AppComponent, [
 	provide('IoTFoundationLib', { useValue: IoTFoundationLib }),
 	provide('ChartJS', { useValue: Chart }),
 	provide('Foundation', { useValue: Foundation }),
+	provide('jQuery', { useValue: $ }),
 	provide(LocationStrategy, { useClass: HashLocationStrategy })
 ]);

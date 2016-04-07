@@ -1,8 +1,6 @@
 import {Injectable} from 'angular2/core';
 import {Job} from './job';
 import {SensorService} from '../sensor.service';
-// import {Http, Headers, Response} from 'angular2/http';
-// import 'rxjs/Rx';
 
 @Injectable()
 export class JobService {
@@ -10,7 +8,6 @@ export class JobService {
 
 	constructor(
 		private _sensorService: SensorService
-        // private _http: Http
 	) {
 		this.jobs = [{
 			name: "Williams, Randy",

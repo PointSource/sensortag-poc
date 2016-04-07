@@ -1,8 +1,10 @@
-import {NgZone} from 'angular2/core';
-import {Router} from 'angular2/router';
+import {NgZone, ElementRef} from 'angular2/core';
+import {RouteParams} from 'angular2/router';
 import {Http} from 'angular2/http';
-import {SensorService} from './sensor.service';
-import {SensorListComponent} from "./sensor-list.component"
+import {SensorService} from '../sensor.service';
+import {JobService} from './job.service';
+import {NavService} from '../nav.service';
+import {ConfigureJobComponent} from "./configure-job.component"
 
 var sensortag;
 var tisensortag;
@@ -56,49 +58,65 @@ beforeEach(() => {
 
 
 describe('Sensor List Component', () => {
-	let ngZone: NgZone;
-	let router: Router;
+	let _sensorService: SensorService;
+	let _jobService: JobService;
+	let _navService = jasmine.createSpyObj("_navService", ['setTitle']);
+	let _routeParams = jasmine.createSpyObj("_routeParams", ['get']);
+	let _elementRef = {
+		nativeElement: {
+			children: []
+		}
+	};
+	let _jquery = () => { 
+		return {
+			foundation: ()=>{}
+		}
+	};
+	let _ngZone: NgZone;
+	let _foundation = jasmine.createSpyObj("_foundation", ['Reveal']);
 	let _http: Http;
-	let sensorService: SensorService;
 	let sensorListComponent;
 
 	beforeEach(() => {
-		sensorService = new SensorService(_http);
-		sensorListComponent = new SensorListComponent(
-			sensorService,
-			iotFoundationLib, 
+		_sensorService = new SensorService(_http);
+		_jobService = new JobService(_sensorService);
+
+		spyOn(_jobService, "getJob").and.returnValue({
+			policyNumber: "Job1",
+			name: "Andrew Mortensen",
+			numSensors: 0
+		})
+		sensorListComponent = new ConfigureJobComponent(
+			_sensorService,
+			_jobService,
+			_navService,
+			_routeParams,
+			_elementRef,
+			_jquery,
+			_foundation,
 			evothings, 
-			ngZone, 
-			{
-				navigate: () => {}
-			}
+			_ngZone
 		);
 	})
 
 	describe('on init', () => {
 
-		it('initializes IoT Foundation connection', () => {
-			spyOn(iotFoundationLib, "createInstance").and.callThrough();
-			sensorListComponent.ngOnInit();
-			expect(iotFoundationLib.createInstance).toHaveBeenCalled();
-		});
-
 		it('fills list with any devices that were saved', () => {
 			sensorListComponent._sensorService.addSensor({
 				address: "address123"
 			});
-			spyOn(sensorListComponent._sensorService, "getSensors").and.callThrough();
+			spyOn(sensorListComponent._sensorService, "getSensorsForPolicy").and.callThrough();
 			sensorListComponent.ngOnInit();
-			expect(sensorListComponent._sensorService.getSensors).toHaveBeenCalled();
-			expect(sensorListComponent.connectedDevices.length).toBe(1);
+			expect(sensorListComponent._sensorService.getSensorsForPolicy).toHaveBeenCalled();
+			expect(sensorListComponent.sensors.length).toBe(1);
 		});
 	});
 
 	describe('on connectToNearestDevice', () => {
 		it('creates a sensorTag instance to track device information', () => {
-			spyOn(sensorListComponent, "initSensorTag").and.callThrough();
+			spyOn(evothings.tisensortag, "createInstance").and.callThrough();
 			sensorListComponent.connectToNearestDevice();
-			expect(sensorListComponent.initSensorTag).toHaveBeenCalled();
+			expect(evothings.tisensortag.createInstance).toHaveBeenCalled();
 		});
 
 		it('calls sensortag.connectToNearestDevice', () => {
@@ -114,21 +132,15 @@ describe('Sensor List Component', () => {
 			sensorListComponent.ngOnInit();
 		})
 
-		it('gets the address of the device', () => {
-			spyOn(sensortag, "getDeviceAddress");
-			sensorListComponent.deviceConnectedHandler(sensortag);
-			expect(sensortag.getDeviceAddress).toHaveBeenCalled();
-		})
-
 		it('adds the sensortag to the list of connected devices', () => {
 			spyOn(sensorListComponent._sensorService, "addSensor").and.callThrough();
 			sensorListComponent.deviceConnectedHandler(sensortag);
 			expect(sensorListComponent._sensorService.addSensor).toHaveBeenCalled();
-			expect(sensorListComponent.connectedDevices[0].sensortag)
+			expect(sensorListComponent.sensors[0].sensortag)
 				.toEqual(sensortag);
-			expect(sensorListComponent.connectedDevices[0].isNamed)
-				.toBe(false);
-			expect(sensorListComponent.connectedDevices[0].data.humidityData.lastTenValues)
+			expect(sensorListComponent.sensors[0].isNamed)
+				.toBe(true);
+			expect(sensorListComponent.sensors[0].data.humidityData.lastTenValues)
 				.toEqual([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
 		})
 
@@ -148,8 +160,11 @@ describe('Sensor List Component', () => {
 
 	describe('on initial status update', () => {
 
+
+
 		it('should update main status', () => {
 			sensorListComponent.ngOnInit();
+			spyOn(sensorListComponent.modalElement, "foundation");
 			sensorListComponent.initialStatusHandler(sensortag, "SCANNING");
 			expect(sensorListComponent.status).toBe("SCANNING");
 		});
@@ -183,17 +198,17 @@ describe('Sensor List Component', () => {
 		it('sets device.isNamed to true', () => {
 			sensorListComponent.ngOnInit();
 			sensorListComponent.deviceConnectedHandler(sensortag);
-			sensorListComponent.nameDevice(sensorListComponent.connectedDevices[0], "new name");
-			expect(sensorListComponent.connectedDevices[0].isNamed).toBe(true);
-			expect(sensorListComponent.connectedDevices[0].name).toBe("new name");
+			sensorListComponent.nameSensor("new name");
+			expect(sensorListComponent.sensors[0].isNamed).toBe(true);
+			expect(sensorListComponent.sensors[0].name).toBe("new name");
 		});
 
 	});
 
-	describe('on toggleDeviceConnection', () => {
+	xdescribe('on toggleDeviceConnection', () => {
 
 		beforeEach(() => {
-			sensorListComponent.connectedDevices = [{
+			sensorListComponent.sensors = [{
 				sensortag: {
 					disconnectDevice: () => { },
 					connectToDevice: () => { }
@@ -203,23 +218,23 @@ describe('Sensor List Component', () => {
 		})
 
 		it('if device is connected, calls disconnectDevice', () => {
-			spyOn(sensorListComponent.connectedDevices[0].sensortag, "disconnectDevice");
+			spyOn(sensorListComponent.sensors[0].sensortag, "disconnectDevice");
 			sensorListComponent.toggleDeviceConnection(0);
-			expect(sensorListComponent.connectedDevices[0].sensortag.disconnectDevice).toHaveBeenCalled();
+			expect(sensorListComponent.sensors[0].sensortag.disconnectDevice).toHaveBeenCalled();
 		});
 
 		it('if device is connected, sets isConnected to false', () => {
 			sensorListComponent.toggleDeviceConnection(0);
-			expect(sensorListComponent.connectedDevices[0].isConnected).toBe(false);
+			expect(sensorListComponent.sensors[0].isConnected).toBe(false);
 		})
 
 		it('if device is disconnected, calls connectToDevice', () => {
-			spyOn(sensorListComponent.connectedDevices[0].sensortag, "connectToDevice");
+			spyOn(sensorListComponent.sensors[0].sensortag, "connectToDevice");
 			// Disconnect
 			sensorListComponent.toggleDeviceConnection(0);
 			// Connect
 			sensorListComponent.toggleDeviceConnection(0);
-			expect(sensorListComponent.connectedDevices[0].sensortag.connectToDevice).toHaveBeenCalled();
+			expect(sensorListComponent.sensors[0].sensortag.connectToDevice).toHaveBeenCalled();
 		})
 
 	});
@@ -229,19 +244,19 @@ describe('Sensor List Component', () => {
 
 		beforeEach(() => {
 			sensorListComponent.ngOnInit();
-			sensorListComponent.connectedDevices = [{
+			sensorListComponent.sensors = [{
 				isConnected: false
 			}]
 		})
 
 		it('should update device status', () => {
-			sensorListComponent.statusHandler(0, "SCANNING");
-			expect(sensorListComponent.connectedDevices[0].status).toBe("SCANNING");
+			sensorListComponent.statusHandler(sensorListComponent.sensors[0], "SCANNING");
+			expect(sensorListComponent.sensors[0].status).toBe("SCANNING");
 		});
 
 		it('if status is DEVICE_INFO_AVAILABLE, should set isConnected to true', () => {
-			sensorListComponent.statusHandler(0, "DEVICE_INFO_AVAILABLE");
-			expect(sensorListComponent.connectedDevices[0].isConnected).toBe(true);
+			sensorListComponent.statusHandler(sensorListComponent.sensors[0], "DEVICE_INFO_AVAILABLE");
+			expect(sensorListComponent.sensors[0].isConnected).toBe(true);
 		});
 	});
 
@@ -259,7 +274,7 @@ describe('Sensor List Component', () => {
 
 		it('should update status to display error', () => {
 			sensorListComponent.errorHandler("OOPS");
-			expect(sensorListComponent.status).toBe("Error: " + "OOPS");
+			expect(sensorListComponent.status).toBe("ERROR");
 		});
 
 		it('if device is disconnected, clear the display values', () => {
@@ -282,26 +297,20 @@ describe('Sensor List Component', () => {
 				}
 			}
 
-			spyOn(sensorListComponent.objIOT, "publishToFoundationCloud");
-			sensorListComponent.humidityHandler(0);
+			sensorListComponent.humidityHandler(sensorListComponent.sensors[0]);
 		})
 
 		it('should update humidityData for this device', () => {
-			expect(sensorListComponent.connectedDevices[0].data.humidityData)
+			expect(sensorListComponent.sensors[0].data.humidityData)
 				.toEqual({
-					humidityTemperature: '75.0',
-					relativeHumidity: '90.0',
-					lastTenValues: [0, 0, 0, 0, 0, 0, 0, 0, 0, 90]
+					lastTenValues: [0, 0, 0, 0, 0, 0, 0, 0, 0, 90],
+					relativeHumidity: '90.0'
 				});
 		});
 
 		it('should update last 10 humidity data for this device', () => {
-			expect(sensorListComponent.connectedDevices[0].data.humidityData.lastTenValues)
+			expect(sensorListComponent.sensors[0].data.humidityData.lastTenValues)
 				.toEqual([0, 0, 0, 0, 0, 0, 0, 0, 0, 90]);
-		});
-
-		it('should send sensor data to the service', () => {
-			expect(sensorListComponent.objIOT.publishToFoundationCloud).toHaveBeenCalled();
 		});
 
 
@@ -312,24 +321,13 @@ describe('Sensor List Component', () => {
 		beforeEach(() => {
 			sensorListComponent.ngOnInit();
 			sensorListComponent.deviceConnectedHandler(sensortag, 0);
-			sensorListComponent.keypressHandler(0, [1]);
+			sensorListComponent.keypressHandler(sensorListComponent.sensors[0], [1]);
 		})
 
 		it('should update keypressData for this device', () => {
-			expect(sensorListComponent.connectedDevices[0].data.keypressData)
+			expect(sensorListComponent.sensors[0].data.keypressData)
 				.toEqual(1);
 		});
-	});
-
-	describe('on opening details', () => {
-
-		it('should route to SensorDetail', () => {
-			spyOn(sensorListComponent._router, "navigate");
-			sensorListComponent.goToSensorDetails(0);
-			expect(sensorListComponent._router.navigate).toHaveBeenCalledWith([
-				'SensorDetail', { 'index': 0 }
-			]);
-		})
 	});
 
 });
