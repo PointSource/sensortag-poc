@@ -577,16 +577,7 @@
 
 			function gotSystemId(data)
 			{
-				// Set firmware string.
-				var data_uint8  = new Uint8Array(data);
-
-				var systemId = "";
-
-				for (var i = 0; i < data_uint8.length; i++) {
-					var hexValue = evothings.util.toHexString(data_uint8[i]);
-					systemId += hexValue + ":";
-				}
-				instance.systemId = systemId;
+				instance.systemId = evothings.util.typedArrayToHexString(data);
 
 				// Read services requested by the application.
 				readFirmwareVersion()
