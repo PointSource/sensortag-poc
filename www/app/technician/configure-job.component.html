@@ -38,10 +38,6 @@
     No sensors added to this job yet. Please click "Add a Sensor" to add a sensor to this job.
 </div>
 
-<div *ngFor="#sensor of sensors; #i = index">
-    <sensor [sensor]="sensor" (onDeviceDisconnected)="deviceDisconnectedHandler(sensor)"></sensor>
-</div>
-
 <button (click)="connectToNearestDevice()" class="expanded large button">
     <i class="fa fa-plus-circle button-icon"></i>Add a Sensor
 </button>
@@ -49,3 +45,7 @@
 <button *ngIf="sensors && sensors.length > 0" class="expanded large button success" (click)="saveDevices()">
     <i class="fa fa-check button-icon"></i>Done
 </button>
+
+<div *ngFor="#sensor of sensors; #i = index">
+    <sensor [sensor]="sensor" (onDeviceDisconnected)="deviceDisconnectedHandler(sensor)"></sensor>
+</div>

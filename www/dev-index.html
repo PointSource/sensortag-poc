@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <!--
     Demonstration of the TI SensorTag JavaScript library.
@@ -20,6 +21,7 @@
     <link rel="stylesheet" href="libs/font-awesome-4.5.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="libs/foundation-sites/foundation.min.css">
     <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/platform-overrides.css">
     
 
     <script>
@@ -27,7 +29,8 @@
             require: () => {}
         }
     </script>
-
+    
+    <!-- <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Intl.~locale.en"></script> -->
     <!-- <script src="cordova.js"></script> -->
     <script src="libs/iotFoundation-lib.js"></script>
     <script src="libs/mqttws31.js"></script>
@@ -48,8 +51,6 @@
     <script src="libs/angular2/angular2.dev.js"></script>
     <script src="libs/angular2/router.dev.js"></script>
     <script src="libs/angular2/http.dev.js"></script>
-
-    <!-- <script src="app.js"></script> -->
 </head>
 
 <body>
@@ -79,43 +80,45 @@
                 //   System.import('app/main')
                 //         .then(null, console.error.bind(console));
                 // }) 
-        //     },
-        // false)
 
 
+        // document.addEventListener(
+        //     'deviceready',
+        //     function() { 
 
 
                 evothings.scriptsLoaded(function() {
                     evothings.ble = {
-                        stopScan: () => {},
-                        startScan: () => {},
-                        fromUtf8: () => "1.2.3"
+                        stopScan: function () {},
+                        startScan: function () {},
+                        fromUtf8: function () {return "1.2.3"}
                     }
 
-                    evothings.easyble.startScan = (success, fail) => {
+
+                    evothings.easyble.startScan = function (success, fail) {
                         success({
                                 device: 123,
                                 address: "1234" + Math.floor(Math.random() * 12) + 12,
                                 advertisementData: {
                                     kCBAdvDataLocalName: 'CC2650 SensorTag'
                                 },
-                                close: () => {
+                                close: function () {
                                     console.log('device.close');
                                 },
                                 rssi: 1000,
-                                connect: (callback) => {
+                                connect: function (callback) {
                                     callback();
                                 },
-                                readServices: (something, callback, errorFun) => {
+                                readServices: function (something, callback, errorFun) {
                                     callback();
                                 },
-                                readServiceCharacteristic: (param1, param2, callback, errorFun) => {
+                                readServiceCharacteristic: function (param1, param2, callback, errorFun) {
                                     callback();
                                 },
-                                writeServiceCharacteristic: () => {},
-                                writeServiceDescriptor: () => {},
-                                enableServiceNotification: (service, data, callback, errorFun) => {
-                                    setInterval(() => {
+                                writeServiceCharacteristic: function () {},
+                                writeServiceDescriptor: function () {},
+                                enableServiceNotification: function (service, data, callback, errorFun)  {
+                                    setInterval(function ()  {
                                         callback([
                                             Math.floor(Math.random() * 12) + 12, 
                                             Math.floor(Math.random() * 12) + 84, 
@@ -141,6 +144,9 @@
                   System.import('app/main')
                         .then(null, console.error.bind(console));
                 }) 
+        //     },
+        // false)
+
     </script>
 
 </body>
