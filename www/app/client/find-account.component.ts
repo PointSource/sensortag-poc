@@ -19,7 +19,7 @@ export class FindAccountComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        this._navService.setTitle("Get Account");
+        this._navService.setTitle("Find My Account");
     }
 
     findAccount(policyNumber: string) {

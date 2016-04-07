@@ -50,3 +50,7 @@ ul.scatter-legend {
 .policy-number {
     color: #b2b2b2;
 }
+
+.error {
+    color: #ee3c50;
+}

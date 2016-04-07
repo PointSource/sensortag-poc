@@ -37,7 +37,7 @@ System.register(['angular2/core', 'angular2/router', '../technician/job.service'
                     this._router = _router;
                 }
                 FindAccountComponent.prototype.ngOnInit = function () {
-                    this._navService.setTitle("Get Account");
+                    this._navService.setTitle("Find My Account");
                 };
                 FindAccountComponent.prototype.findAccount = function (policyNumber) {
                     var job = this._jobService.getJob(policyNumber);

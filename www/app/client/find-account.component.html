@@ -1,8 +1,8 @@
-<div class="callout" [ngClass]="{alert: status === 'ERROR'}">
+<div class="callout">
 	
 	<p *ngIf="status !== 'ERROR'">Help us to find your account by entering your policy number below</p>
 
-	<p *ngIf="status === 'ERROR'">Could not find policy. Please try again.</p>
+	<p *ngIf="status === 'ERROR'" class="error">Could not find policy. Please try again.</p>
 
   	<label>Policy Number
         <input type="number" placeholder="####" #policyNumber>
