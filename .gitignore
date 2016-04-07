@@ -11,3 +11,4 @@ npm-debug.log
 www/app/*.js
 typings
 www/app/technician/*.js
+www/app/client/*.js

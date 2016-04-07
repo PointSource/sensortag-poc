@@ -1,17 +1,19 @@
 import {Component, OnInit, Inject, NgZone} from 'angular2/core';
 import {RouteParams} from 'angular2/router';
-import {SensorService} from './sensor.service';
-import {JobService} from './technician/job.service';
-import {NavService} from './nav.service';
-import {Sensor} from './sensor';
-import {SensorComponent} from './sensor.component';
+import {SensorService} from '../sensor.service';
+import {JobService} from '../technician/job.service';
+import {NavService} from '../nav.service';
+import {Sensor} from '../sensor';
+import {Job} from '../technician/job';
+import {SensorComponent} from '../sensor.component';
 
 @Component({
-    templateUrl: 'app/client.component.html',
+    templateUrl: 'app/client/account-details.component.html',
     directives: [SensorComponent]
 })
-export class ClientComponent implements OnInit {
+export class AccountDetailsComponent implements OnInit {
     sensors: Sensor[];
+    job: Job;
 
     constructor(
         private _sensorService: SensorService,
@@ -25,35 +27,35 @@ export class ClientComponent implements OnInit {
     ngOnInit() {
         var policyNumber = this._routeParams.get('policyNumber');
         this.job = this._jobService.getJob(policyNumber);
-        this._navService.setTitle("Get Account");
+        this._navService.setTitle("My Sensors");
     }
 
     loadSensors() {
         // this._sensorService.fetch().add(() => {
             this.sensors = this._sensorService.getSensorsForPolicy(this.job.policyNumber);
 
-            let index = 0;
-            for (let sensor of this.sensors) {
-                sensor.isConnected = false;
-                this.initSensorTag(sensor, index);
-                index++;
-            }
+            // let index = 0;
+            // for (let sensor of this.sensors) {
+            //     sensor.isConnected = false;
+            //     this.initSensorTag(sensor, index);
+            //     index++;
+            // }
         // });
     }
 
     initSensorTag(sensor, index) {
-        var self = this;
+        // var self = this;
 
-        // Create SensorTag CC2650 instance.
-        sensor.sensortag = this._evothings.tisensortag.createInstance(
-            this._evothings.tisensortag.CC2650_BLUETOOTH_SMART)
+        // // Create SensorTag CC2650 instance.
+        // sensor.sensortag = this._evothings.tisensortag.createInstance(
+        //     this._evothings.tisensortag.CC2650_BLUETOOTH_SMART)
 
-        sensor.sensortag
-            .statusCallback(function(status) {
-                self._ngZone.run(function() {
-                    self.statusHandler(index, status)
-                });
-            })
+        // sensor.sensortag
+        //     .statusCallback(function(status) {
+        //         self._ngZone.run(function() {
+        //             self.statusHandler(index, status)
+        //         });
+        //     })
             // .humidityCallback(function(data) {
             //     self._ngZone.run(function() {
             //         self.humidityHandler(index, data);
@@ -75,8 +77,8 @@ export class ClientComponent implements OnInit {
         }
     }
 
-    sendData() {
-		console.log('send sensor data');
+    takeReading() {
+        alert("Reading successfully submitted");
     }
 
 }

@@ -5,10 +5,11 @@ import {Router} from 'angular2/router';
     selector: 'sensor',
     templateUrl: 'app/sensor.component.html',
     styleUrls: ['app/sensor.component.css'],
-    inputs: ['sensor']
+    inputs: ['sensor', 'mode']
 })
 export class SensorComponent {
 	sensor;
+    mode;
     @Output() onDeviceDisconnected = new EventEmitter();
 
     constructor(

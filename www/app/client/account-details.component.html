@@ -1,0 +1,10 @@
+
+<button class="expanded large button" (click)="loadSensors()" *ngIf="!sensors || sensors.length === 0">Load Sensors</button>
+
+<button *ngIf="sensors && sensors.length > 0" class="button large expanded" (click)="takeReading()"><i class="fa fa-tachometer"></i>Take a Reading</button>
+
+
+
+<div *ngFor="#device of sensors; #i = index">
+    <sensor [sensor]="device" [mode]="'client'"></sensor>
+</div>

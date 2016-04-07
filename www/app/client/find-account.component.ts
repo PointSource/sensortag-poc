@@ -27,7 +27,7 @@ export class FindAccountComponent implements OnInit {
         if (job === undefined) {
             this.status = "ERROR";
         } else {
-            this._router.navigate(['Client', {policyNumber: policyNumber}]);
+            this._router.navigate(['AccountDetails', {policyNumber: policyNumber}]);
         }
     }
 

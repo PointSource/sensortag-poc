@@ -45,7 +45,7 @@ System.register(['angular2/core', 'angular2/router', '../technician/job.service'
                         this.status = "ERROR";
                     }
                     else {
-                        this._router.navigate(['Client', { policyNumber: policyNumber }]);
+                        this._router.navigate(['AccountDetails', { policyNumber: policyNumber }]);
                     }
                 };
                 FindAccountComponent = __decorate([

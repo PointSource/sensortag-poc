@@ -1,14 +1,17 @@
 import {Component, OnInit, Inject, NgZone} from 'angular2/core';
 import {RouteConfig, ROUTER_DIRECTIVES} from 'angular2/router';
-import {SensorDetailComponent} from './sensor-detail.component';
 import {LandingComponent} from './landing.component';
+import {NavService} from './nav.service';
+
+// Technician
 import {JobListComponent} from './technician/job-list.component';
 import {JobDetailsComponent} from './technician/job-details.component';
 import {ConfigureJobComponent} from './technician/configure-job.component';
 import {ReadingHistoryComponent} from './technician/reading-history.component'
-import {NavService} from './nav.service';
+import {SensorDetailComponent} from './sensor-detail.component';
 
-import {ClientComponent} from './client.component';
+// Client
+import {AccountDetailsComponent} from './client/account-details.component';
 import {FindAccountComponent} from './client/find-account.component';
 
 @Component({
@@ -19,13 +22,18 @@ import {FindAccountComponent} from './client/find-account.component';
 })
 @RouteConfig([
 	{ path: '/landing', name: 'Landing', component: LandingComponent, useAsDefault: true },
+
+    // Technician
     { path: '/jobDetails', name: 'JobDetails', component: JobDetailsComponent },
     { path: '/jobList', name: 'JobList', component: JobListComponent },
     { path: '/configureJob', name: 'ConfigureJob', component: ConfigureJobComponent },
     { path: '/readingHistory', name: 'ReadingHistory', component: ReadingHistoryComponent },
+	{ path: '/sensor', name: 'SensorDetail', component: SensorDetailComponent },
+    
+    // Client
     { path: '/findAccount', name: 'FindAccount', component: FindAccountComponent },
-    { path: '/client', name: 'Client', component: ClientComponent },
-	{ path: '/sensor', name: 'SensorDetail', component: SensorDetailComponent }
+    { path: '/accountDetails', name: 'AccountDetails', component: AccountDetailsComponent }
+
 ])
 export class AppComponent implements OnInit {
 

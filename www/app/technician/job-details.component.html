@@ -11,6 +11,7 @@
 	No sensors added to this job yet. Please configure the sensors for this job in order to take readings.
 </div>
 
+<button *ngIf="sensors.length > 0" class="button large expanded" (click)="takeReading()"><i class="fa fa-tachometer"></i>Take a Reading</button>
 
 <div class="callout" *ngIf="readings.length > 0">
 	<h3>Humidity</h3>
@@ -59,6 +60,5 @@
 	<a class="chart-link" (click)="goToReadingDetails('ambientTemperature')"><i class="fa fa-line-chart"></i></a>
 </div>
 
-<button *ngIf="sensors.length > 0" class="button large expanded" (click)="takeReading()"><i class="fa fa-tachometer"></i>Take a Reading</button>
 
 <button class="button large expanded secondary" (click)="goToConfigureJob()"><i class="fa fa-cog"></i>Configure Sensors</button>

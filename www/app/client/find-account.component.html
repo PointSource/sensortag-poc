@@ -5,7 +5,7 @@
 	<p *ngIf="status === 'ERROR'">Could not find policy. Please try again.</p>
 
   	<label>Policy Number
-        <input type="text" placeholder="####" #policyNumber>
+        <input type="number" placeholder="####" #policyNumber>
 	</label>
 
 	<button class="button expanded" (click)="findAccount(policyNumber.value)">Find My Account</button>
