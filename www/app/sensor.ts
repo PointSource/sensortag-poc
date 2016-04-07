@@ -6,5 +6,5 @@ export interface Sensor {
 	isNamed: boolean;
 	isConnected: boolean;
 	device: any;
-	policyNumber: number;
+	policyNumber: string;
 }

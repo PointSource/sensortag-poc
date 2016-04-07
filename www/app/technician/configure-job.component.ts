@@ -15,7 +15,6 @@ import {SensorComponent} from '../sensor.component';
 })
 export class ConfigureJobComponent implements OnInit {
     private job: Job;    
-    // objIOT: any = {};
     chart: any;
 	status: string;
     statusPercentage: number;
@@ -30,7 +29,6 @@ export class ConfigureJobComponent implements OnInit {
         private _navService: NavService,
         private _routeParams: RouteParams,
         private _elementRef: ElementRef,
-        @Inject('IoTFoundationLib') private _iotfoundationlib,
         @Inject('Foundation') private _foundation,
         @Inject('Evothings') private _evothings,
         private _ngZone: NgZone
@@ -51,45 +49,6 @@ export class ConfigureJobComponent implements OnInit {
         this.statusPercentage = 0;
 
         this.sensors = this._sensorService.getSensorsForPolicy(policyNumber);
-
-        // // IoT Foundation object..
-        // this.objIOT['b0b448d31202'] = this._iotfoundationlib.createInstance('b0b448d31202', 'b4KBCvZ*ivr9cVhpPg');
-
-        // this.objIOT['b0b448d31202']
-        //     .onConnectSuccessCallback(() => {
-        //         // alert("connect success")
-        //     })
-        //     .onConnectFailureCallback(() => {
-        //         // alert("connect fail")
-        //     })
-        //     .connectToFoundationCloud()
-
-
-        // // IoT Foundation object..
-        // this.objIOT['b0b448c9d807'] = this._iotfoundationlib.createInstance('b0b448c9d807', '2?Q7s4DL-_3L4LKKIM');
-
-        // this.objIOT['b0b448c9d807']
-        //     .onConnectSuccessCallback(() => {
-        //         // alert("connect success")
-        //     })
-        //     .onConnectFailureCallback(() => {
-        //         // alert("connect fail")
-        //     })
-        //     .connectToFoundationCloud()
-
-
-
-        // // IoT Foundation object..
-        // this.objIOT['b0b448c8b807'] = this._iotfoundationlib.createInstance('b0b448c8b807', 'GXpLWf_ge1qX5z-BNO');
-
-        // this.objIOT['b0b448c8b807']
-        //     .onConnectSuccessCallback(() => {
-        //         // alert("connect success")
-        //     })
-        //     .onConnectFailureCallback(() => {
-        //         // alert("connect fail")
-        //     })
-        //     .connectToFoundationCloud()
     }
 
     connectToNearestDevice() {
@@ -137,7 +96,7 @@ export class ConfigureJobComponent implements OnInit {
     deviceConnectedHandler(sensortag, index) {
         var self = this;
 
-        var connectedDevice: Sensor = {
+        var sensor: Sensor = {
             status: "initializing",
             sensortag: sensortag,
             data: {
@@ -161,29 +120,29 @@ export class ConfigureJobComponent implements OnInit {
             policyNumber: this.job.policyNumber
         };
 
-        connectedDevice.sensortag
+        sensor.sensortag
             .statusCallback(function(status) {
                 self._ngZone.run(function() {
-                    self.statusHandler(connectedDevice, status)
+                    self.statusHandler(sensor, status)
                 });
             })
             .humidityCallback(function(data) {
                 self._ngZone.run(function() {
-                    self.humidityHandler(connectedDevice, data);
+                    self.humidityHandler(sensor, data);
                 });
             }, 1000)
             .temperatureCallback(function(data) {
                 self._ngZone.run(function() {
-                    self.temperatureHandler(connectedDevice, data);
+                    self.temperatureHandler(sensor, data);
                 });
             }, 1000)
             .keypressCallback(function(data) {
                 self._ngZone.run(function() {
-                    self.keypressHandler(connectedDevice, data);
+                    self.keypressHandler(sensor, data);
                 });
             });
 
-        this._sensorService.addSensor(connectedDevice);
+        this._sensorService.addSensor(sensor);
         this.sensors = this._sensorService.getSensorsForPolicy(this.job.policyNumber);
     }
 
