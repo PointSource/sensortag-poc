@@ -26,6 +26,9 @@ beforeEach(() => {
 		getDeviceAddress: () => {
 			return "address123"
 		},
+		getSystemId: () => {
+			return "000111222"
+		},
 		getDevice: () => {
 			return {
 				address: "address123"
@@ -57,7 +60,7 @@ beforeEach(() => {
 
 
 
-describe('Sensor List Component', () => {
+describe('Configure Job Component', () => {
 	let _sensorService: SensorService;
 	let _jobService: JobService;
 	let _navService = jasmine.createSpyObj("_navService", ['setTitle']);

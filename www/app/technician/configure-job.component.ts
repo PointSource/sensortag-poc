@@ -98,6 +98,7 @@ export class ConfigureJobComponent implements OnInit {
         var self = this;
 
         var sensor: Sensor = {
+            systemId: sensortag.getSystemId(),
             status: "initializing",
             sensortag: sensortag,
             data: {
@@ -114,7 +115,6 @@ export class ConfigureJobComponent implements OnInit {
                 keypressData: 0
             },
             name: "Sensor "+index,
-            device: sensortag.getDevice(),
             policyNumber: this.job.policyNumber
         };
 
@@ -210,7 +210,7 @@ export class ConfigureJobComponent implements OnInit {
 
     // Handle device disconnected
     deviceDisconnectedHandler(sensor) {
-        this._sensorService.removeSensor(sensor.device.address);
+        this._sensorService.removeSensor(sensor.systemId);
         this.sensors = this._sensorService.getSensorsForPolicy(this.job.policyNumber);
     }
 

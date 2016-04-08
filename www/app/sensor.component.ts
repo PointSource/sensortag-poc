@@ -1,5 +1,6 @@
 import {Component, Output, EventEmitter} from 'angular2/core';
 import {Router} from 'angular2/router';
+import {Sensor} from './sensor';
 
 @Component({
     selector: 'sensor',
@@ -8,7 +9,7 @@ import {Router} from 'angular2/router';
     inputs: ['sensor', 'mode']
 })
 export class SensorComponent {
-	sensor;
+	sensor: Sensor;
     mode;
     isNamed = true;
     isConnected = true;
@@ -32,7 +33,7 @@ export class SensorComponent {
     }
 
     goToSensorDetails() {
-		this._router.navigate(['SensorDetail', { address: this.sensor.device.address }]);
+		this._router.navigate(['SensorDetail', { address: this.sensor.systemId }]);
     }
 
 }
