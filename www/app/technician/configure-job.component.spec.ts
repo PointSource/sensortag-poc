@@ -205,39 +205,6 @@ describe('Sensor List Component', () => {
 
 	});
 
-	xdescribe('on toggleDeviceConnection', () => {
-
-		beforeEach(() => {
-			configureJob.sensors = [{
-				sensortag: {
-					disconnectDevice: () => { },
-					connectToDevice: () => { }
-				},
-				isConnected: true
-			}];
-		})
-
-		it('if device is connected, calls disconnectDevice', () => {
-			spyOn(configureJob.sensors[0].sensortag, "disconnectDevice");
-			configureJob.toggleDeviceConnection(0);
-			expect(configureJob.sensors[0].sensortag.disconnectDevice).toHaveBeenCalled();
-		});
-
-		it('if device is connected, sets isConnected to false', () => {
-			configureJob.toggleDeviceConnection(0);
-			expect(configureJob.sensors[0].isConnected).toBe(false);
-		})
-
-		it('if device is disconnected, calls connectToDevice', () => {
-			spyOn(configureJob.sensors[0].sensortag, "connectToDevice");
-			// Disconnect
-			configureJob.toggleDeviceConnection(0);
-			// Connect
-			configureJob.toggleDeviceConnection(0);
-			expect(configureJob.sensors[0].sensortag.connectToDevice).toHaveBeenCalled();
-		})
-
-	});
 
 	// update this to report to indv devices
 	describe('on status update', () => {

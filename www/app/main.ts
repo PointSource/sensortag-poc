@@ -4,6 +4,7 @@ import {ROUTER_PROVIDERS, LocationStrategy, HashLocationStrategy} from 'angular2
 import {HTTP_PROVIDERS} from 'angular2/http';
 import {AppComponent} from './app.component';
 import {SensorService} from './sensor.service';
+import {BLEService} from './ble.service';
 import {NavService} from './nav.service';
 import {JobService} from './technician/job.service';
 import {ReadingService} from './technician/reading.service';
@@ -21,6 +22,7 @@ bootstrap(AppComponent, [
 	NavService,
 	JobService,
 	ReadingService,
+	BLEService,
 	provide('Evothings', { useValue: evothings }),
 	provide('IoTFoundationLib', { useValue: IoTFoundationLib }),
 	provide('ChartJS', { useValue: Chart }),

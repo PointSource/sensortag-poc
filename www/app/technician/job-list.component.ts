@@ -17,7 +17,8 @@ export class JobListComponent implements OnInit {
         private _navService: NavService,
         private _jobService: JobService,
         private myElement: ElementRef,
-        @Inject('Foundation') private _foundation
+        @Inject('Foundation') private _foundation,
+        @Inject('jQuery') private _jquery
     ) { }
 
     ngOnInit() {
@@ -31,7 +32,7 @@ export class JobListComponent implements OnInit {
 
         this.jobList = this._jobService.getJobs();
 
-        this.modalElement = $(this.myElement.nativeElement.children[0]);
+        this.modalElement = this._jquery(this.myElement.nativeElement.children[0]);
         var elem = new this._foundation.Reveal(this.modalElement);
     }
 

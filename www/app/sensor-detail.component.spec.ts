@@ -1,5 +1,6 @@
 import {SensorDetailComponent} from "./sensor-detail.component"
 import {SensorService} from "./sensor.service"
+import {Http} from 'angular2/http';
 import {RouteParams} from 'angular2/router';
 
 
@@ -7,9 +8,10 @@ describe('Sensor Detail Component', () => {
 	let sensorService: SensorService;
 	let routeParams: RouteParams;
 	let sensorDetailComponent;
+	let http: Http;
 
 	beforeEach(() => {
-		sensorService = new SensorService();
+		sensorService = new SensorService(http);
 		routeParams = new RouteParams({"test": "test"});
 		sensorDetailComponent = new SensorDetailComponent(routeParams, sensorService);
 	})

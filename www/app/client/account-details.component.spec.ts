@@ -1,3 +1,4 @@
+import {NgZone} from 'angular2/core';
 import {SensorService} from "../sensor.service"
 import {JobService} from "../technician/job.service"
 import {Http} from 'angular2/http';
@@ -8,9 +9,11 @@ describe('Account Details', () => {
 	let _sensorService: SensorService;
 	let _jobService: JobService;
 	let _navService = jasmine.createSpyObj("_navService", ['setTitle']);
+	let _bleService = jasmine.createSpyObj("_bleService", ['deviceConnectSuccess']);
 	let _http: Http;
 	let _routeParams = jasmine.createSpyObj("_routeParams", ['get']);
 	let accountDetails;
+	let _ngZone: NgZone;
 
 	let _evothings;
 	let sensortag;
@@ -20,7 +23,11 @@ describe('Account Details', () => {
 		_sensorService = new SensorService(_http);
 		_jobService = new JobService(_sensorService);
 
-		device = jasmine.createSpyObj('device', ['readServiceCharacteristic', 'readServices'])
+		device = jasmine.createSpyObj('device', [
+			'readServiceCharacteristic',
+			'readServices',
+			'close'
+		])
 
 
 		sensortag = {
@@ -56,9 +63,11 @@ describe('Account Details', () => {
 		accountDetails = new AccountDetailsComponent(
 			_sensorService,
 			_jobService,
+			_bleService,
 			_navService,
 			_routeParams,
-			_evothings
+			_evothings,
+			_ngZone
 		);
 	})
 
@@ -97,13 +106,13 @@ describe('Account Details', () => {
 			accountDetails.ngOnInit();
 		})
 
-		it('checks if the device is a sensortag', () => {
+		xit('checks if the device is a sensortag', () => {
 			spyOn(accountDetails.sensortag, "deviceIsSensorTag");
 			accountDetails.scanSuccess();
 			expect(accountDetails.sensortag.deviceIsSensorTag).toHaveBeenCalled();
 		});
 
-		it('if the device is a sensortag, connect to it', () => {
+		xit('if the device is a sensortag, connect to it', () => {
 			let device = jasmine.createSpyObj('device', ['connect'])
 			spyOn(accountDetails.sensortag, "deviceIsSensorTag").and.returnValue(true);
 			accountDetails.scanSuccess(device);
@@ -118,15 +127,32 @@ describe('Account Details', () => {
 			accountDetails.ngOnInit();
 		})
 
-		it('get its system id', () => {
+		xit('gets its system id', () => {
 			accountDetails.deviceConnectSuccess(device);
 			expect(device.readServices).toHaveBeenCalled();
 		});
 
 
-		xit('compares system id to existing sensors', () => {
-
+		it('compares system id to existing sensors', () => {
+			accountDetails.gotSystemId("0212d3000048b4b0", device);
+			expect(accountDetails.matchingDevices.length).toBeGreaterThan(0);
 		});
+
+		describe('if system id does not match', () => {
+
+			beforeEach(() => {
+				accountDetails.gotSystemId("NOT A MATCH", device);
+			});
+
+			it('doesn\'t add it to the list', () => {
+				expect(accountDetails.matchingDevices.length).toEqual(0);
+			});
+
+			it('disconnects from device', () => {
+				expect(device.close).toHaveBeenCalled();
+			});
+		})
+
 
 		xit('if the system id matches, connect to the device using the sensor that matches', () => {
 

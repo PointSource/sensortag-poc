@@ -3,6 +3,7 @@ import {RouteParams} from 'angular2/router';
 import {SensorService} from '../sensor.service';
 import {JobService} from '../technician/job.service';
 import {NavService} from '../nav.service';
+import {BLEService} from '../ble.service';
 import {Sensor} from '../sensor';
 import {Job} from '../technician/job';
 import {SensorComponent} from '../sensor.component';
@@ -16,13 +17,15 @@ export class AccountDetailsComponent implements OnInit {
     job: Job;
     status: string;
     sensortag: any;
-    availableDevices: any[];
-    DEVICEINFO_SERVICE: string;
-    SYSTEM_ID: string;
+
+    // TEMP
+    matchingDevices: any[];
+    deviceAddresses: string[];
 
     constructor(
         private _sensorService: SensorService,
         private _jobService: JobService,
+        private _bleService: BLEService,
         private _navService: NavService,
         private _routeParams: RouteParams,
         @Inject('Evothings') private _evothings,
@@ -30,18 +33,14 @@ export class AccountDetailsComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        this.DEVICEINFO_SERVICE = '0000180a-0000-1000-8000-00805f9b34fb';
-        this.SYSTEM_ID = '00002a23-0000-1000-8000-00805f9b34fb';
-
 
         var policyNumber = this._routeParams.get('policyNumber');
         this.job = this._jobService.getJob(policyNumber);
         this._navService.setTitle("My Sensors");
 
-        // Create SensorTag CC2650 instance.
-        this.sensortag = this._evothings.tisensortag.createInstance(
-            this._evothings.tisensortag.CC2650_BLUETOOTH_SMART)
 
+        this.matchingDevices = [];
+        this.deviceAddresses = [];
     }
 
     loadSensors() {
@@ -57,7 +56,7 @@ export class AccountDetailsComponent implements OnInit {
         this.status = "SCANNING";
         this._evothings.easyble.startScan(function(device) {
             self._ngZone.run(() => {
-                self.scanSuccess(device)
+                self.scanSuccess(device);
             });
         }, function() {
             self._ngZone.run(function() {
@@ -75,44 +74,46 @@ export class AccountDetailsComponent implements OnInit {
     scanSuccess(device) {
         var self = this;
 
-        if (this.sensortag.deviceIsSensorTag(device)) {
-            this.status = "CONNECTING"
-            device.connect(
-                function(device) { 
-                    self._ngZone.run(() => {
-                        self.deviceConnectSuccess(device);
-                    });
-                }, this.deviceConnectFail)
-        }
+        this._bleService.getSystemIdFromDevice(device, 
+            (systemId, device) => {
+                self._ngZone.run(() => {
+                    self.gotSystemId(systemId, device);
+                }
+            }, self.systemIdFail);
     }
 
     scanFail() {
         this.status = "SCAN_FAIL"
     }
 
-    deviceConnectSuccess(device) {
-        this.status = "READING DATA";
-        device.readServices([this.DEVICEINFO_SERVICE], 
-            (device) => {
-                device.readServiceCharacteristic(
-                    this.DEVICEINFO_SERVICE,
-                    this.SYSTEM_ID,
-                    (data) => {
-                        var systemId = this._evothings.util.typedArrayToHexString(data);
-                        console.log(systemId);
-                    },
-                    (error) => {
-                        console.error(error);
-                    }
-                );
-            },
-            (error) => {
-                console.error(error);
-            })
+    gotSystemId (systemId, device) {
+        var TEMPID = "0212d3000048b4b0";
+        console.log(systemId);
+        if (systemId === TEMPID) {
+            console.log('matches!!');
+            this.deviceAddresses.push(systemId);
+            this.matchingDevices.push(device)
+        } else {
+            console.log('disconnecting');
+
+            let index = this.deviceAddresses.findIndex((address) => {
+                return address === device.address;
+            });
+            if (index !== -1) {
+                this.deviceAddresses.splice(index, 1);
+            }
+
+            device.close();
+        }
+
     }
 
-    deviceConnectFail(error) {
-        this.status = "DEVICE FAIL"
+    systemIdFail(error) {
+        console.error(error);
+    }
+
+    deviceMatches(device) {
+        console.log("device matches");
     }
 
     statusHandler(index, status) {
