@@ -3,8 +3,6 @@ export interface Sensor {
 	sensortag: any;
 	data: any;
 	name: string;
-	isNamed: boolean;
-	isConnected: boolean;
 	device: any;
 	policyNumber: string;
 }

@@ -3,7 +3,7 @@
         disconnected: sensor.status === 'DISCONNECTED' || sensor.status === 'CONNECTING' || sensor.status === 'CONNECTED' || sensor.status === 'READING_DEVICE_INFO',
         highlight: sensor.data.keypressData !== 0
     }">
-        <div *ngIf="sensor.isNamed === false">
+        <div *ngIf="isNamed === false">
             <div class="input-group">
                 <input class="input-group-field" type="text" placeholder="Sensor name" [(ngModel)]="sensor.name" />
                 <div class="input-group-button">
@@ -13,7 +13,7 @@
             <p class="help-text" id="passwordHelpText">Enter a name to identify this sensor. You can use the location of the sensor, etc</p>
         </div>
 
-        <div *ngIf="sensor.isNamed === true">
+        <div *ngIf="isNamed === true">
             <h4 class="sensorName">{{sensor.name}}</h4>
             <div *ngIf="sensor.data.humidityData">
                 <div>
@@ -35,9 +35,9 @@
                     Delete
                 </button>
 
-                <button *ngIf="sensor.isConnected" (click)="sensor.isNamed = false" class="button secondary hollow">Edit</button>
+                <button *ngIf="isConnected" (click)="isNamed = false" class="button secondary hollow">Edit</button>
 
-                <button *ngIf="sensor.isConnected" (click)="goToSensorDetails()" class="button secondary hollow">Details</button>
+                <button *ngIf="isConnected" (click)="goToSensorDetails()" class="button secondary hollow">Details</button>
             </div>
         </div>
     </div>

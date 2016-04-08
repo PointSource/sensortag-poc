@@ -10,6 +10,9 @@ import {Router} from 'angular2/router';
 export class SensorComponent {
 	sensor;
     mode;
+    isNamed = true;
+    isConnected = true;
+
     @Output() onDeviceDisconnected = new EventEmitter();
 
     constructor(
@@ -17,14 +20,14 @@ export class SensorComponent {
 	) { }
 
     nameDevice(name) {
-        this.sensor.isNamed = true;
+        this.isNamed = true;
         this.sensor.name = name;
     }
 
     disconnect() {
         this.sensor.sensortag.disconnectDevice();
         this.sensor.status = "DISCONNECTED";
-        this.sensor.isConnected = false;
+        this.isConnected = false;
         this.onDeviceDisconnected.emit("event");
     }
 

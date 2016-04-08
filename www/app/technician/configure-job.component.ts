@@ -114,8 +114,6 @@ export class ConfigureJobComponent implements OnInit {
                 keypressData: 0
             },
             name: "Sensor "+index,
-            isNamed: true,
-            isConnected: true,
             device: sensortag.getDevice(),
             policyNumber: this.job.policyNumber
         };
@@ -148,9 +146,6 @@ export class ConfigureJobComponent implements OnInit {
 
     statusHandler(sensor, status) {
         sensor.status = status;
-        if (status === "DEVICE_INFO_AVAILABLE") {
-            sensor.isConnected = true;
-        }
     }
 
     errorHandler(error) {

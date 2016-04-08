@@ -67,10 +67,6 @@ export class AccountDetailsComponent implements OnInit {
         setTimeout(() => { this.stopScanning() }, 1000);
     }
 
-    stopScanning() {
-        this._evothings.easyble.stopScan();
-    }
-
     scanSuccess(device) {
         var self = this;
 
@@ -84,6 +80,10 @@ export class AccountDetailsComponent implements OnInit {
 
     scanFail() {
         this.status = "SCAN_FAIL"
+    }
+
+    stopScanning() {
+        this._evothings.easyble.stopScan();
     }
 
     gotSystemId (systemId, device) {
@@ -110,17 +110,6 @@ export class AccountDetailsComponent implements OnInit {
 
     systemIdFail(error) {
         console.error(error);
-    }
-
-    deviceMatches(device) {
-        console.log("device matches");
-    }
-
-    statusHandler(index, status) {
-        this.sensors[index].status = status;
-        if (status === "DEVICE_INFO_AVAILABLE") {
-            this.sensors[index].isConnected = true;
-        }
     }
 
     takeReading() {
