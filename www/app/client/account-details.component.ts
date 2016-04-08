@@ -95,14 +95,6 @@ export class AccountDetailsComponent implements OnInit {
             this.matchingDevices.push(device)
         } else {
             console.log('disconnecting');
-
-            let index = this.deviceAddresses.findIndex((address) => {
-                return address === device.address;
-            });
-            if (index !== -1) {
-                this.deviceAddresses.splice(index, 1);
-            }
-
             device.close();
         }
 

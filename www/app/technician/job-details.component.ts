@@ -56,7 +56,7 @@ export class JobDetailsComponent implements OnInit {
             for (let sensor of this.sensors) {
                 reading.sensorData.push({
                     name: sensor.name,
-                    address: sensor.device.address,
+                    systemId: sensor.systemId,
                     data: {
                         humidityData: {
                             relativeHumidity: sensor.data.humidityData.relativeHumidity

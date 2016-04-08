@@ -3,7 +3,7 @@ export interface Reading {
 	date: number;
 	sensorData: [{
 		name: string,
-		address: string,
+		systemId: string,
 		data: any
 	}];
 }

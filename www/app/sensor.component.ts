@@ -33,7 +33,7 @@ export class SensorComponent {
     }
 
     goToSensorDetails() {
-		this._router.navigate(['SensorDetail', { address: this.sensor.systemId }]);
+        this._router.navigate(['SensorDetail', { systemId: this.sensor.systemId }]);
     }
 
 }

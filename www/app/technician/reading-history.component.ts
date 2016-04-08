@@ -41,9 +41,9 @@ export class ReadingHistoryComponent implements OnInit {
 
         for (let reading of this.readings) {
             for (let sensorData of reading.sensorData) {
-                if (!readingsBySensor[sensorData.address]) {
-                    readingsBySensor[sensorData.address] = {
-                        label: this._sensorService.getSensor(sensorData.address).name,
+                if (!readingsBySensor[sensorData.systemId]) {
+                    readingsBySensor[sensorData.systemId] = {
+                        label: this._sensorService.getSensor(sensorData.systemId).name,
                         data: []
                     };
                 }
@@ -56,7 +56,7 @@ export class ReadingHistoryComponent implements OnInit {
                     dataPoint = sensorData.data.temperatureData.ambientTemperature;
                 }
 
-                readingsBySensor[sensorData.address].data.push({
+                readingsBySensor[sensorData.systemId].data.push({
                     x: new Date(reading.date),
                     y: dataPoint
                 });
