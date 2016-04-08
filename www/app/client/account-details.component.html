@@ -1,3 +1,10 @@
+<h1>
+	{{status}}
+</h1>
+
+<!-- <div *ngFor="#sensor of availableSensors"> -->
+
+<button class="expanded large button warning" (click)="scanForSensors()">Scan</button>
 
 <button class="expanded large button" (click)="loadSensors()" *ngIf="!sensors || sensors.length === 0">Load Sensors</button>
 
