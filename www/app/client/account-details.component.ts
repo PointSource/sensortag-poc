@@ -86,12 +86,10 @@ export class AccountDetailsComponent implements OnInit {
     }
 
     gotSystemId (systemId, device) {
-        // var TEMPID = "0212d3000048b4b0";
-        // console.log(systemId);
+        console.log(systemId);
         var foundSensor = this.sensors.find((sensor) => {
             return sensor.systemId === systemId;
         })
-        // if (systemId === TEMPID) {
         if (foundSensor !== undefined) {
             console.log('matches!!');
             device.close();
