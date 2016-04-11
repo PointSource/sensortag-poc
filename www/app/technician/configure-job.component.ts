@@ -1,4 +1,4 @@
-import {Component, OnInit, Inject, NgZone, ElementRef} from 'angular2/core';
+import {Component, OnInit, Inject, ElementRef, Injector} from 'angular2/core';
 import {RouteParams} from 'angular2/router';
 
 import {SensorService} from '../sensor.service';
@@ -12,7 +12,8 @@ import {SensorComponent} from '../sensor.component';
 
 @Component({
     templateUrl: 'app/technician/configure-job.component.html',
-    directives: [SensorComponent]
+    directives: [SensorComponent],
+    providers: [SensorClass]
 })
 export class ConfigureJobComponent implements OnInit {
     private job: Job;    
@@ -32,8 +33,7 @@ export class ConfigureJobComponent implements OnInit {
         private _elementRef: ElementRef,
         @Inject('jQuery') private _jquery,
         @Inject('Foundation') private _foundation,
-        @Inject('Evothings') private _evothings,
-        private _ngZone: NgZone
+        private _injector: Injector
 	) { }
 
 	ngOnInit() {
@@ -56,7 +56,7 @@ export class ConfigureJobComponent implements OnInit {
     connectToNearestDevice() {
         var self = this;
 
-        var sensor = new SensorClass(this._ngZone, this._evothings);
+        var sensor = this._injector.get(SensorClass);
 
         sensor.connectToNearestDevice(this.job.policyNumber, (sensor, status) => {
             self.statusHandler(sensor, status);

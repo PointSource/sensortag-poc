@@ -131,13 +131,13 @@ export class SensorClass implements Sensor {
     }
 
     keypressHandler(data) {
-        if (this._evothings.easyble.error.DISCONNECTED == error) {
-        	// Deal with disconnected
-		}
         this.data.keypressData = data[0];
     }
 
-	errorHandler(error) {
+    errorHandler(error) {
+        if (this._evothings.easyble.error.DISCONNECTED == error) {
+        	// Deal with disconnected
+		}
 		this.status = 'ERROR';
     }
 }
