@@ -44,10 +44,10 @@ export class AccountDetailsComponent implements OnInit {
     }
 
     loadSensors() {
-        // this._sensorService.fetch().add(() => {
+        this._sensorService.fetch().add(() => {
             this.sensors = this._sensorService.getSensorsForPolicy(this.job.policyNumber);
             this.scanForSensors();
-        // });
+        });
 
     }
 
@@ -64,6 +64,7 @@ export class AccountDetailsComponent implements OnInit {
             });
         });
 
+        setTimeout(() => { this.stopScanning() }, 1000);
     }
 
     scanSuccess(device) {

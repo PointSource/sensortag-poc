@@ -6,6 +6,7 @@ import {NavService} from '../nav.service';
 import {JobService} from './job.service';
 
 import {Sensor} from '../sensor';
+import {SensorClass} from '../sensor.class';
 import {Job} from './job';
 import {SensorComponent} from '../sensor.component';
 
@@ -97,55 +98,12 @@ export class ConfigureJobComponent implements OnInit {
     deviceConnectedHandler(sensortag, index) {
         var self = this;
 
-        var sensor: Sensor = {
-            systemId: sensortag.getSystemId(),
-            status: "initializing",
-            sensortag: sensortag,
-            data: {
-                humidityData: {
-                    lastTenValues: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    relativeHumidity: 0
-                },
-                temperatureData: {
-                    lastTenAmbient: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    lastTenTarget: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    ambientTemperature: 0,
-                    targetTemperature: 0
-                },
-                keypressData: 0
-            },
-            name: "Sensor "+index,
-            policyNumber: this.job.policyNumber
-        };
+        var sensor = new SensorClass(this._ngZone);
 
-        sensor.sensortag
-            .statusCallback(function(status) {
-                self._ngZone.run(function() {
-                    self.statusHandler(sensor, status)
-                });
-            })
-            .humidityCallback(function(data) {
-                self._ngZone.run(function() {
-                    self.humidityHandler(sensor, data);
-                });
-            }, 1000)
-            .temperatureCallback(function(data) {
-                self._ngZone.run(function() {
-                    self.temperatureHandler(sensor, data);
-                });
-            }, 1000)
-            .keypressCallback(function(data) {
-                self._ngZone.run(function() {
-                    self.keypressHandler(sensor, data);
-                });
-            });
+        sensor.deviceConnectedHandler(this.job.policyNumber, sensortag);
 
         this._sensorService.addSensor(sensor);
         this.sensors = this._sensorService.getSensorsForPolicy(this.job.policyNumber);
-    }
-
-    statusHandler(sensor, status) {
-        sensor.status = status;
     }
 
     errorHandler(error) {
@@ -157,48 +115,13 @@ export class ConfigureJobComponent implements OnInit {
         }
     }
 
-    temperatureHandler(sensor, data) {
-        var values = sensor.sensortag.getTemperatureValues(data);
-        var af = sensor.sensortag.celsiusToFahrenheit(values.ambientTemperature);
-        var tf = sensor.sensortag.celsiusToFahrenheit(values.targetTemperature);
-
-        sensor.data.temperatureData.ambientTemperature = af.toFixed(1);
-        sensor.data.temperatureData.targetTemperature = tf.toFixed(1)
-        var lastTenAmbient = sensor.data.temperatureData.lastTenAmbient.slice();
-        lastTenAmbient.push(af);
-        lastTenAmbient.shift();
-        sensor.data.temperatureData.lastTenAmbient = lastTenAmbient;
-
-        var lastTenTarget = sensor.data.temperatureData.lastTenTarget.slice();
-        lastTenTarget.push(tf);
-        lastTenTarget.shift();
-        sensor.data.temperatureData.lastTenTarget = lastTenTarget;
-    }
-
-    humidityHandler(sensor, data) {
-        var values = sensor.sensortag.getHumidityValues(data)
-
-        // Calculate the relative humidity.
-        var h = values.relativeHumidity;
-
-        sensor.data.humidityData.relativeHumidity = h.toFixed(1)
-        var lastTenValues = sensor.data.humidityData.lastTenValues.slice();
-        lastTenValues.push(h);
-        lastTenValues.shift();
-        sensor.data.humidityData.lastTenValues = lastTenValues;
-    }
-
-    keypressHandler(sensor, data) {
-        sensor.data.keypressData = data[0];
-    }
-
     resetSensorDisplayValues() {
         // Clear current values.
         this.status = 'Press Connect to find a SensorTag';
     }
 
     saveDevices() {
-        // this._sensorService.sync();
+        this._sensorService.sync();
         window.history.back();
     }
 
