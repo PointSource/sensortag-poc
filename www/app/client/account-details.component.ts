@@ -1,26 +1,27 @@
-import {Component, OnInit, Inject, NgZone} from 'angular2/core';
+import {Component, OnInit, Inject, NgZone, Injector} from 'angular2/core';
 import {RouteParams} from 'angular2/router';
+
 import {SensorService} from '../sensor.service';
 import {JobService} from '../technician/job.service';
 import {NavService} from '../nav.service';
 import {BLEService} from '../ble.service';
+
 import {Sensor} from '../sensor';
+import {SensorClass} from '../sensor.class';
 import {Job} from '../technician/job';
 import {SensorComponent} from '../sensor.component';
 
 @Component({
     templateUrl: 'app/client/account-details.component.html',
-    directives: [SensorComponent]
+    directives: [SensorComponent],
+    providers: [SensorClass]
 })
 export class AccountDetailsComponent implements OnInit {
+    savedSensors: any[];
     sensors: Sensor[];
     job: Job;
     status: string;
     sensortag: any;
-
-    // TEMP
-    matchingDevices: any[];
-    deviceAddresses: string[];
 
     constructor(
         private _sensorService: SensorService,
@@ -29,23 +30,20 @@ export class AccountDetailsComponent implements OnInit {
         private _navService: NavService,
         private _routeParams: RouteParams,
         @Inject('Evothings') private _evothings,
-        private _ngZone: NgZone
+        private _ngZone: NgZone,
+        private _injector: Injector
     ) { }
 
     ngOnInit() {
-
+        this.sensors = [];
         var policyNumber = this._routeParams.get('policyNumber');
         this.job = this._jobService.getJob(policyNumber);
         this._navService.setTitle("My Sensors");
-
-
-        this.matchingDevices = [];
-        this.deviceAddresses = [];
     }
 
     loadSensors() {
         this._sensorService.fetch().add(() => {
-            this.sensors = this._sensorService.getSensorsForPolicy(this.job.policyNumber);
+            this.savedSensors = this._sensorService.getSensorsForPolicy(this.job.policyNumber);
             this.scanForSensors();
         });
 
@@ -88,15 +86,16 @@ export class AccountDetailsComponent implements OnInit {
 
     gotSystemId (systemId, device) {
         console.log(systemId);
-        var foundSensor = this.sensors.find((sensor) => {
+        var foundSensor = this.savedSensors.find((sensor) => {
             return sensor.systemId === systemId;
         })
         if (foundSensor !== undefined) {
             console.log('matches!!');
             device.close();
-            foundSensor.sensortag.connectToDevice(device);
-            this.deviceAddresses.push(systemId);
-            this.matchingDevices.push(device)
+            var sensor: SensorClass = this._injector.get(SensorClass);
+            sensor.initialize(this.job.policyNumber, foundSensor.name);
+            sensor.connectToDevice(device);
+            this.sensors.push(sensor);
         } else {
             console.log('disconnecting');
             device.close();

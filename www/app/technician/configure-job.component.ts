@@ -56,9 +56,11 @@ export class ConfigureJobComponent implements OnInit {
     connectToNearestDevice() {
         var self = this;
 
-        var sensor = this._injector.get(SensorClass);
+        var sensor: SensorClass = this._injector.get(SensorClass);
 
-        sensor.connectToNearestDevice(this.job.policyNumber, (sensor, status) => {
+        sensor.initialize(this.job.policyNumber)
+
+        sensor.connectToNearestDevice((sensor, status) => {
             self.statusHandler(sensor, status);
         })
     }

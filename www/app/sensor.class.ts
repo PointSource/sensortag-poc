@@ -15,15 +15,50 @@ export class SensorClass implements Sensor {
         @Inject('Evothings') private _evothings
 	) {}
 
-    connectToNearestDevice(policyNumber: string, statusCallback) {
-        var self = this;
-
+    initialize(policyNumber: string, name: string) {
         this.policyNumber = policyNumber;
-
-
+        
         // Create SensorTag CC2650 instance.
         this.sensortag = this._evothings.tisensortag.createInstance(
-            this._evothings.tisensortag.CC2650_BLUETOOTH_SMART)
+            this._evothings.tisensortag.CC2650_BLUETOOTH_SMART);
+
+        this.data = {
+            humidityData: {
+                lastTenValues: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                relativeHumidity: 0
+            },
+            temperatureData: {
+                lastTenAmbient: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                lastTenTarget: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                ambientTemperature: 0,
+                targetTemperature: 0
+            },
+            keypressData: 0
+        }
+        this.name = name ? name : "Sensor";
+        this.status = "initializing";
+    }
+
+    connectToDevice(device) {
+        var self = this;
+
+        this.sensortag
+            .statusCallback(function(status) {
+                self._ngZone.run(function() {
+                    self.initialStatusHandler(status)
+                });
+            })
+            .errorCallback(function(error) {
+                self._ngZone.run(function() {
+                    self.errorHandler(error);
+                });
+            })
+
+        this.sensortag.connectToDevice(device);
+    }
+
+    connectToNearestDevice(statusCallback) {
+        var self = this;
 
         this.sensortag
             .statusCallback(function(status) {
@@ -54,22 +89,6 @@ export class SensorClass implements Sensor {
         var self = this;
 
         this.systemId = this.sensortag.getSystemId();
-        this.status = "initializing";
-        // this.sensortag = sensortag;
-        this.data = {
-            humidityData: {
-                lastTenValues: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                relativeHumidity: 0
-            },
-            temperatureData: {
-                lastTenAmbient: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                lastTenTarget: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                ambientTemperature: 0,
-                targetTemperature: 0
-            },
-            keypressData: 0
-        }
-        this.name = "Sensor";
 
         this.sensortag
             .statusCallback((status) => {
