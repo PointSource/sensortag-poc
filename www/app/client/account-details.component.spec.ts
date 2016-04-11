@@ -31,6 +31,7 @@ describe('Account Details', () => {
 
 
 		sensortag = {
+			startScanningForDevices: () => {},
 			statusCallback: () => sensortag,
 			errorCallback: () => sensortag,
 			keypressCallback: () => sensortag,
@@ -60,6 +61,12 @@ describe('Account Details', () => {
 			numSensors: 0
 		})
 
+		spyOn(_sensorService, "getSensorsForPolicy").and.returnValue([{
+			policyNumber: "Job1",
+			systemId: "MATCHES",
+			sensortag: sensortag
+		}]);
+
 		accountDetails = new AccountDetailsComponent(
 			_sensorService,
 			_jobService,
@@ -71,19 +78,43 @@ describe('Account Details', () => {
 		);
 	})
 
+	describe('on load sensors', () => {
+
+		beforeEach(() => {
+			spyOn(accountDetails, "scanForSensors");
+			accountDetails.ngOnInit();
+			accountDetails.loadSensors();
+		})
+
+		it('calls sensorService.getSensorsForPolicy with this policy number', () => {
+			expect(_sensorService.getSensorsForPolicy).toHaveBeenCalledWith(accountDetails.job.policyNumber);
+		});
+
+		it('calls scanForSensors', () => {
+			expect(accountDetails.scanForSensors).toHaveBeenCalled();
+		})
+
+	})
+
 
 	describe('on scan for sensors', () => {
 
-		it('calls easyble.scan', () => {
+		beforeEach(() => {
 			accountDetails.ngOnInit();
 			accountDetails.scanForSensors();
+		})
+
+		xit('loops through sensors and scans for devices', () => {
+			expect(accountDetails.sensors[0].sensortag.startScanningForDevices).toHaveBeenCalled();
+		})
+
+
+		it('calls easyble.scan', () => {
 			expect(_evothings.easyble.startScan).toHaveBeenCalled();
 		});
 
 
 		it('sets status to scanning', () => {
-			accountDetails.ngOnInit();
-			accountDetails.scanForSensors();
 			expect(accountDetails.status).toEqual("SCANNING");
 		});
 
@@ -100,43 +131,49 @@ describe('Account Details', () => {
 
 	});
 
-	describe('on scan success', () => {
+	// Put this into the tests for BLE SERVICE
+	// describe('on scan success', () => {
 
-		beforeEach(() => {
-			accountDetails.ngOnInit();
-		})
+	// 	beforeEach(() => {
+	// 		accountDetails.ngOnInit();
+	// 	})
 
-		xit('checks if the device is a sensortag', () => {
-			spyOn(accountDetails.sensortag, "deviceIsSensorTag");
-			accountDetails.scanSuccess();
-			expect(accountDetails.sensortag.deviceIsSensorTag).toHaveBeenCalled();
-		});
+	// 	xit('checks if the device is a sensortag', () => {
+	// 		spyOn(accountDetails.sensortag, "deviceIsSensorTag");
+	// 		accountDetails.scanSuccess();
+	// 		expect(accountDetails.sensortag.deviceIsSensorTag).toHaveBeenCalled();
+	// 	});
 
-		xit('if the device is a sensortag, connect to it', () => {
-			let device = jasmine.createSpyObj('device', ['connect'])
-			spyOn(accountDetails.sensortag, "deviceIsSensorTag").and.returnValue(true);
-			accountDetails.scanSuccess(device);
-			expect(accountDetails.status).toEqual("CONNECTING");
-			expect(device.connect).toHaveBeenCalled();
-		});
-	});
+	// 	xit('if the device is a sensortag, connect to it', () => {
+	// 		let device = jasmine.createSpyObj('device', ['connect'])
+	// 		spyOn(accountDetails.sensortag, "deviceIsSensorTag").and.returnValue(true);
+	// 		accountDetails.scanSuccess(device);
+	// 		expect(accountDetails.status).toEqual("CONNECTING");
+	// 		expect(device.connect).toHaveBeenCalled();
+	// 	});
+	// });
 
 	describe('when device is connected', () => {
 
 		beforeEach(() => {
 			accountDetails.ngOnInit();
+			accountDetails.loadSensors();
 		})
 
-		xit('gets its system id', () => {
-			accountDetails.deviceConnectSuccess(device);
-			expect(device.readServices).toHaveBeenCalled();
-		});
+		describe("if the system id matches,", () => {
 
+			it('adds the device to the list of matches', () => {
+				accountDetails.gotSystemId("MATCHES", device);
+				expect(accountDetails.matchingDevices.length).toBeGreaterThan(0);
+			});
 
-		it('compares system id to existing sensors', () => {
-			accountDetails.gotSystemId("0212d3000048b4b0", device);
-			expect(accountDetails.matchingDevices.length).toBeGreaterThan(0);
-		});
+			it('connects to the device using the sensor that matches', () => {
+				spyOn(accountDetails.sensors[0].sensortag, "connectToDevice");
+				accountDetails.gotSystemId("MATCHES", device);
+				expect(accountDetails.sensors[0].sensortag.connectToDevice).toHaveBeenCalled();
+			});
+		})
+
 
 		describe('if system id does not match', () => {
 
@@ -144,7 +181,7 @@ describe('Account Details', () => {
 				accountDetails.gotSystemId("NOT A MATCH", device);
 			});
 
-			it('doesn\'t add it to the list', () => {
+			it('does not add it to the list', () => {
 				expect(accountDetails.matchingDevices.length).toEqual(0);
 			});
 
@@ -154,9 +191,6 @@ describe('Account Details', () => {
 		})
 
 
-		xit('if the system id matches, connect to the device using the sensor that matches', () => {
-
-		});
 
 	});
 

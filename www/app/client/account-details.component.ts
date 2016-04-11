@@ -46,7 +46,7 @@ export class AccountDetailsComponent implements OnInit {
     loadSensors() {
         // this._sensorService.fetch().add(() => {
             this.sensors = this._sensorService.getSensorsForPolicy(this.job.policyNumber);
-            // this.scanForSensors();
+            this.scanForSensors();
         // });
 
     }
@@ -64,7 +64,6 @@ export class AccountDetailsComponent implements OnInit {
             });
         });
 
-        setTimeout(() => { this.stopScanning() }, 1000);
     }
 
     scanSuccess(device) {
@@ -74,7 +73,7 @@ export class AccountDetailsComponent implements OnInit {
             (systemId, device) => {
                 self._ngZone.run(() => {
                     self.gotSystemId(systemId, device);
-                }
+                });
             }, self.systemIdFail);
     }
 
@@ -87,10 +86,16 @@ export class AccountDetailsComponent implements OnInit {
     }
 
     gotSystemId (systemId, device) {
-        var TEMPID = "0212d3000048b4b0";
-        console.log(systemId);
-        if (systemId === TEMPID) {
+        // var TEMPID = "0212d3000048b4b0";
+        // console.log(systemId);
+        var foundSensor = this.sensors.find((sensor) => {
+            return sensor.systemId === systemId;
+        })
+        // if (systemId === TEMPID) {
+        if (foundSensor !== undefined) {
             console.log('matches!!');
+            device.close();
+            foundSensor.sensortag.connectToDevice(device);
             this.deviceAddresses.push(systemId);
             this.matchingDevices.push(device)
         } else {
