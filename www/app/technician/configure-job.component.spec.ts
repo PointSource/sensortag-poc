@@ -7,6 +7,7 @@ import {NavService} from '../nav.service';
 import {ConfigureJobComponent} from "./configure-job.component"
 
 var sensortag;
+var sensor;
 var tisensortag;
 var evothings;
 var iotFoundationLib;
@@ -32,6 +33,16 @@ beforeEach(() => {
 		getDevice: () => {
 			return {
 				address: "address123"
+			}
+		}
+	};
+
+	sensor = {
+		sensortag: sensortag,
+		policyNumber: "Job1",
+		data: {
+			humidityData: {
+				lastTenValues: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 			}
 		}
 	};
@@ -115,19 +126,7 @@ describe('Configure Job Component', () => {
 		});
 	});
 
-	describe('on connectToNearestDevice', () => {
-		it('creates a sensorTag instance to track device information', () => {
-			spyOn(evothings.tisensortag, "createInstance").and.callThrough();
-			configureJob.connectToNearestDevice();
-			expect(evothings.tisensortag.createInstance).toHaveBeenCalled();
-		});
 
-		it('calls sensortag.connectToNearestDevice', () => {
-			spyOn(sensortag, "connectToNearestDevice");
-			configureJob.connectToNearestDevice();
-			expect(sensortag.connectToNearestDevice).toHaveBeenCalled();
-		});
-	});
 
 	describe('when device is connected', () => {
 
@@ -137,7 +136,7 @@ describe('Configure Job Component', () => {
 
 		it('adds the sensortag to the list of connected devices', () => {
 			spyOn(configureJob._sensorService, "addSensor").and.callThrough();
-			configureJob.deviceConnectedHandler(sensortag);
+			configureJob.deviceConnectedHandler(sensor);
 			expect(configureJob._sensorService.addSensor).toHaveBeenCalled();
 			expect(configureJob.sensors[0].sensortag)
 				.toEqual(sensortag);
@@ -145,50 +144,37 @@ describe('Configure Job Component', () => {
 				.toEqual([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
 		})
 
-		it('sets humidity callback on sensortag', () => {
-			spyOn(sensortag, "humidityCallback").and.returnValue(sensortag);
-			configureJob.deviceConnectedHandler(sensortag);
-			expect(sensortag.humidityCallback).toHaveBeenCalled();
-		})
-
-		it('sets keypress callback on sensortag', () => {
-			spyOn(sensortag, "keypressCallback").and.returnValue(sensortag);
-			configureJob.deviceConnectedHandler(sensortag);
-			expect(sensortag.keypressCallback).toHaveBeenCalled();
-		})
-
 	});
 
-	describe('on initial status update', () => {
-
+	describe('on status update', () => {
 
 
 		it('should update main status', () => {
 			configureJob.ngOnInit();
 			spyOn(configureJob.modalElement, "foundation");
-			configureJob.initialStatusHandler(sensortag, "SCANNING");
+			configureJob.statusHandler(sensortag, "SCANNING");
 			expect(configureJob.status).toBe("SCANNING");
 		});
 
 
 		it('should update status percentage', () => {
 			configureJob.ngOnInit();
-			configureJob.initialStatusHandler(sensortag, "SCANNING");
+			configureJob.statusHandler(sensortag, "SCANNING");
 			expect(configureJob.statusPercentage).toBe(20);
-			configureJob.initialStatusHandler(sensortag, "SENSORTAG_FOUND");
+			configureJob.statusHandler(sensortag, "SENSORTAG_FOUND");
 			expect(configureJob.statusPercentage).toBe(40);
-			configureJob.initialStatusHandler(sensortag, "CONNECTING");
+			configureJob.statusHandler(sensortag, "CONNECTING");
 			expect(configureJob.statusPercentage).toBe(60);
-			configureJob.initialStatusHandler(sensortag, "READING_DEVICE_INFO");
+			configureJob.statusHandler(sensortag, "READING_DEVICE_INFO");
 			expect(configureJob.statusPercentage).toBe(80);
-			configureJob.initialStatusHandler(sensortag, "DEVICE_INFO_AVAILABLE");
+			configureJob.statusHandler(sensortag, "DEVICE_INFO_AVAILABLE");
 			expect(configureJob.statusPercentage).toBe(100);
 		});
 
 		it('if status is DEVICE_INFO_AVAILABLE add sensortag to connected devices', () => {
 			configureJob.ngOnInit();
 			spyOn(configureJob, "deviceConnectedHandler");
-			configureJob.initialStatusHandler(sensortag, "DEVICE_INFO_AVAILABLE");
+			configureJob.statusHandler(sensortag, "DEVICE_INFO_AVAILABLE");
 			expect(configureJob.deviceConnectedHandler).toHaveBeenCalled();
 		});
 
@@ -198,103 +184,11 @@ describe('Configure Job Component', () => {
 	describe('when device is named', () => {
 		it('sets device name to new name', () => {
 			configureJob.ngOnInit();
-			configureJob.deviceConnectedHandler(sensortag);
+			configureJob.deviceConnectedHandler(sensor);
 			configureJob.nameSensor("new name");
 			expect(configureJob.sensors[0].name).toBe("new name");
 		});
 
-	});
-
-
-	// update this to report to indv devices
-	describe('on status update', () => {
-
-		beforeEach(() => {
-			configureJob.ngOnInit();
-			configureJob.sensors = [{
-				isConnected: false
-			}]
-		})
-
-		it('should update device status', () => {
-			configureJob.statusHandler(configureJob.sensors[0], "SCANNING");
-			expect(configureJob.sensors[0].status).toBe("SCANNING");
-		});
-
-		xit('if status is DEVICE_INFO_AVAILABLE, should set isConnected to true', () => {
-			configureJob.statusHandler(configureJob.sensors[0], "DEVICE_INFO_AVAILABLE");
-			expect(configureJob.sensors[0].isConnected).toBe(true);
-		});
-	});
-
-
-
-	describe('on error connecting', () => {
-
-		beforeEach(() => {
-			evothings.easyble = {
-				error: {
-					DISCONNECTED: "EASYBLE_ERROR_DISCONNECTED"
-				}
-			}
-		})
-
-		it('should update status to display error', () => {
-			configureJob.errorHandler("OOPS");
-			expect(configureJob.status).toBe("ERROR");
-		});
-
-		it('if device is disconnected, clear the display values', () => {
-			spyOn(configureJob, "resetSensorDisplayValues");
-			configureJob.errorHandler("EASYBLE_ERROR_DISCONNECTED");
-			expect(configureJob.resetSensorDisplayValues).toHaveBeenCalled();
-		});
-	});
-
-	describe('on humidity callback', () => {
-
-		beforeEach(() => {
-			configureJob.ngOnInit();
-			configureJob.deviceConnectedHandler(sensortag, 0);
-
-			sensortag.getHumidityValues = function() {
-				return {
-					humidityTemperature: 75,
-					relativeHumidity: 90
-				}
-			}
-
-			configureJob.humidityHandler(configureJob.sensors[0]);
-		})
-
-		it('should update humidityData for this device', () => {
-			expect(configureJob.sensors[0].data.humidityData)
-				.toEqual({
-					lastTenValues: [0, 0, 0, 0, 0, 0, 0, 0, 0, 90],
-					relativeHumidity: '90.0'
-				});
-		});
-
-		it('should update last 10 humidity data for this device', () => {
-			expect(configureJob.sensors[0].data.humidityData.lastTenValues)
-				.toEqual([0, 0, 0, 0, 0, 0, 0, 0, 0, 90]);
-		});
-
-
-	});
-
-	describe('on keypress callback', () => {
-
-		beforeEach(() => {
-			configureJob.ngOnInit();
-			configureJob.deviceConnectedHandler(sensortag, 0);
-			configureJob.keypressHandler(configureJob.sensors[0], [1]);
-		})
-
-		it('should update keypressData for this device', () => {
-			expect(configureJob.sensors[0].data.keypressData)
-				.toEqual(1);
-		});
 	});
 
 });

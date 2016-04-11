@@ -84,8 +84,6 @@ export class ConfigureJobComponent implements OnInit {
     }
 
     deviceConnectedHandler(sensor) {
-        var self = this;
-
         this._sensorService.addSensor(sensor);
         this.sensors = this._sensorService.getSensorsForPolicy(this.job.policyNumber);
     }
