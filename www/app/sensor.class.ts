@@ -1,4 +1,4 @@
-import {NgZone} from 'angular2/core';
+import {NgZone, Inject} from 'angular2/core';
 import {Sensor} from './sensor';
 import {SensorData} from './sensor-data';
 
@@ -10,17 +10,52 @@ export class SensorClass implements Sensor {
 	sensortag: any;
 	data: SensorData;
 
-    constructor (private _ngZone: NgZone) {
+    constructor (
+    	private _ngZone: NgZone,
+        @Inject('Evothings') private _evothings
+	) {}
 
-    }
-
-    deviceConnectedHandler(policyNumber: string, sensortag) {
+    connectToNearestDevice(policyNumber: string, statusCallback) {
         var self = this;
+
         this.policyNumber = policyNumber;
 
-        this.systemId = sensortag.getSystemId();
+
+        // Create SensorTag CC2650 instance.
+        this.sensortag = this._evothings.tisensortag.createInstance(
+            this._evothings.tisensortag.CC2650_BLUETOOTH_SMART)
+
+        this.sensortag
+            .statusCallback(function(status) {
+                self._ngZone.run(function() {
+                    self.initialStatusHandler(status)
+                    statusCallback(self, status);
+                });
+            })
+            .errorCallback(function(error) {
+                self._ngZone.run(function() {
+                    self.errorHandler(error);
+                });
+            })
+
+        this.sensortag.connectToNearestDevice();
+    }
+
+	initialStatusHandler(status) {
+
+		if ('DEVICE_INFO_AVAILABLE' == status) {
+            this.deviceConnectedHandler();
+        }
+
+        this.status = status;
+    }
+
+    deviceConnectedHandler() {
+        var self = this;
+
+        this.systemId = this.sensortag.getSystemId();
         this.status = "initializing";
-        this.sensortag = sensortag;
+        // this.sensortag = sensortag;
         this.data = {
             humidityData: {
                 lastTenValues: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -96,6 +131,13 @@ export class SensorClass implements Sensor {
     }
 
     keypressHandler(data) {
+        if (this._evothings.easyble.error.DISCONNECTED == error) {
+        	// Deal with disconnected
+		}
         this.data.keypressData = data[0];
+    }
+
+	errorHandler(error) {
+		this.status = 'ERROR';
     }
 }

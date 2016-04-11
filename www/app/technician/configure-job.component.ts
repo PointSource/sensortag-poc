@@ -56,26 +56,14 @@ export class ConfigureJobComponent implements OnInit {
     connectToNearestDevice() {
         var self = this;
 
-        // Create SensorTag CC2650 instance.
-        var sensortag = this._evothings.tisensortag.createInstance(
-            this._evothings.tisensortag.CC2650_BLUETOOTH_SMART)
+        var sensor = new SensorClass(this._ngZone, this._evothings);
 
-        sensortag
-            .statusCallback(function(status) {
-                self._ngZone.run(function() {
-                    self.initialStatusHandler(sensortag, status)
-                });
-            })
-            .errorCallback(function(error) {
-                self._ngZone.run(function() {
-                    self.errorHandler(error);
-                });
-            })
-
-        sensortag.connectToNearestDevice();
+        sensor.connectToNearestDevice(this.job.policyNumber, (sensor, status) => {
+            self.statusHandler(sensor, status);
+        })
     }
 
-    initialStatusHandler(sensortag, status) {
+    statusHandler(sensor, status) {
         if ('SCANNING' == status) {
             this.modalElement.foundation('open');
             this.statusPercentage = 20
@@ -87,7 +75,7 @@ export class ConfigureJobComponent implements OnInit {
             this.statusPercentage = 80
         } else if ('DEVICE_INFO_AVAILABLE' == status) {
             this.statusPercentage = 100;
-            this.deviceConnectedHandler(sensortag, this.sensors.length);
+            this.deviceConnectedHandler(sensor);
         } else if ('SENSORTAG_NOT_FOUND' == status) {
             this.statusPercentage = 0;
         }
@@ -95,29 +83,11 @@ export class ConfigureJobComponent implements OnInit {
         this.status = status;
     }
 
-    deviceConnectedHandler(sensortag, index) {
+    deviceConnectedHandler(sensor) {
         var self = this;
-
-        var sensor = new SensorClass(this._ngZone);
-
-        sensor.deviceConnectedHandler(this.job.policyNumber, sensortag);
 
         this._sensorService.addSensor(sensor);
         this.sensors = this._sensorService.getSensorsForPolicy(this.job.policyNumber);
-    }
-
-    errorHandler(error) {
-        if (this._evothings.easyble.error.DISCONNECTED == error) {
-            this.resetSensorDisplayValues()
-        }
-        else {
-			this.status = 'ERROR';
-        }
-    }
-
-    resetSensorDisplayValues() {
-        // Clear current values.
-        this.status = 'Press Connect to find a SensorTag';
     }
 
     saveDevices() {
