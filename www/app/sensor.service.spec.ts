@@ -1,51 +1,60 @@
+class MockSensorService extends SensorService {
+	sensors = [{
+		systemId: "1234",
+		policyNumber: "Job1",
+		name: "Garage",
+		status: "CONNECTED",
+		sensortag: {},
+		data: {},
+	},{
+		systemId: "5678",
+		policyNumber: "Job2",
+		name: "Garage2",
+		status: "CONNECTED",
+		sensortag: {},
+		data: {},
+	}];
+}
+
+import {
+	beforeEach,
+	beforeEachProviders,
+	describe,
+	expect,
+	it,
+	inject,
+	injectAsync } from 'angular2/testing';
+import {provide} from "angular2/core"
+
 import {SensorService} from "./sensor.service"
 import {Http} from 'angular2/http';
 
-describe('Sensor Service', () => {
-	let sensorService: SensorService;
-	let http: Http;
+beforeEachProviders(() => {
+	return [
+		provide(Http, { useValue: {} }),
+		provide(SensorService, {useClass: MockSensorService})
+	]
+})
 
-	beforeEach(() => {
-		sensorService = new SensorService(http);
-	})
+
+describe('Sensor Service', () =>
 
 	describe('on getSensorsForJob', () => {
 
-		beforeEach(() => {
-			sensorService.sensors = [{
-				status: "CONNECTED",
-				sensortag: {},
-				data: {},
-				name: "Garage",
-				isNamed: true,
-				isConnected: true,
-				device: {},
-				policyNumber: "Job1"
-			}, {
-				status: "CONNECTED",
-				sensortag: {},
-				data: {},
-				name: "Garage",
-				isNamed: true,
-				isConnected: true,
-				device: {},
-				policyNumber: "Job2"
-			}]
-		})
+		it('returns the sensors for a specific job', inject(
+			[SensorService],
+			(_sensorService: SensorService) => {
 
-		it('returns the sensors for a specific job', () => {
-			let sensorsForJob = sensorService.getSensorsForPolicy("Job1");
+			let sensorsForJob = _sensorService.getSensorsForPolicy("Job1");
 			expect(sensorsForJob).toEqual([{
+				systemId: "1234",
+				policyNumber: "Job1",
+				name: "Garage",
 				status: "CONNECTED",
 				sensortag: {},
 				data: {},
-				name: "Garage",
-				isNamed: true,
-				isConnected: true,
-				device: {},
-				policyNumber: "Job1"
 			}]);
-		});
+		}));
 
 	});
 });
