@@ -15,6 +15,7 @@ describe('Account Details', () => {
 	let accountDetails;
 	let _ngZone: NgZone;
 	let _injector;
+	let _sensorFactory;
 
 	let _evothings;
 	let sensortag;
@@ -60,11 +61,14 @@ describe('Account Details', () => {
 		sensor = {
 			initialize: () => { },
 			sensortag: sensortag,
-			connectToDevice: () => { }
+			connectToDevice: () => { },
+			setName: () => {}
 		};
 
-		_injector = jasmine.createSpyObj("_injector", ["get"]);
-		_injector.get.and.returnValue(sensor);
+
+
+		_sensorFactory = jasmine.createSpyObj("_sensorFactory", ["sensor"]);
+		_sensorFactory.sensor.and.returnValue(sensor);
 
 		spyOn(_jobService, "getJob").and.returnValue({
 			policyNumber: "Job1",
@@ -94,7 +98,8 @@ describe('Account Details', () => {
 			_routeParams,
 			_evothings,
 			_ngZone,
-			_injector
+			_injector,
+			_sensorFactory
 		);
 	})
 
