@@ -59,7 +59,8 @@ describe('Account Details', () => {
 		_injector = jasmine.createSpyObj("_injector", ["get"]);
 		_injector.get.and.returnValue({
 			initialize: () => {},
-			sensortag: sensortag
+			sensortag: sensortag,
+			connectToDevice: () => {}
 		})
 
 		spyOn(_jobService, "getJob").and.returnValue({
