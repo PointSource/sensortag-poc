@@ -27,7 +27,7 @@ export class LandingComponent implements OnInit {
     }
 
     disconnect() {
-        this._bleService.disconnect();
+        this._bleService.disconnectAllDevices();
     }
 
 }

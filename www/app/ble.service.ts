@@ -18,7 +18,9 @@ export class BLEService {
 
 	}
 
-    disconnect() {}
+    disconnectAllDevices() {
+        this._evothings.easyble.closeConnectedDevices();
+    }
 
     getSystemIdFromDevice(device, success, fail) {
         if(this.sensortag.deviceIsSensorTag(device)) {
@@ -44,11 +46,13 @@ export class BLEService {
                         success(systemId, device);
                     },
                     (error) => {
+                        console.error(device.address, 'read characteristics FAIL')
                         console.error(error);
                     }
                 );
             },
             (error) => {
+                console.error(device.address, 'read services FAIL');
                 fail(error);
             })
     }

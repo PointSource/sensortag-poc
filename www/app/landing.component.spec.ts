@@ -50,9 +50,9 @@ describe('on disconnect', () => {
 		[BLEService, LandingComponent], 
 		(_bleService: BLEService, landingComponent: LandingComponent) => 
 	{
-		spyOn(_bleService, "disconnect");
+		spyOn(_bleService, "disconnectAllDevices");
 		landingComponent.disconnect();
-		expect(_bleService.disconnect).toHaveBeenCalled();
+		expect(_bleService.disconnectAllDevices).toHaveBeenCalled();
 	})
 	);
 

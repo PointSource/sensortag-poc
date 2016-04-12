@@ -1,3 +1,5 @@
+import {SensorService} from "./sensor.service"
+
 class MockSensorService extends SensorService {
 	sensors = [{
 		systemId: "1234",
@@ -25,8 +27,6 @@ import {
 	inject,
 	injectAsync } from 'angular2/testing';
 import {provide} from "angular2/core"
-
-import {SensorService} from "./sensor.service"
 import {Http} from 'angular2/http';
 
 beforeEachProviders(() => {
