@@ -39,6 +39,7 @@ export class AccountDetailsComponent implements OnInit {
         var policyNumber = this._routeParams.get('policyNumber');
         this.job = this._jobService.getJob(policyNumber);
         this._navService.setTitle("My Sensors");
+        this.loadSensors();
     }
 
     loadSensors() {
