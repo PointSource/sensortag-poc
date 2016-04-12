@@ -6,14 +6,14 @@ import {NavService} from '../nav.service';
 import {JobService} from './job.service';
 
 import {Sensor} from '../sensor';
-import {SensorClass} from '../sensor.class';
+import {SensorFactory} from '../sensor.factory';
 import {Job} from './job';
 import {SensorComponent} from '../sensor.component';
 
 @Component({
     templateUrl: 'app/technician/configure-job.component.html',
-    directives: [SensorComponent],
-    providers: [SensorClass]
+    directives: [SensorComponent]
+
 })
 export class ConfigureJobComponent implements OnInit {
     private job: Job;    
@@ -33,7 +33,8 @@ export class ConfigureJobComponent implements OnInit {
         private _elementRef: ElementRef,
         @Inject('jQuery') private _jquery,
         @Inject('Foundation') private _foundation,
-        private _injector: Injector
+        private _injector: Injector,
+        private _sensorFactory: SensorFactory
 	) { }
 
 	ngOnInit() {
@@ -56,9 +57,7 @@ export class ConfigureJobComponent implements OnInit {
     connectToNearestDevice() {
         var self = this;
 
-        var sensor: SensorClass = this._injector.get(SensorClass);
-
-        sensor.initialize(this.job.policyNumber)
+        var sensor = this._sensorFactory.sensor(this.job.policyNumber);
 
         sensor.connectToNearestDevice((sensor, status) => {
             self.statusHandler(sensor, status);

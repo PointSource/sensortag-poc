@@ -4,6 +4,7 @@ import {ROUTER_PROVIDERS, LocationStrategy, HashLocationStrategy} from 'angular2
 import {HTTP_PROVIDERS} from 'angular2/http';
 import {AppComponent} from './app.component';
 import {SensorService} from './sensor.service';
+import {SensorFactory} from './sensor.factory';
 import {BLEService} from './ble.service';
 import {NavService} from './nav.service';
 import {JobService} from './technician/job.service';
@@ -19,6 +20,7 @@ bootstrap(AppComponent, [
 	ROUTER_PROVIDERS,
 	HTTP_PROVIDERS,
 	SensorService,
+	SensorFactory,
 	NavService,
 	JobService,
 	ReadingService,

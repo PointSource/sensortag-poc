@@ -66,6 +66,7 @@ export class AccountDetailsComponent implements OnInit {
     }
 
     scanSuccess(device) {
+        console.log("scanSuccess");
         var self = this;
 
         this._bleService.getSystemIdFromDevice(device, 
@@ -77,15 +78,17 @@ export class AccountDetailsComponent implements OnInit {
     }
 
     scanFail() {
-        this.status = "SCAN_FAIL"
+        console.log("scanFail");
+        this.status = "SCAN_FAIL";
     }
 
     stopScanning() {
+        console.log("stopScanning");
         this._evothings.easyble.stopScan();
     }
 
     gotSystemId (systemId, device) {
-        console.log(systemId);
+        console.log("gotSystemId", systemId);
         var foundSensor = this.savedSensors.find((sensor) => {
             return sensor.systemId === systemId;
         })
@@ -104,6 +107,7 @@ export class AccountDetailsComponent implements OnInit {
     }
 
     systemIdFail(error) {
+        console.log("systemIdFail");
         console.error(error);
     }
 

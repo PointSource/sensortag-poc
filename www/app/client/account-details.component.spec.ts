@@ -18,6 +18,7 @@ describe('Account Details', () => {
 
 	let _evothings;
 	let sensortag;
+	let sensor;
 	let device;
 
 	beforeEach( () => {
@@ -56,18 +57,21 @@ describe('Account Details', () => {
 			}
 		}
 
-		_injector = jasmine.createSpyObj("_injector", ["get"]);
-		_injector.get.and.returnValue({
-			initialize: () => {},
+		sensor = {
+			initialize: () => { },
 			sensortag: sensortag,
-			connectToDevice: () => {}
-		})
+			connectToDevice: () => { }
+		};
+
+		_injector = jasmine.createSpyObj("_injector", ["get"]);
+		_injector.get.and.returnValue(sensor);
 
 		spyOn(_jobService, "getJob").and.returnValue({
 			policyNumber: "Job1",
 			name: "Andrew Mortensen",
 			numSensors: 0
 		})
+
 
 		spyOn(_sensorService, "getSensorsForPolicy").and.returnValue([{
 			policyNumber: "Job1",
@@ -120,11 +124,6 @@ describe('Account Details', () => {
 			accountDetails.scanForSensors();
 		})
 
-		xit('loops through sensors and scans for devices', () => {
-			expect(accountDetails.sensors[0].sensortag.startScanningForDevices).toHaveBeenCalled();
-		})
-
-
 		it('calls easyble.scan', () => {
 			expect(_evothings.easyble.startScan).toHaveBeenCalled();
 		});
@@ -163,10 +162,10 @@ describe('Account Details', () => {
 				expect(accountDetails.sensors.length).toBeGreaterThan(0);
 			});
 
-			xit('connects to the device using the sensor that matches', () => {
-				spyOn(accountDetails.sensors[0].sensortag, "connectToDevice");
+			it('connects to the device using the sensor that matches', () => {
+				spyOn(sensor, "connectToDevice");
 				accountDetails.gotSystemId("MATCHES", device);
-				expect(accountDetails.sensors[0].sensortag.connectToDevice).toHaveBeenCalled();
+				expect(sensor.connectToDevice).toHaveBeenCalled();
 			});
 		})
 

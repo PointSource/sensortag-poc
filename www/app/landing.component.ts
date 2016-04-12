@@ -1,6 +1,7 @@
 import {Component, OnInit} from 'angular2/core';
 import {Router} from 'angular2/router';
 import {NavService} from './nav.service';
+import {BLEService} from './ble.service';
 
 @Component({
     templateUrl: 'app/landing.component.html'
@@ -9,7 +10,8 @@ export class LandingComponent implements OnInit {
 
     constructor(
         private _router: Router,
-        private _navService: NavService
+        private _navService: NavService,
+        private _bleService: BLEService
     ) { }
 
     ngOnInit() {
@@ -24,5 +26,8 @@ export class LandingComponent implements OnInit {
         this._router.navigate(['FindAccount', {}]);
     }
 
+    disconnect() {
+        this._bleService.disconnect();
+    }
 
 }

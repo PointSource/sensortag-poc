@@ -18,6 +18,8 @@ export class BLEService {
 
 	}
 
+    disconnect() {}
+
     getSystemIdFromDevice(device, success, fail) {
         if(this.sensortag.deviceIsSensorTag(device)) {
             device.connect(
