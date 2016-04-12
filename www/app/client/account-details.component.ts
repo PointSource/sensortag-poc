@@ -7,14 +7,13 @@ import {NavService} from '../nav.service';
 import {BLEService} from '../ble.service';
 
 import {Sensor} from '../sensor';
-import {SensorClass} from '../sensor.class';
+import {SensorFactory} from '../sensor.factory';
 import {Job} from '../technician/job';
 import {SensorComponent} from '../sensor.component';
 
 @Component({
     templateUrl: 'app/client/account-details.component.html',
-    directives: [SensorComponent],
-    providers: [SensorClass]
+    directives: [SensorComponent]
 })
 export class AccountDetailsComponent implements OnInit {
     savedSensors: any[];
@@ -31,7 +30,8 @@ export class AccountDetailsComponent implements OnInit {
         private _routeParams: RouteParams,
         @Inject('Evothings') private _evothings,
         private _ngZone: NgZone,
-        private _injector: Injector
+        private _injector: Injector,
+        private _sensorFactory: SensorFactory
     ) { }
 
     ngOnInit() {
@@ -95,8 +95,8 @@ export class AccountDetailsComponent implements OnInit {
         if (foundSensor !== undefined) {
             console.log('matches!!');
             device.close();
-            var sensor: SensorClass = this._injector.get(SensorClass);
-            sensor.initialize(this.job.policyNumber, foundSensor.name);
+            var sensor = this._sensorFactory.sensor(this.job.policyNumber);
+            sensor.setName(foundSensor.name);
             sensor.connectToDevice(device);
             this.sensors.push(sensor);
         } else {

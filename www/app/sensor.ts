@@ -38,6 +38,10 @@ export class Sensor {
         this.status = "initializing";
     }
 
+    setName(name: string) {
+        this.name = name;
+    }
+
     connectToDevice(device) {
         var self = this;
 
