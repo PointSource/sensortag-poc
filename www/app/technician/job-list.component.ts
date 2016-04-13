@@ -1,6 +1,7 @@
 import {Component, OnInit, ElementRef, Inject} from 'angular2/core';
 import {NavService} from '../nav.service';
 import {JobService} from './job.service';
+import {SensorService} from '../sensor.service';
 import {Job} from './job';
 import {Router} from 'angular2/router';
 
@@ -16,6 +17,7 @@ export class JobListComponent implements OnInit {
         private _router: Router,
         private _navService: NavService,
         private _jobService: JobService,
+        private _sensorService: SensorService,
         private myElement: ElementRef,
         @Inject('Foundation') private _foundation,
         @Inject('jQuery') private _jquery
@@ -29,8 +31,13 @@ export class JobListComponent implements OnInit {
             policyNumber: "",
             numSensors: 0
         }
-
-        this.jobList = this._jobService.getJobs();
+        if (this._sensorService.sensors.length === 0) {
+            this._sensorService.fetch().add(() => {
+                this.jobList = this._jobService.getJobs();
+            });
+        } else {
+            this.jobList = this._jobService.getJobs();
+        }
 
         this.modalElement = this._jquery(this.myElement.nativeElement.children[0]);
         var elem = new this._foundation.Reveal(this.modalElement);

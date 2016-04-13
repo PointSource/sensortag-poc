@@ -37,9 +37,24 @@ export class JobDetailsComponent implements OnInit {
         }
         this._navService.setTitle(this.job.name);
 
-        this.sensors = this._sensorService.getSensorsForPolicy(this.job.policyNumber);
+        this.readings = [];
+        this.sensors = [];
 
-        this.readings = this._readingService.getReadingsForPolicy(this.job.policyNumber);
+        if (this._sensorService.sensors.length === 0) {
+            this._sensorService.fetch().add(() => {
+                this.sensors = this._sensorService.getSensorsForPolicy(this.job.policyNumber);
+            });
+        } else {
+            this.sensors = this._sensorService.getSensorsForPolicy(this.job.policyNumber);
+        }
+
+        if (this._readingService.readings.length === 0) {
+            this._readingService.fetch().add(() => {
+                this.readings = this._readingService.getReadingsForPolicy(this.job.policyNumber);
+            });
+        } else {
+            this.readings = this._readingService.getReadingsForPolicy(this.job.policyNumber);
+        }
     }
 
     goToConfigureJob(policyNumber: string) {

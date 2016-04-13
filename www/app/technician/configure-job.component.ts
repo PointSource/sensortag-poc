@@ -1,4 +1,4 @@
-import {Component, OnInit, Inject, ElementRef, Injector} from 'angular2/core';
+import {Component, OnInit, Inject, ElementRef} from 'angular2/core';
 import {RouteParams} from 'angular2/router';
 
 import {SensorService} from '../sensor.service';
@@ -33,7 +33,6 @@ export class ConfigureJobComponent implements OnInit {
         private _elementRef: ElementRef,
         @Inject('jQuery') private _jquery,
         @Inject('Foundation') private _foundation,
-        private _injector: Injector,
         private _sensorFactory: SensorFactory
 	) { }
 

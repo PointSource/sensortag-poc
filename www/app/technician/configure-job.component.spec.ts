@@ -11,6 +11,7 @@ var sensor;
 var tisensortag;
 var evothings;
 var iotFoundationLib;
+var _sensorFactory;
 
 beforeEach(() => {
 	sensortag = {
@@ -46,6 +47,9 @@ beforeEach(() => {
 			}
 		}
 	};
+
+	_sensorFactory = jasmine.createSpyObj("_sensorFactory", ["sensor"]);
+	_sensorFactory.sensor.and.returnValue(sensor);
 
 	evothings = {
 		tisensortag: {
@@ -108,8 +112,7 @@ describe('Configure Job Component', () => {
 			_elementRef,
 			_jquery,
 			_foundation,
-			evothings, 
-			_ngZone
+			_sensorFactory
 		);
 	})
 

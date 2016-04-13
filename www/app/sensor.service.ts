@@ -20,9 +20,6 @@ export class SensorService {
 	}
 
 	sync() {
-		var headers = new Headers();
-        headers.append('Content-Type', 'application/json');
-
         var sensorsCopy = [];
 
         for (let sensor of this.sensors) {
@@ -33,6 +30,8 @@ export class SensorService {
         	})
         }
 
+		var headers = new Headers();
+        headers.append('Content-Type', 'application/json');
 		this._http.post('http://10.128.64.62:1337/devices/sync', JSON.stringify(sensorsCopy), {
 			headers: headers
 		}).subscribe((res) => console.log(res));
