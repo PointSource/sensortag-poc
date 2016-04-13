@@ -24,6 +24,7 @@ export class SensorService {
 
         for (let sensor of this.sensors) {
         	sensorsCopy.push({
+        		status: "DISCONNECTED",
         		systemId: sensor.systemId,
         		name: sensor.name,
         		policyNumber: sensor.policyNumber

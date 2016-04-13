@@ -1,7 +1,7 @@
 <div>
     <div class="callout" [ngClass]="{
         disconnected: sensor.status === 'DISCONNECTED' || sensor.status === 'CONNECTING' || sensor.status === 'CONNECTED' || sensor.status === 'READING_DEVICE_INFO',
-        highlight: sensor.data.keypressData !== 0
+        highlight: sensor.data && sensor.data.keypressData !== 0
     }">
         <div *ngIf="isNamed === false">
             <div class="input-group">
@@ -15,12 +15,12 @@
 
         <div *ngIf="isNamed === true">
             <h4 class="sensorName">{{sensor.name}} <small>{{sensor.systemId}}</small></h4>
-            <div *ngIf="sensor.data.humidityData">
+            <div *ngIf="sensor.data && sensor.data.humidityData">
                 <div>
                     Humidity: {{sensor.data.humidityData.relativeHumidity}}% rH
                 </div>
             </div>
-            <div *ngIf="sensor.data.temperatureData">
+            <div *ngIf="sensor.data && sensor.data.temperatureData">
                 <div>
                     Target Temp: {{sensor.data.temperatureData.targetTemperature}}&#x000B0; F
                 </div>

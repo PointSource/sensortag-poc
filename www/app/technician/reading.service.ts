@@ -1,5 +1,6 @@
 import {Injectable} from 'angular2/core';
 import {Reading} from './reading';
+import {Sensor} from '../sensor';
 import {Http, Headers, Response} from 'angular2/http';
 import 'rxjs/Rx';
 
@@ -44,6 +45,34 @@ export class ReadingService {
 			}
 		}
 		return readingsForPolicy;
+	}
+
+	takeReading(sensors: Sensor[], policyNumber: string) {
+		if (sensors.length > 0) {
+            let reading: Reading = {
+                policyNumber: policyNumber,
+                date: new Date().getTime(),
+                sensorData: []
+            };
+            for (let sensor of sensors) {
+                reading.sensorData.push({
+                    name: sensor.name,
+                    systemId: sensor.systemId,
+                    data: {
+                        humidityData: {
+                            relativeHumidity: sensor.data.humidityData.relativeHumidity
+                        },
+                        temperatureData: {
+                            targetTemperature: sensor.data.temperatureData.targetTemperature,
+                            ambientTemperature: sensor.data.temperatureData.ambientTemperature
+                        }
+                    }
+                });
+            }
+
+            this.addReading(reading);
+            return this.getReadingsForPolicy(policyNumber);
+        }
 	}
 
 }

@@ -62,31 +62,7 @@ export class JobDetailsComponent implements OnInit {
     }
 
     takeReading() {
-        if (this.sensors.length > 0) {
-            let reading: Reading = {
-                policyNumber: this.job.policyNumber,
-                date: new Date().getTime(),
-                sensorData: []
-            };
-            for (let sensor of this.sensors) {
-                reading.sensorData.push({
-                    name: sensor.name,
-                    systemId: sensor.systemId,
-                    data: {
-                        humidityData: {
-                            relativeHumidity: sensor.data.humidityData.relativeHumidity
-                        },
-                        temperatureData: {
-                            targetTemperature: sensor.data.temperatureData.targetTemperature,
-                            ambientTemperature: sensor.data.temperatureData.ambientTemperature
-                        }
-                    }
-                });
-            }
-
-            this._readingService.addReading(reading);
-            this.readings = this._readingService.getReadingsForPolicy(this.job.policyNumber);
-        }
+        this.readings = this._readingService.takeReading(this.sensors, this.job.policyNumber);
     }
 
     goToReadingDetails(type) {
