@@ -3,6 +3,7 @@ import {RouteParams} from 'angular2/router';
 
 import {SensorService} from '../sensor.service';
 import {JobService} from '../technician/job.service';
+import {ReadingService} from '../technician/reading.service';
 import {NavService} from '../nav.service';
 import {BLEService} from '../ble.service';
 
@@ -27,6 +28,7 @@ export class AccountDetailsComponent implements OnInit {
         private _jobService: JobService,
         private _bleService: BLEService,
         private _navService: NavService,
+        private _readingService: ReadingService;
         private _routeParams: RouteParams,
         @Inject('Evothings') private _evothings,
         private _ngZone: NgZone,
@@ -113,6 +115,7 @@ export class AccountDetailsComponent implements OnInit {
     }
 
     takeReading() {
+        this._readingService.takeReading(this.sensors, this.job.policyNumber);
         alert("Reading successfully submitted");
     }
 
