@@ -1,19 +1,3 @@
-						// [{
-						// 	systemId: "1234",
-						// 	policyNumber: "Job1",
-						// 	name: "Garage",
-						// 	status: "CONNECTED",
-						// 	sensortag: {},
-						// 	data: {},
-						// }, {
-						// 	systemId: "5678",
-						// 	policyNumber: "Job2",
-						// 	name: "Garage2",
-						// 	status: "CONNECTED",
-						// 	sensortag: {},
-						// 	data: {},
-						// }]
-
 import {Http} from 'angular2/http';
 
 class MockJobService extends JobService {
@@ -25,6 +9,47 @@ class MockJobService extends JobService {
 		}
 	}
 }
+
+
+var sensortag = {
+	startScanningForDevices: () => { },
+	statusCallback: () => sensortag,
+	errorCallback: () => sensortag,
+	keypressCallback: () => sensortag,
+	temperatureCallback: () => sensortag,
+	humidityCallback: () => sensortag,
+	connectToNearestDevice: () => { },
+	connectToDevice: () => { },
+	celsiusToFahrenheit: (celsius) => {
+		return (celsius * 9 / 5) + 32
+	},
+	deviceIsSensorTag: () => { }
+};
+
+var sensor = {
+	initialize: () => { },
+	sensortag: sensortag,
+	connectToDevice: () => { },
+	setName: () => {}
+};
+
+var _evothings = {
+		ble: jasmine.createSpyObj("ble", ['connect']),
+		easyble: jasmine.createSpyObj("easyble", ['startScan', 'stopScan']),
+		tisensortag: {
+			createInstance: function() {
+				return sensortag
+			}
+		}
+	}
+
+var device = jasmine.createSpyObj('device', [
+	'readServiceCharacteristic',
+	'readServices',
+	'close'
+])
+
+
 
 import {
 	beforeEach,
@@ -72,172 +97,87 @@ beforeEachProviders(() => {
 		SensorService,
 		AccountDetailsComponent,
 		provide('Evothings', {
-			useValue: {
-				tisensortag: {
-					createInstance: function() {
-						return {}
-					}
-				},
-				easyble: {
-					startScan: () => { },
-					stopScan: () => { }
-				}
-			}
+			useValue: _evothings
 		}),
 	];
 });
 
 
 describe('Account Details', () => {
-	// let _sensorService: SensorService;
-	// let _jobService: JobService;
-	// let _navService = jasmine.createSpyObj("_navService", ['setTitle']);
-	// let _bleService = jasmine.createSpyObj("_bleService", ['deviceConnectSuccess']);
-	// let _http: Http;
-	// let _routeParams = jasmine.createSpyObj("_routeParams", ['get']);
-	// let accountDetails;
-	// let _ngZone: NgZone;
-	// let _injector;
-	// let _sensorFactory;
-
-	// let _evothings;
-	// let sensortag;
-	// let sensor;
-	// let device;
-
-	// beforeEach( () => {
-	// 	_sensorService = new SensorService(_http);
-	// 	_jobService = new JobService(_sensorService);
-
-	// 	device = jasmine.createSpyObj('device', [
-	// 		'readServiceCharacteristic',
-	// 		'readServices',
-	// 		'close'
-	// 	])
 
 
-	// 	sensortag = {
-	// 		startScanningForDevices: () => {},
-	// 		statusCallback: () => sensortag,
-	// 		errorCallback: () => sensortag,
-	// 		keypressCallback: () => sensortag,
-	// 		temperatureCallback: () => sensortag,
-	// 		humidityCallback: () => sensortag,
-	// 		connectToNearestDevice: () => { },
-	// 		connectToDevice: () => { },
-	// 		celsiusToFahrenheit: (celsius) => {
-	// 			return (celsius * 9 / 5) + 32
-	// 		},
-	// 		deviceIsSensorTag: () => {}
-	// 	};
+	let _accountDetails;
+	let _sensorService;
+	let _sensorFactory;
 
-	// 	_evothings = {
-	// 		ble: jasmine.createSpyObj("ble", ['connect']),
-	// 		easyble: jasmine.createSpyObj("easyble", ['startScan', 'stopScan']),
-	// 		tisensortag: {
-	// 			createInstance: function() {
-	// 				return sensortag
-	// 			}
-	// 		}
-	// 	}
+	beforeEach(inject(
+		[AccountDetailsComponent, SensorService, SensorFactory],
+		(accountDetails: AccountDetailsComponent, sensorService: SensorService, sensorFactory: SensorFactory) => {
+			_accountDetails = accountDetails;
+			_sensorService = sensorService;
+			_sensorFactory = sensorFactory;
 
-	// 	sensor = {
-	// 		initialize: () => { },
-	// 		sensortag: sensortag,
-	// 		connectToDevice: () => { },
-	// 		setName: () => {}
-	// 	};
+			spyOn(_sensorService, "getSensorsForPolicy").and.returnValue([{
+				policyNumber: "Job1",
+				systemId: "MATCHES",
+				sensortag: sensortag
+			}]);
 
 
+			spyOn(_sensorFactory, "sensor").and.returnValue(sensor);
+		}
+	))
 
-	// 	_sensorFactory = jasmine.createSpyObj("_sensorFactory", ["sensor"]);
-	// 	_sensorFactory.sensor.and.returnValue(sensor);
+	describe('on load sensors', () => {
 
-	// 	spyOn(_jobService, "getJob").and.returnValue({
-	// 		policyNumber: "Job1",
-	// 		name: "Andrew Mortensen",
-	// 		numSensors: 0
-	// 	})
-
-
-	// 	spyOn(_sensorService, "getSensorsForPolicy").and.returnValue([{
-	// 		policyNumber: "Job1",
-	// 		systemId: "MATCHES",
-	// 		sensortag: sensortag
-	// 	}]);
-
-
-	// 	spyOn(_sensorService, "fetch").and.returnValue({
-	// 		add: (callback) => {
-	// 			callback();
-	// 		}
-	// 	});
-
-	// 	accountDetails = new AccountDetailsComponent(
-	// 		_sensorService,
-	// 		_jobService,
-	// 		_bleService,
-	// 		_navService,
-	// 		_routeParams,
-	// 		_evothings,
-	// 		_ngZone,
-	// 		_injector,
-	// 		_sensorFactory
-	// 	);
-	// })
-
-	fdescribe('on load sensors', () => {
-
-		let accountDetails;
 		let sensorService;
 
 		beforeEach(inject(
-			[AccountDetailsComponent, SensorService],
-			(_accountDetails: AccountDetailsComponent, _sensorService: SensorService) => {
+			[SensorService],
+			(_sensorService: SensorService) => {
 				sensorService = _sensorService;
-				accountDetails = _accountDetails;
 				spyOn(_accountDetails, "scanForSensors");
-				spyOn(_sensorService, "getSensorsForPolicy");
 				_accountDetails.ngOnInit();
 				_accountDetails.loadSensors();
 			}
 		))
 
 		it('calls sensorService.getSensorsForPolicy with this policy number', () => {
-			expect(sensorService.getSensorsForPolicy).toHaveBeenCalledWith(accountDetails.job.policyNumber);
+			expect(sensorService.getSensorsForPolicy).toHaveBeenCalledWith(_accountDetails.job.policyNumber);
 		});
 
 		it('calls scanForSensors', () => {
-			expect(accountDetails.scanForSensors).toHaveBeenCalled();
+			expect(_accountDetails.scanForSensors).toHaveBeenCalled();
 		});
 
 	})
 
 
-	xdescribe('on scan for sensors', () => {
+	describe('on scan for sensors', () => {
 
 		beforeEach(() => {
-			accountDetails.ngOnInit();
-			accountDetails.scanForSensors();
+			_accountDetails.ngOnInit();
+			_accountDetails.scanForSensors();
 		})
 
 		it('calls easyble.scan', () => {
+			console.log(_evothings);
 			expect(_evothings.easyble.startScan).toHaveBeenCalled();
 		});
 
 
 		it('sets status to scanning', () => {
-			expect(accountDetails.status).toEqual("SCANNING");
+			expect(_accountDetails.status).toEqual("SCANNING");
 		});
 
 	});
 
 
-	xdescribe('on stop scan', () => {
+	describe('on stop scan', () => {
 
 		it('calls easyble.stopScan', () => {
-			accountDetails.ngOnInit();
-			accountDetails.stopScanning();
+			_accountDetails.ngOnInit();
+			_accountDetails.stopScanning();
 			expect(_evothings.easyble.stopScan).toHaveBeenCalled();
 		});
 
@@ -245,23 +185,23 @@ describe('Account Details', () => {
 
 
 
-	xdescribe('when device is connected', () => {
+	describe('when device is connected', () => {
 
 		beforeEach(() => {
-			accountDetails.ngOnInit();
-			accountDetails.loadSensors();
+			_accountDetails.ngOnInit();
+			_accountDetails.loadSensors();
 		})
 
 		describe("if the system id matches,", () => {
 
 			it('adds the device to the list of matches', () => {
-				accountDetails.gotSystemId("MATCHES", device);
-				expect(accountDetails.sensors.length).toBeGreaterThan(0);
+				_accountDetails.gotSystemId("MATCHES", device);
+				expect(_accountDetails.sensors.length).toBeGreaterThan(0);
 			});
 
 			it('connects to the device using the sensor that matches', () => {
 				spyOn(sensor, "connectToDevice");
-				accountDetails.gotSystemId("MATCHES", device);
+				_accountDetails.gotSystemId("MATCHES", device);
 				expect(sensor.connectToDevice).toHaveBeenCalled();
 			});
 		})
@@ -270,11 +210,11 @@ describe('Account Details', () => {
 		describe('if system id does not match', () => {
 
 			beforeEach(() => {
-				accountDetails.gotSystemId("NOT A MATCH", device);
+				_accountDetails.gotSystemId("NOT A MATCH", device);
 			});
 
 			it('does not add it to the list', () => {
-				expect(accountDetails.sensors.length).toEqual(0);
+				expect(_accountDetails.sensors.length).toEqual(0);
 			});
 
 			it('disconnects from device', () => {
@@ -286,12 +226,12 @@ describe('Account Details', () => {
 
 	});
 
-	xdescribe('on scan fail', () => {
+	describe('on scan fail', () => {
 
 		it('sets status to SCAN_FAIL', () => {
-			accountDetails.ngOnInit();
-			accountDetails.scanFail();
-			expect(accountDetails.status).toEqual("SCAN_FAIL");
+			_accountDetails.ngOnInit();
+			_accountDetails.scanFail();
+			expect(_accountDetails.status).toEqual("SCAN_FAIL");
 		});
 
 	});
