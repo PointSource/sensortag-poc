@@ -10,9 +10,7 @@ export class ReadingService {
 
 	constructor(
         private _http: Http
-	) { 
-		this.fetch();
-	}
+	) { }
 
 	fetch() {
 		return this._http.get('http://10.128.64.62:1337/readings')
