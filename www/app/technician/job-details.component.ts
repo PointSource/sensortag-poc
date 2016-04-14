@@ -58,7 +58,7 @@ export class JobDetailsComponent implements OnInit {
     }
 
     takeReading() {
-        this.readings = this._readingService.takeReading(this.sensors, this.job.policyNumber);
+        this.readings = this._readingService.takeReading(this.sensors, this.job.policyNumber, false);
     }
 
     goToReadingDetails(type) {

@@ -115,8 +115,7 @@ export class AccountDetailsComponent implements OnInit {
     }
 
     takeReading() {
-        this._readingService.takeReading(this.sensors, this.job.policyNumber);
-        alert("Reading successfully submitted");
+        this._readingService.takeReading(this.sensors, this.job.policyNumber, true);
     }
 
 }

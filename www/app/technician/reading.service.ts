@@ -47,12 +47,13 @@ export class ReadingService {
 		return readingsForPolicy;
 	}
 
-	takeReading(sensors: Sensor[], policyNumber: string) {
+	takeReading(sensors: Sensor[], policyNumber: string, isClient: boolean) {
 		if (sensors.length > 0) {
             let reading: Reading = {
                 policyNumber: policyNumber,
                 date: new Date().getTime(),
-                sensorData: []
+                sensorData: [],
+                isClient: isClient === true
             };
             for (let sensor of sensors) {
                 reading.sensorData.push({

@@ -6,4 +6,5 @@ export interface Reading {
 		systemId: string,
 		data: any
 	}];
+	isClient: boolean;
 }

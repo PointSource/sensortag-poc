@@ -58,7 +58,8 @@ export class ReadingHistoryComponent implements OnInit {
 
                 readingsBySensor[sensorData.systemId].data.push({
                     x: new Date(reading.date),
-                    y: dataPoint
+                    y: dataPoint,
+                    r: reading.isClient ? 2 : 1
                 });
             }
         }
