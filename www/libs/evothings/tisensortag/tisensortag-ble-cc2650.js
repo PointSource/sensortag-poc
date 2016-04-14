@@ -304,6 +304,7 @@
 		}
 
 		/**
+		 * SensorTag CC2650.
 		 * Calculate humidity values from raw data.
 		 * @param data - an Uint8Array.
 		 * @return Object with fields: humidityTemperature, relativeHumidity.
