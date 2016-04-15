@@ -93,11 +93,35 @@
                         fromUtf8: function () {return "1.2.3"}
                     }
 
+                    var device = {
+                        systemId: "0000000000000000",
+                        readServices: function(services, callback) {
+                            callback(device);
+                        },
+                        readServiceCharacteristic: function(service, characteristic, callback) {
+                            callback(new ArrayBuffer(8));
+                        },
+                        close: function() {},
+                        connect: function (callback) {
+                            callback(device);
+                        },
+                        writeServiceCharacteristic: function () {},
+                        writeServiceDescriptor: function () {},
+                        enableServiceNotification: function (service, data, callback, errorFun)  {
+                            setInterval(function ()  {
+                                callback([
+                                    Math.floor(Math.random() * 12) + 12, 
+                                    Math.floor(Math.random() * 12) + 84, 
+                                    Math.floor(Math.random() * 12) + 20, 
+                                    Math.floor(Math.random() * 12) + 55
+                                ]);
+                            }, 1000);
+                        }
+                    }
 
                     evothings.easyble.startScan = function (success, fail) {
                         success({
                                 device: 123,
-                                address: "1234" + Math.floor(Math.random() * 12) + 12,
                                 advertisementData: {
                                     kCBAdvDataLocalName: 'CC2650 SensorTag'
                                 },
@@ -106,7 +130,7 @@
                                 },
                                 rssi: 1000,
                                 connect: function (callback) {
-                                    callback();
+                                    callback(device);
                                 },
                                 readServices: function (something, callback, errorFun) {
                                     callback();
