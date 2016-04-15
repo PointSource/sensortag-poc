@@ -17,6 +17,7 @@ import {SensorComponent} from '../sensor.component';
     directives: [SensorComponent]
 })
 export class AccountDetailsComponent implements OnInit {
+    foundAddresses: any[]
     sensors: Sensor[];
     job: Job;
     status: string;
@@ -36,6 +37,7 @@ export class AccountDetailsComponent implements OnInit {
     ) { }
 
     ngOnInit() {
+        this.foundAddresses = [];
         this.sensors = [];
         var policyNumber = this._routeParams.get('policyNumber');
         this.job = this._jobService.getJob(policyNumber);
@@ -82,23 +84,31 @@ export class AccountDetailsComponent implements OnInit {
         console.log("scanSuccess");
         var self = this;
 
-        this._bleService.getSystemIdFromDevice(device, 
-            (systemId, device) => {
-                console.log("gotSystemId success");
+        if (this._bleService.deviceIsSensorTag(device) && this.foundAddresses.indexOf(device.address) === -1) {
+            this.foundAddresses.push(device.address);
+            this._bleService.getSystemIdFromDevice(device, 
+                (systemId, device) => {
+                    console.log("gotSystemId success");
 
-                self._ngZone.run(() => {
-                    self.gotSystemId(systemId, device);
-                });
-            }, self.systemIdFail);
+                    self._ngZone.run(() => {
+                        self.gotSystemId(systemId, device);
+                    });
+                }, self.systemIdFail
+            );
+        }
+
     }
 
     scanFail() {
-        console.log("scanFail");
+        console.error("scanFail");
         this.status = "SCAN_FAIL";
     }
 
     stopScanning() {
-        console.log("stopScanning");
+        console.log("stopScanning", this.foundAddresses);
+        if (this.foundAddresses.length < this.sensors.length) {
+            this.status = "Found " + this.foundAddresses.length + " sensors of " + this.sensors.length;
+        }
         this._evothings.easyble.stopScan();
     }
 
@@ -111,7 +121,6 @@ export class AccountDetailsComponent implements OnInit {
             console.log('matches!!');
             device.close();
             foundSensor.connectToDevice(device);
-            // this.sensors.push(sensor);
         } else {
             console.log('disconnecting');
             device.close();

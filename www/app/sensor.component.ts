@@ -32,6 +32,10 @@ export class SensorComponent {
         this.onDeviceDisconnected.emit("event");
     }
 
+    scanForSensor() {
+        this.sensor.scanForSensor();
+    }
+
     goToSensorDetails() {
         this._router.navigate(['SensorDetail', { systemId: this.sensor.systemId }]);
     }

@@ -39,6 +39,14 @@
 
                 <button *ngIf="isConnected" (click)="goToSensorDetails()" class="button secondary hollow">Details</button>
             </div>
+
+
+            <div  *ngIf="mode==='client' && sensor.status === 'DISCONNECTED' || sensor.status === 'SENSORTAG_NOT_FOUND'" class="text-right">
+                <button (click)="scanForSensor()" class="button secondary hollow">
+                    Connect
+                </button>
+            </div>
+
         </div>
     </div>
 </div>

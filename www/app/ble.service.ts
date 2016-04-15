@@ -22,6 +22,10 @@ export class BLEService {
         this._evothings.easyble.closeConnectedDevices();
     }
 
+    deviceIsSensorTag(device) {
+        return this.sensortag.deviceIsSensorTag(device)
+    }
+
     getSystemIdFromDevice(device, success, fail) {
         if(this.sensortag.deviceIsSensorTag(device)) {
             device.connect(

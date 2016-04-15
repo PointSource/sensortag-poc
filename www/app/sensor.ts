@@ -1,5 +1,6 @@
 import {NgZone, Inject} from 'angular2/core';
 import {SensorData} from './sensor-data';
+import {BLEService} from './ble.service';
 
 export class Sensor {
 	systemId: string;
@@ -8,13 +9,16 @@ export class Sensor {
 	status: string;
 	sensortag: any;
 	data: SensorData;
+    _bleService: BLEService;
 
     constructor(
 		private _ngZone: NgZone,
+        // private _bleService: BLEService,
         @Inject('Evothings') private _evothings
 	) { }
 
     initialize(policyNumber: string) {
+        this._bleService = new BLEService(this._evothings);
         this.policyNumber = policyNumber;
 
         // Create SensorTag CC2650 instance.
@@ -62,6 +66,43 @@ export class Sensor {
             })
 
         this.sensortag.connectToDevice(device);
+    }
+
+    scanForSensor() {
+        var self = this;
+        console.log('Sensor.scanForSensor()');
+        this.sensortag.startScanningForDevices((device) => {
+            console.log('Sensor.scanForSensor() found device');
+            if (self._bleService.deviceIsSensorTag(device)) {
+                self._bleService.getSystemIdFromDevice(device,
+                    (systemId, device) => {
+                        console.log("Sensor.scanForSensor() gotSystemId success");
+
+                        self._ngZone.run(() => {
+                            self.gotSystemId(systemId, device);
+                        });
+                    }, () => {
+                        console.log("Sensor.scanForSensor() system id fail");
+                    }
+                );
+            }
+        });
+
+        setTimeout(() => { 
+            this.sensortag.stopScanningForDevices 
+        }, 1000);
+    }
+
+    gotSystemId(systemId, device) {
+        console.log("Sensor.gotSystemId()", systemId);
+        if (this.systemId === systemId) {
+            console.log('Sensor.gotSystemId() matches!!');
+            device.close();
+            this.connectToDevice(device);
+        } else {
+            console.log('Sensor.gotSystemId() disconnecting');
+            device.close();
+        }
     }
 
     connectToNearestDevice(statusCallback) {
