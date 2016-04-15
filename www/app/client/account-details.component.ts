@@ -74,6 +74,8 @@ export class AccountDetailsComponent implements OnInit {
 
         this.modalElement.foundation('open');
         this.status = "SCANNING";
+
+        this.foundAddresses = [];
         this._bleService.disconnectAllDevices();
         this._evothings.easyble.startScan(function(device) {
             self._ngZone.run(() => {
@@ -104,7 +106,6 @@ export class AccountDetailsComponent implements OnInit {
                 }, self.systemIdFail
             );
         }
-
     }
 
     scanFail() {
@@ -113,9 +114,9 @@ export class AccountDetailsComponent implements OnInit {
     }
 
     stopScanning() {
-        console.log("stopScanning", this.foundAddresses);
         if (this.foundAddresses.length < this.sensors.length) {
-            this.status = "Found " + this.foundAddresses.length + " sensors of " + this.sensors.length;
+            // this._bleService.disconnectAllDevices();
+            this.status = "CONNECTING";
         } else {
             this.modalElement.foundation('close');
         }
