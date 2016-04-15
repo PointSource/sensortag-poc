@@ -1,6 +1,18 @@
-<h1>
-	{{status}}
-</h1>
+<div class="reveal">
+
+	<h5>{{status}}</h5>
+
+    <h5 *ngIf="status === 'SCANNING'">Scanning for devices</h5>
+
+    <div *ngIf="status !== 'SCANNING' && foundAddresses.length < sensors.length" class="row">
+	    <h5>
+	    	Found {{foundAddresses.length}} sensors out of {{sensors.length}}. Try scanning again?
+	    </h5>
+    	<button class="button expanded" (click)="scanForSensors()">Try again</button>
+    	<button class="button secondary hollow expanded" data-close>Cancel</button>
+    </div>
+
+</div>
 
 <button *ngIf="sensors && sensors.length > 0 && foundAddresses.length >= sensors.length" class="button large expanded" (click)="takeReading()">
 	<i class="fa fa-tachometer"></i>Take a Reading

@@ -30,6 +30,7 @@
             </div>
 
             <h4 *ngIf="sensor.status === 'CONNECTING' || sensor.status === 'CONNECTED' || sensor.status === 'READING_DEVICE_INFO'">CONNECTING</h4>
+            
             <div  *ngIf="mode!=='client' && !(sensor.status === 'CONNECTING' || sensor.status === 'CONNECTED' || sensor.status === 'READING_DEVICE_INFO')" class="text-right">
                 <button (click)="disconnect()" class="button alert hollow">
                     Delete

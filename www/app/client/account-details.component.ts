@@ -1,4 +1,4 @@
-import {Component, OnInit, Inject, NgZone, Injector} from 'angular2/core';
+import {Component, OnInit, Inject, NgZone, ElementRef} from 'angular2/core';
 import {RouteParams} from 'angular2/router';
 
 import {SensorService} from '../sensor.service';
@@ -22,21 +22,26 @@ export class AccountDetailsComponent implements OnInit {
     job: Job;
     status: string;
     sensortag: any;
+    private modalElement: any;
 
     constructor(
         private _sensorService: SensorService,
         private _jobService: JobService,
         private _bleService: BLEService,
         private _navService: NavService,
-        private _readingService: ReadingService;
+        private _readingService: ReadingService,
         private _routeParams: RouteParams,
+        private _elementRef: ElementRef,
         @Inject('Evothings') private _evothings,
+        @Inject('jQuery') private _jquery,
+        @Inject('Foundation') private _foundation,
         private _ngZone: NgZone,
-        private _injector: Injector,
         private _sensorFactory: SensorFactory
     ) { }
 
     ngOnInit() {
+        this.modalElement = this._jquery(this._elementRef.nativeElement.children[0]);
+        new this._foundation.Reveal(this.modalElement, { closeOnClick: false });
         this.foundAddresses = [];
         this.sensors = [];
         var policyNumber = this._routeParams.get('policyNumber');
@@ -66,7 +71,10 @@ export class AccountDetailsComponent implements OnInit {
 
     scanForSensors() {
         var self = this;
+
+        this.modalElement.foundation('open');
         this.status = "SCANNING";
+        this._bleService.disconnectAllDevices();
         this._evothings.easyble.startScan(function(device) {
             self._ngZone.run(() => {
                 self.scanSuccess(device);
@@ -108,6 +116,8 @@ export class AccountDetailsComponent implements OnInit {
         console.log("stopScanning", this.foundAddresses);
         if (this.foundAddresses.length < this.sensors.length) {
             this.status = "Found " + this.foundAddresses.length + " sensors of " + this.sensors.length;
+        } else {
+            this.modalElement.foundation('close');
         }
         this._evothings.easyble.stopScan();
     }
