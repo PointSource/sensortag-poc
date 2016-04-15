@@ -1,5 +1,5 @@
 import {Component, OnInit, Inject, NgZone, ElementRef} from 'angular2/core';
-import {RouteParams} from 'angular2/router';
+// import {RouteParams} from 'angular2/router';
 
 import {SensorService} from '../sensor.service';
 import {JobService} from '../technician/job.service';
@@ -30,7 +30,6 @@ export class AccountDetailsComponent implements OnInit {
         private _bleService: BLEService,
         private _navService: NavService,
         private _readingService: ReadingService,
-        private _routeParams: RouteParams,
         private _elementRef: ElementRef,
         @Inject('Evothings') private _evothings,
         @Inject('jQuery') private _jquery,
@@ -44,10 +43,20 @@ export class AccountDetailsComponent implements OnInit {
         new this._foundation.Reveal(this.modalElement, { closeOnClick: false });
         this.foundAddresses = [];
         this.sensors = [];
-        var policyNumber = this._routeParams.get('policyNumber');
-        this.job = this._jobService.getJob(policyNumber);
         this._navService.setTitle("My Sensors");
-        this.loadSensors();
+
+        this.modalElement.foundation('open');
+    }
+
+    findAccount(policyNumber: string) {
+        var job = this._jobService.getJob(policyNumber);
+
+        if (job === undefined) {
+            this.status = "ERROR";
+        } else {
+            this.job = job;
+            this.loadSensors();
+        }
     }
 
     loadSensors() {
@@ -72,7 +81,6 @@ export class AccountDetailsComponent implements OnInit {
     scanForSensors() {
         var self = this;
 
-        this.modalElement.foundation('open');
         this.status = "SCANNING";
 
         this.foundAddresses = [];

@@ -1,17 +1,31 @@
 <div class="reveal">
 
-	<h5>{{status}}</h5>
+    <div *ngIf="!job">
+        <p *ngIf="status !== 'ERROR'">Help us to find your account by entering your policy number below</p>
 
-    <h5 *ngIf="status === 'SCANNING'">Scanning for devices</h5>
+        <p *ngIf="status === 'ERROR'" class="error">Could not find policy. Please try again.</p>
 
-    <div *ngIf="status !== 'SCANNING' && foundAddresses.length < sensors.length" class="row">
-	    <h5>
-	    	Found {{foundAddresses.length}} sensors out of {{sensors.length}}. Try scanning again?
-	    </h5>
-    	<button class="button expanded" (click)="scanForSensors()">Try again</button>
-    	<button class="button secondary hollow expanded" data-close>Cancel</button>
+        <label>Policy Number
+            <input type="number" placeholder="####" #policyNumberInput>
+        </label>
+
+        <button class="button expanded" (click)="findAccount(policyNumberInput.value)">Find My Account</button>
     </div>
 
+
+    <div *ngIf="job">
+    	<h5>{{status}}</h5>
+
+        <h5 *ngIf="status === 'SCANNING'">Scanning for devices</h5>
+
+        <div *ngIf="status !== 'SCANNING' && foundAddresses.length < sensors.length" class="row">
+    	    <h5>
+    	    	Found {{foundAddresses.length}} sensors out of {{sensors.length}}. Try scanning again?
+    	    </h5>
+        	<button class="button expanded" (click)="scanForSensors()">Try again</button>
+        	<button class="button secondary hollow expanded" data-close>Cancel</button>
+        </div>
+    </div>
 </div>
 
 <button *ngIf="sensors && sensors.length > 0 && foundAddresses.length >= sensors.length" class="button large expanded" (click)="takeReading()">

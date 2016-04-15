@@ -23,7 +23,7 @@ export class LandingComponent implements OnInit {
     }
 
     goToClient() {
-        this._router.navigate(['FindAccount', {}]);
+        this._router.navigate(['AccountDetails', {}]);
     }
 
     disconnect() {
