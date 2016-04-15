@@ -1,131 +1,110 @@
-import {NgZone, ElementRef} from 'angular2/core';
-import {RouteParams} from 'angular2/router';
-import {Http} from 'angular2/http';
-import {SensorService} from '../sensor.service';
-import {JobService} from './job.service';
-import {NavService} from '../nav.service';
+import {
+	beforeEach,
+	beforeEachProviders,
+	describe,
+	expect,
+	it,
+	inject,
+	injectAsync } from 'angular2/testing';
+import {provide} from "angular2/core"
 import {ConfigureJobComponent} from "./configure-job.component"
+import {JobService} from "./job.service"
+import {RouteParams} from 'angular2/router';
+import {ElementRef} from 'angular2/core';
 
-var sensortag;
-var sensor;
-var tisensortag;
-var evothings;
-var iotFoundationLib;
-var _sensorFactory;
-
-beforeEach(() => {
-	sensortag = {
-		statusCallback: () => sensortag,
-		errorCallback: () => sensortag,
-		keypressCallback: () => sensortag,
-		temperatureCallback: () => sensortag,
-		humidityCallback: () => sensortag,
-		connectToNearestDevice: () => { },
-		connectToDevice: () => { },
-		celsiusToFahrenheit: (celsius) => {
-			return (celsius * 9 / 5) + 32
-		},
-		getDeviceAddress: () => {
-			return "address123"
-		},
-		getSystemId: () => {
-			return "000111222"
-		},
-		getDevice: () => {
-			return {
-				address: "address123"
-			}
-		}
-	};
-
-	sensor = {
-		sensortag: sensortag,
-		policyNumber: "Job1",
-		data: {
-			humidityData: {
-				lastTenValues: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-			}
-		}
-	};
-
-	_sensorFactory = jasmine.createSpyObj("_sensorFactory", ["sensor"]);
-	_sensorFactory.sensor.and.returnValue(sensor);
-
-	evothings = {
-		tisensortag: {
-			createInstance: function() {
-				return sensortag
-			}
-		}
+var MockElementRef = {
+	nativeElement: {
+		children: []
 	}
+}
 
-	var objIOT = {
-		onConnectSuccessCallback: () => { return objIOT },
-		onConnectFailureCallback: () => { return objIOT },
-		connectToFoundationCloud: () => { return objIOT },
-		publishToFoundationCloud: () => { }
+class MockRouteParams extends RouteParams {
+	get() {
+		return "01929"
 	}
+}
 
-	iotFoundationLib = {
-		createInstance: () => {
-			return objIOT
-		}
+
+class MockJobService extends JobService {
+	get() {
+		return "Job1"
 	}
-})
+}
 
 
+var sensortag = {
+};
+
+var sensor = {
+	initialize: () => { },
+	sensortag: {},
+	connectToDevice: () => { },
+	setName: () => { },
+	policyNumber: '01929',
+	data: {
+		humidityData: {
+			lastTenValues: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+			relativeHumidity: 0
+		},
+		temperatureData: {
+			lastTenAmbient: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+			lastTenTarget: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+			ambientTemperature: 0,
+			targetTemperature: 0
+		},
+		keypressData: 0
+	}
+};
+
+let foundation = jasmine.createSpyObj("_foundation", ['Reveal']);
+
+
+beforeEachProviders(() => {
+	return [
+		JobService,
+		provide(RouteParams, { useClass: MockRouteParams }),
+		provide('Foundation', {useValue: foundation}),
+		provide(ElementRef, { useValue: MockElementRef }),
+		ConfigureJobComponent,
+		provide('jQuery', {
+			useValue: () => {
+				return {
+					foundation: () => { }
+				}
+			}
+		}),
+
+	]
+});
 
 describe('Configure Job Component', () => {
-	let _sensorService: SensorService;
-	let _jobService: JobService;
-	let _navService = jasmine.createSpyObj("_navService", ['setTitle']);
-	let _routeParams = jasmine.createSpyObj("_routeParams", ['get']);
-	let _elementRef = {
-		nativeElement: {
-			children: []
-		}
-	};
-	let _jquery = () => { 
-		return {
-			foundation: ()=>{}
-		}
-	};
-	let _ngZone: NgZone;
-	let _foundation = jasmine.createSpyObj("_foundation", ['Reveal']);
-	let _http: Http;
-	let configureJob;
 
-	beforeEach(() => {
-		_sensorService = new SensorService(_http);
-		_jobService = new JobService(_sensorService);
+	let _configureJob;
+	let _jobService;
 
-		spyOn(_jobService, "getJob").and.returnValue({
-			policyNumber: "Job1",
-			name: "Andrew Mortensen",
-			numSensors: 0
-		})
-		configureJob = new ConfigureJobComponent(
-			_sensorService,
-			_jobService,
-			_navService,
-			_routeParams,
-			_elementRef,
-			_jquery,
-			_foundation,
-			_sensorFactory
-		);
-	})
+	beforeEach(inject(
+		[ConfigureJobComponent, JobService],
+		(configureJob: ConfigureJobComponent, jobService: JobService) => {
+			_configureJob = configureJob;
+			_jobService = jobService;
+			_jobService.addJob({
+				name: "Peterson, Jared",
+				policyNumber: "01929",
+				numSensors: 0
+			});
+		}
+	))
 
 	describe('on init', () => {
 
 		it('fills list with any devices that were saved', () => {
-			configureJob._sensorService.addSensor({
-				address: "address123"
+			_configureJob._sensorService.addSensor({
+				policyNumber: "01929"
 			});
-			spyOn(configureJob._sensorService, "getSensorsForPolicy").and.callThrough();
-			configureJob.ngOnInit();
-			expect(configureJob._sensorService.getSensorsForPolicy).toHaveBeenCalled();
-			expect(configureJob.sensors.length).toBe(1);
+			spyOn(_configureJob._sensorService, "getSensorsForPolicy").and.callThrough();
+			_configureJob.ngOnInit();
+			expect(_configureJob._sensorService.getSensorsForPolicy).toHaveBeenCalled();
+			expect(_configureJob.sensors.length).toBe(1);
 		});
 	});
 
@@ -134,16 +113,16 @@ describe('Configure Job Component', () => {
 	describe('when device is connected', () => {
 
 		beforeEach(() => {
-			configureJob.ngOnInit();
+			_configureJob.ngOnInit();
 		})
 
 		it('adds the sensortag to the list of connected devices', () => {
-			spyOn(configureJob._sensorService, "addSensor").and.callThrough();
-			configureJob.deviceConnectedHandler(sensor);
-			expect(configureJob._sensorService.addSensor).toHaveBeenCalled();
-			expect(configureJob.sensors[0].sensortag)
-				.toEqual(sensortag);
-			expect(configureJob.sensors[0].data.humidityData.lastTenValues)
+			spyOn(_configureJob._sensorService, "addSensor").and.callThrough();
+			_configureJob.deviceConnectedHandler(sensor);
+			expect(_configureJob._sensorService.addSensor).toHaveBeenCalled();
+			console.log(_configureJob.sensors);
+			console.log(_configureJob.job.policyNumber);
+			expect(_configureJob.sensors[0].data.humidityData.lastTenValues)
 				.toEqual([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
 		})
 
@@ -153,32 +132,32 @@ describe('Configure Job Component', () => {
 
 
 		it('should update main status', () => {
-			configureJob.ngOnInit();
-			spyOn(configureJob.modalElement, "foundation");
-			configureJob.statusHandler(sensortag, "SCANNING");
-			expect(configureJob.status).toBe("SCANNING");
+			_configureJob.ngOnInit();
+			spyOn(_configureJob.modalElement, "foundation");
+			_configureJob.statusHandler(sensortag, "SCANNING");
+			expect(_configureJob.status).toBe("SCANNING");
 		});
 
 
 		it('should update status percentage', () => {
-			configureJob.ngOnInit();
-			configureJob.statusHandler(sensortag, "SCANNING");
-			expect(configureJob.statusPercentage).toBe(20);
-			configureJob.statusHandler(sensortag, "SENSORTAG_FOUND");
-			expect(configureJob.statusPercentage).toBe(40);
-			configureJob.statusHandler(sensortag, "CONNECTING");
-			expect(configureJob.statusPercentage).toBe(60);
-			configureJob.statusHandler(sensortag, "READING_DEVICE_INFO");
-			expect(configureJob.statusPercentage).toBe(80);
-			configureJob.statusHandler(sensortag, "DEVICE_INFO_AVAILABLE");
-			expect(configureJob.statusPercentage).toBe(100);
+			_configureJob.ngOnInit();
+			_configureJob.statusHandler(sensortag, "SCANNING");
+			expect(_configureJob.statusPercentage).toBe(20);
+			_configureJob.statusHandler(sensortag, "SENSORTAG_FOUND");
+			expect(_configureJob.statusPercentage).toBe(40);
+			_configureJob.statusHandler(sensortag, "CONNECTING");
+			expect(_configureJob.statusPercentage).toBe(60);
+			_configureJob.statusHandler(sensortag, "READING_DEVICE_INFO");
+			expect(_configureJob.statusPercentage).toBe(80);
+			_configureJob.statusHandler(sensortag, "DEVICE_INFO_AVAILABLE");
+			expect(_configureJob.statusPercentage).toBe(100);
 		});
 
 		it('if status is DEVICE_INFO_AVAILABLE add sensortag to connected devices', () => {
-			configureJob.ngOnInit();
-			spyOn(configureJob, "deviceConnectedHandler");
-			configureJob.statusHandler(sensortag, "DEVICE_INFO_AVAILABLE");
-			expect(configureJob.deviceConnectedHandler).toHaveBeenCalled();
+			_configureJob.ngOnInit();
+			spyOn(_configureJob, "deviceConnectedHandler");
+			_configureJob.statusHandler(sensortag, "DEVICE_INFO_AVAILABLE");
+			expect(_configureJob.deviceConnectedHandler).toHaveBeenCalled();
 		});
 
 	});
@@ -186,10 +165,10 @@ describe('Configure Job Component', () => {
 
 	describe('when device is named', () => {
 		it('sets device name to new name', () => {
-			configureJob.ngOnInit();
-			configureJob.deviceConnectedHandler(sensor);
-			configureJob.nameSensor("new name");
-			expect(configureJob.sensors[0].name).toBe("new name");
+			_configureJob.ngOnInit();
+			_configureJob.deviceConnectedHandler(sensor);
+			_configureJob.nameSensor("new name");
+			expect(_configureJob.sensors[0].name).toBe("new name");
 		});
 
 	});

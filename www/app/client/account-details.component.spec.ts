@@ -1,3 +1,14 @@
+import {
+	beforeEach,
+	beforeEachProviders,
+	describe,
+	expect,
+	it,
+	inject,
+	injectAsync } from 'angular2/testing';
+import {provide} from "angular2/core"
+
+
 import {Http} from 'angular2/http';
 
 class MockJobService extends JobService {
@@ -10,25 +21,9 @@ class MockJobService extends JobService {
 	}
 }
 
-
-var sensortag = {
-	startScanningForDevices: () => { },
-	statusCallback: () => sensortag,
-	errorCallback: () => sensortag,
-	keypressCallback: () => sensortag,
-	temperatureCallback: () => sensortag,
-	humidityCallback: () => sensortag,
-	connectToNearestDevice: () => { },
-	connectToDevice: () => { },
-	celsiusToFahrenheit: (celsius) => {
-		return (celsius * 9 / 5) + 32
-	},
-	deviceIsSensorTag: () => { }
-};
-
 var sensor = {
 	initialize: () => { },
-	sensortag: sensortag,
+	sensortag: {},
 	connectToDevice: () => { },
 	setName: () => {}
 };
@@ -38,7 +33,7 @@ var _evothings = {
 		easyble: jasmine.createSpyObj("easyble", ['startScan', 'stopScan']),
 		tisensortag: {
 			createInstance: function() {
-				return sensortag
+				return {}
 			}
 		}
 	}
@@ -50,16 +45,6 @@ var device = jasmine.createSpyObj('device', [
 ])
 
 
-
-import {
-	beforeEach,
-	beforeEachProviders,
-	describe,
-	expect,
-	it,
-	inject,
-	injectAsync } from 'angular2/testing';
-import {provide} from "angular2/core"
 
 import {RouteParams} from 'angular2/router';
 
@@ -120,7 +105,7 @@ describe('Account Details', () => {
 			spyOn(_sensorService, "getSensorsForPolicy").and.returnValue([{
 				policyNumber: "Job1",
 				systemId: "MATCHES",
-				sensortag: sensortag
+				sensortag: {}
 			}]);
 
 
