@@ -17,7 +17,6 @@ import {SensorComponent} from '../sensor.component';
     directives: [SensorComponent]
 })
 export class AccountDetailsComponent implements OnInit {
-    savedSensors: any[];
     sensors: Sensor[];
     job: Job;
     status: string;
@@ -46,8 +45,19 @@ export class AccountDetailsComponent implements OnInit {
 
     loadSensors() {
         this._sensorService.fetch().add(() => {
-            this.savedSensors = this._sensorService.getSensorsForPolicy(this.job.policyNumber);
-            this.scanForSensors();
+            let savedSensors = this._sensorService.getSensorsForPolicy(this.job.policyNumber);
+            for (let savedSensor of savedSensors) {
+                var sensor = this._sensorFactory.sensor(this.job.policyNumber);
+                sensor.setName(savedSensor.name);
+                sensor.setSystemId(savedSensor.systemId);
+                this.sensors.push(sensor);
+            }
+
+            if (this.sensors.length > 0) {
+                this.scanForSensors();
+            } else {
+                this.status = "No Sensors on Account";
+            }
         });
 
     }
@@ -74,6 +84,8 @@ export class AccountDetailsComponent implements OnInit {
 
         this._bleService.getSystemIdFromDevice(device, 
             (systemId, device) => {
+                console.log("gotSystemId success");
+
                 self._ngZone.run(() => {
                     self.gotSystemId(systemId, device);
                 });
@@ -92,16 +104,14 @@ export class AccountDetailsComponent implements OnInit {
 
     gotSystemId (systemId, device) {
         console.log("gotSystemId", systemId);
-        var foundSensor = this.savedSensors.find((sensor) => {
+        var foundSensor = this.sensors.find((sensor) => {
             return sensor.systemId === systemId;
         })
         if (foundSensor !== undefined) {
             console.log('matches!!');
             device.close();
-            var sensor = this._sensorFactory.sensor(this.job.policyNumber);
-            sensor.setName(foundSensor.name);
-            sensor.connectToDevice(device);
-            this.sensors.push(sensor);
+            foundSensor.connectToDevice(device);
+            // this.sensors.push(sensor);
         } else {
             console.log('disconnecting');
             device.close();

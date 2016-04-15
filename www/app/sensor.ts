@@ -35,11 +35,15 @@ export class Sensor {
             keypressData: 0
         }
         this.name = "Sensor";
-        this.status = "initializing";
+        this.status = "DISCONNECTED";
     }
 
     setName(name: string) {
         this.name = name;
+    }
+
+    setSystemId(systemId: string) {
+        this.systemId = systemId;
     }
 
     connectToDevice(device) {
