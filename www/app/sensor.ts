@@ -10,6 +10,7 @@ export class Sensor {
 	sensortag: any;
 	data: SensorData;
     onDeviceConnected: any;
+    onDeviceConnectFail: any;
     _bleService: BLEService;
 
     constructor(
@@ -72,13 +73,21 @@ export class Sensor {
         this.sensortag.connectToDevice(device);
     }
 
-    setOnDeviceConnected(onDeviceConnected: Function) {
-        this.onDeviceConnected = onDeviceConnected;
+    setOnDeviceConnected(callback: Function) {
+        this.onDeviceConnected = callback;
     }
+
+    setOnDeviceConnectFail(callback: Function) {
+        this.onDeviceConnectFail = callback;
+    }
+
 
     scanForSensor() {
         var self = this;
         var foundAddresses = [];
+        var numCompleted = 0;
+        var foundMatch = false;
+
         console.log('Sensor.scanForSensor()');
         this.sensortag.startScanningForDevices((device) => {
             console.log('Sensor.scanForSensor() found device');
@@ -91,8 +100,23 @@ export class Sensor {
                         self._ngZone.run(() => {
                             self.gotSystemId(systemId, device);
                         });
+                        numCompleted++;
+                        if (self.systemId === systemId) {
+                            foundMatch = true;
+                        }
+                        if (numCompleted === foundAddresses.length) {
+                            console.log("LAST ITEM");
+                            console.log("foundMatch?", foundMatch);
+                            if (!foundMatch) {
+                                self.onDeviceConnectFail(device);
+                            }
+                        }
+                        console.log("success -- " +numCompleted +" completed out of "+foundAddresses.length)
+
                     }, () => {
                         console.log("Sensor.scanForSensor() system id fail");
+                        numCompleted++;
+                        console.log("fail -- "+numCompleted + " completed out of " + foundAddresses.length)
                     }
                 );
             }
@@ -147,6 +171,7 @@ export class Sensor {
         var self = this;
 
         this.systemId = this.sensortag.getSystemId();
+        console.log('deviceConnectedHandler', this.systemId);
 
         this.sensortag
             .statusCallback((status) => {
@@ -212,6 +237,7 @@ export class Sensor {
     }
 
     errorHandler(error) {
+        console.log('errorHandler', error);
         if (this._evothings.easyble.error.DISCONNECTED == error) {
 			// Deal with disconnected
 		}

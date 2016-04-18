@@ -50,13 +50,13 @@ export class BLEService {
                         success(systemId, device);
                     },
                     (error) => {
-                        console.error(device.address, 'read characteristics FAIL')
-                        console.error(error);
+                        console.log(device.address, 'read characteristics FAIL')
+                        console.log(error);
                     }
                 );
             },
             (error) => {
-                console.error(device.address, 'read services FAIL');
+                console.log(device.address, 'read services FAIL');
                 fail(error);
             })
     }

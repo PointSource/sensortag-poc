@@ -78,6 +78,10 @@ export class AccountDetailsComponent implements OnInit {
             sensor.setOnDeviceConnected((device) => {
                 self.onDeviceConnected(device);
             });
+            sensor.setOnDeviceConnectFail((device) => {
+                self.onDeviceConnectFail(device);
+            })
+
             sensor.setSystemId(savedSensor.systemId);
             this.sensors.push(sensor);
         }
@@ -111,6 +115,14 @@ export class AccountDetailsComponent implements OnInit {
             this.sensors[this.scanIndex].scanForSensor();
         } else {
             this.status = "DONE_CONNECTING";
+        }
+    }
+
+    onDeviceConnectFail (device) {
+        console.log('on device connect fail');
+        if ((this.scanIndex + 1) < this.sensors.length) {
+            this.scanIndex++;
+            this.sensors[this.scanIndex].scanForSensor();
         }
     }
 
