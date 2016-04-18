@@ -31,13 +31,7 @@ export class JobListComponent implements OnInit {
             policyNumber: "",
             numSensors: 0
         }
-        if (this._sensorService.sensors.length === 0) {
-            this._sensorService.fetch().add(() => {
-                this.jobList = this._jobService.getJobs();
-            });
-        } else {
-            this.jobList = this._jobService.getJobs();
-        }
+        this.jobList = this._jobService.getJobs();
 
         this.modalElement = this._jquery(this.myElement.nativeElement.children[0]);
         var elem = new this._foundation.Reveal(this.modalElement);

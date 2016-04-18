@@ -9,6 +9,7 @@ export class Sensor {
 	status: string;
 	sensortag: any;
 	data: SensorData;
+    onDeviceConnected: any;
     _bleService: BLEService;
 
     constructor(
@@ -56,7 +57,10 @@ export class Sensor {
         this.sensortag
             .statusCallback(function(status) {
                 self._ngZone.run(function() {
-                    self.initialStatusHandler(status)
+                    self.initialStatusHandler(status);
+                    if (self.onDeviceConnected && 'DEVICE_INFO_AVAILABLE' == status) {
+                        self.onDeviceConnected(device);
+                    }
                 });
             })
             .errorCallback(function(error) {
@@ -68,12 +72,18 @@ export class Sensor {
         this.sensortag.connectToDevice(device);
     }
 
+    setOnDeviceConnected(onDeviceConnected: Function) {
+        this.onDeviceConnected = onDeviceConnected;
+    }
+
     scanForSensor() {
         var self = this;
+        var foundAddresses = [];
         console.log('Sensor.scanForSensor()');
         this.sensortag.startScanningForDevices((device) => {
             console.log('Sensor.scanForSensor() found device');
-            if (self._bleService.deviceIsSensorTag(device)) {
+            if (self._bleService.deviceIsSensorTag(device) && foundAddresses.indexOf(device.address) === -1) {
+                foundAddresses.push(device.address);
                 self._bleService.getSystemIdFromDevice(device,
                     (systemId, device) => {
                         console.log("Sensor.scanForSensor() gotSystemId success");
@@ -89,7 +99,7 @@ export class Sensor {
         });
 
         setTimeout(() => { 
-            this.sensortag.stopScanningForDevices 
+            this.sensortag.stopScanningForDevices();
         }, 1000);
     }
 

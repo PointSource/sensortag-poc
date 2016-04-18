@@ -40,17 +40,9 @@ export class JobDetailsComponent implements OnInit {
         this.readings = [];
         this.sensors = [];
 
-        if (this._sensorService.sensors.length === 0) {
-            this._sensorService.fetch().add(() => {
-                this.sensors = this._sensorService.getSensorsForPolicy(this.job.policyNumber);
-            });
-        } else {
-            this.sensors = this._sensorService.getSensorsForPolicy(this.job.policyNumber);
-        }
+        this.sensors = this._sensorService.getSensorsForPolicy(this.job.policyNumber);
 
-        this._readingService.fetch().add(() => {
-            this.readings = this._readingService.getReadingsForPolicy(this.job.policyNumber);
-        });
+        this.readings = this._readingService.getReadingsForPolicy(this.job.policyNumber);
     }
 
     goToConfigureJob(policyNumber: string) {

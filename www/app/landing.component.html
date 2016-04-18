@@ -1,9 +1,9 @@
 
-<button class="button expanded large" (click)="goToTechnician()">
+<button class="button expanded large" [disabled]="!loadingComplete" (click)="goToTechnician()">
 	<i class="fa fa-wrench button-icon"></i>Technician
 </button>
 
-<button class="button expanded large" (click)="goToClient()">
+<button class="button expanded large" [disabled]="!loadingComplete" (click)="goToClient()">
 	<i class="fa fa-home button-icon"></i>Client
 </button>
 

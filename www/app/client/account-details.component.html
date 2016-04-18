@@ -1,5 +1,6 @@
 <div class="reveal">
 
+
     <div *ngIf="!job">
         <p *ngIf="status !== 'ERROR'">Help us to find your account by entering your policy number below</p>
 
@@ -10,29 +11,41 @@
         </label>
 
         <button class="button expanded" (click)="findAccount(policyNumberInput.value)">Find My Account</button>
+
+        <button class="button secondary hollow expanded" (click)="cancel()">Cancel</button>
+
     </div>
 
-
     <div *ngIf="job">
-    	<h5>{{status}}</h5>
 
-        <h5 *ngIf="status === 'SCANNING'">Scanning for devices</h5>
-
-        <div *ngIf="status !== 'SCANNING' && foundAddresses.length < sensors.length" class="row">
-    	    <h5>
-    	    	Found {{foundAddresses.length}} sensors out of {{sensors.length}}. Try scanning again?
-    	    </h5>
-        	<button class="button expanded" (click)="scanForSensors()">Try again</button>
-        	<button class="button secondary hollow expanded" data-close>Cancel</button>
+        <h5 *ngIf="status === 'SCANNING'">Connecting to {{sensors[scanIndex].name}} sensor</h5>
+        <div *ngIf="status === 'SCANNING'" class="progress" role="progressbar">
+            <div class="progress-meter" style="width: {{((scanIndex + 1) / (sensors.length + 1)) * 100}}%"></div>
         </div>
+
+        <h5 *ngIf="status === 'DONE_CONNECTING'">Connection Complete!</h5>
+
+        <button *ngIf="status === 'DONE_CONNECTING'" class="button expanded" data-close>Ok</button>
+
+        <button class="button secondary hollow expanded" data-close>Close</button>
+
     </div>
 </div>
 
-<button *ngIf="sensors && sensors.length > 0 && foundAddresses.length >= sensors.length" class="button large expanded" (click)="takeReading()">
+<h4 *ngIf="connectedAddresses && connectedAddresses.length > 1">Connected To</h4>
+<div *ngIf="connectedAddresses" *ngFor="#address of connectedAddresses">
+    {{address}}
+</div>
+
+<button *ngIf="sensors && sensors.length > 0 && connectedAddresses.length === sensors.length" class="button large expanded" (click)="takeReading()">
 	<i class="fa fa-tachometer"></i>Take a Reading
 </button>
 
+<button *ngIf="sensors && sensors.length > 0 && connectedAddresses.length < sensors.length" class="button large expanded" (click)="takeReading()">
+    <i class="fa fa-bluetooth-b"></i>Scan for Sensors
+</button>
 
-<div *ngFor="#device of sensors; #i = index">
+
+<div *ngFor="#device of sensors">
     <sensor [sensor]="device" [mode]="'client'"></sensor>
 </div>

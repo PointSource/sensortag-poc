@@ -6,6 +6,7 @@ import 'rxjs/Rx';
 @Injectable()
 export class SensorService {
 	public sensors: Sensor[] = [];
+	public clientSensors: Sensor[] = [];
 
 	constructor(
         private _http: Http
@@ -78,6 +79,14 @@ export class SensorService {
 			(sensor) => sensor.systemId === systemId
 		);
 		this.sensors.splice(index, 1);
+	}
+
+	setClientSensors(clientSensors: Sensor[]) {
+		this.clientSensors = clientSensors;
+	}
+
+	getClientSensors(): Sensor[] {
+		return this.clientSensors;
 	}
 
 }

@@ -1,5 +1,7 @@
 import {Component, OnInit} from 'angular2/core';
 import {Router} from 'angular2/router';
+import {SensorService} from './sensor.service';
+import {ReadingService} from './technician/reading.service';
 import {NavService} from './nav.service';
 import {BLEService} from './ble.service';
 
@@ -8,14 +10,24 @@ import {BLEService} from './ble.service';
 })
 export class LandingComponent implements OnInit {
 
+    private loadingComplete: boolean;
+
     constructor(
+        private _sensorService: SensorService,
+        private _readingService: ReadingService,
         private _router: Router,
         private _navService: NavService,
         private _bleService: BLEService
     ) { }
 
     ngOnInit() {
+        this.loadingComplete = false;
         this._navService.setTitle("Sensor Demo");
+        this._sensorService.fetch().add(() => {
+            this._readingService.fetch().add(() => {
+                this.loadingComplete = true;
+            });
+        });
     }
 
     goToTechnician() {
@@ -28,6 +40,7 @@ export class LandingComponent implements OnInit {
 
     disconnect() {
         this._bleService.disconnectAllDevices();
+        this._sensorService.setClientSensors([]);
     }
 
 }

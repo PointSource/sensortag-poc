@@ -17,10 +17,11 @@ import {SensorComponent} from '../sensor.component';
     directives: [SensorComponent]
 })
 export class AccountDetailsComponent implements OnInit {
-    foundAddresses: any[]
+    connectedAddresses: any[];
     sensors: Sensor[];
     job: Job;
     status: string;
+    scanIndex: number;
     sensortag: any;
     private modalElement: any;
 
@@ -41,11 +42,20 @@ export class AccountDetailsComponent implements OnInit {
     ngOnInit() {
         this.modalElement = this._jquery(this._elementRef.nativeElement.children[0]);
         new this._foundation.Reveal(this.modalElement, { closeOnClick: false });
-        this.foundAddresses = [];
+        this.connectedAddresses = [];
         this.sensors = [];
         this._navService.setTitle("My Sensors");
 
-        this.modalElement.foundation('open');
+        // If client sensors have not been loaded, ask the user for their policy
+        // number so you can load the sensors.
+        if (this._sensorService.clientSensors.length === 0) {
+            this.modalElement.foundation('open');
+        } else {
+            this.sensors = this._sensorService.getClientSensors();
+            for (let sensor of this.sensors) {
+                this.connectedAddresses.push(sensor.systemId);
+            }
+        }
     }
 
     findAccount(policyNumber: string) {
@@ -60,100 +70,58 @@ export class AccountDetailsComponent implements OnInit {
     }
 
     loadSensors() {
-        this._sensorService.fetch().add(() => {
-            let savedSensors = this._sensorService.getSensorsForPolicy(this.job.policyNumber);
-            for (let savedSensor of savedSensors) {
-                var sensor = this._sensorFactory.sensor(this.job.policyNumber);
-                sensor.setName(savedSensor.name);
-                sensor.setSystemId(savedSensor.systemId);
-                this.sensors.push(sensor);
-            }
+        var self = this;
+        let savedSensors = this._sensorService.getSensorsForPolicy(this.job.policyNumber);
+        for (let savedSensor of savedSensors) {
+            var sensor = this._sensorFactory.sensor(this.job.policyNumber);
+            sensor.setName(savedSensor.name);
+            sensor.setOnDeviceConnected((device) => {
+                self.onDeviceConnected(device);
+            });
+            sensor.setSystemId(savedSensor.systemId);
+            this.sensors.push(sensor);
+        }
 
-            if (this.sensors.length > 0) {
-                this.scanForSensors();
-            } else {
-                this.status = "No Sensors on Account";
-            }
-        });
-
+        if (this.sensors.length > 0) {
+            this.scanForSensors();
+        } else {
+            this.status = "No Sensors on Account";
+        }
     }
 
     scanForSensors() {
-        var self = this;
+
+        this.connectedAddresses = [];
+
+        this._bleService.disconnectAllDevices();
 
         this.status = "SCANNING";
 
-        this.foundAddresses = [];
-        this._bleService.disconnectAllDevices();
-        this._evothings.easyble.startScan(function(device) {
-            self._ngZone.run(() => {
-                self.scanSuccess(device);
-            });
-        }, function() {
-            self._ngZone.run(function() {
-                self.scanFail()
-            });
-        });
-
-        setTimeout(() => { this.stopScanning() }, 1000);
+        this.scanIndex = 0;
+        this.sensors[this.scanIndex].scanForSensor();
     }
 
-    scanSuccess(device) {
-        console.log("scanSuccess");
-        var self = this;
-
-        if (this._bleService.deviceIsSensorTag(device) && this.foundAddresses.indexOf(device.address) === -1) {
-            this.foundAddresses.push(device.address);
-            this._bleService.getSystemIdFromDevice(device, 
-                (systemId, device) => {
-                    console.log("gotSystemId success");
-
-                    self._ngZone.run(() => {
-                        self.gotSystemId(systemId, device);
-                    });
-                }, self.systemIdFail
-            );
+    onDeviceConnected (device) {
+        // Connect to the next device if this device is not already connected... ?
+        if (this.connectedAddresses.indexOf(device.address) === -1) {
+            this.connectedAddresses.push(device.address);
         }
-    }
-
-    scanFail() {
-        console.error("scanFail");
-        this.status = "SCAN_FAIL";
-    }
-
-    stopScanning() {
-        if (this.foundAddresses.length < this.sensors.length) {
-            // this._bleService.disconnectAllDevices();
-            this.status = "CONNECTING";
+        if ((this.scanIndex + 1) < this.sensors.length) {
+            this.scanIndex++;
+            this.sensors[this.scanIndex].scanForSensor();
         } else {
-            this.modalElement.foundation('close');
+            this.status = "DONE_CONNECTING";
         }
-        this._evothings.easyble.stopScan();
-    }
-
-    gotSystemId (systemId, device) {
-        console.log("gotSystemId", systemId);
-        var foundSensor = this.sensors.find((sensor) => {
-            return sensor.systemId === systemId;
-        })
-        if (foundSensor !== undefined) {
-            console.log('matches!!');
-            device.close();
-            foundSensor.connectToDevice(device);
-        } else {
-            console.log('disconnecting');
-            device.close();
-        }
-
-    }
-
-    systemIdFail(error) {
-        console.log("systemIdFail");
-        console.error(error);
     }
 
     takeReading() {
+        this._sensorService.setClientSensors(this.sensors);
         this._readingService.takeReading(this.sensors, this.job.policyNumber, true);
+    }
+
+    cancel() {
+        this.modalElement.foundation('close');
+        window.history.back();
     }
 
 }

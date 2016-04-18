@@ -12,7 +12,6 @@ import {SensorDetailComponent} from './sensor-detail.component';
 
 // Client
 import {AccountDetailsComponent} from './client/account-details.component';
-import {FindAccountComponent} from './client/find-account.component';
 
 @Component({
     selector: 'my-app',
@@ -31,7 +30,6 @@ import {FindAccountComponent} from './client/find-account.component';
 	{ path: '/sensor', name: 'SensorDetail', component: SensorDetailComponent },
     
     // Client
-    { path: '/findAccount', name: 'FindAccount', component: FindAccountComponent },
     { path: '/accountDetails', name: 'AccountDetails', component: AccountDetailsComponent }
 
 ])
