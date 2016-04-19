@@ -1,5 +1,6 @@
 <div class="reveal">
 
+    <!-- <div>{{status}}</div> -->
 
     <div *ngIf="!job">
         <p *ngIf="status !== 'ERROR'">Help us to find your account by entering your policy number below</p>
@@ -18,18 +19,27 @@
 
     <div *ngIf="job">
 
-        <h5 *ngIf="sensors.length > 0 && scanIndex > 0">{{sensors[scanIndex - 1].name}} sensor is {{sensors[scanIndex - 1].status}}</h5>
+        <h5 *ngIf="status !== 'NO_SENSORS' && sensors.length > 0 && scanIndex > 0">{{sensors[scanIndex - 1].name}} sensor is {{sensors[scanIndex - 1].status}}</h5>
 
-        <h5 *ngIf="status === 'SCANNING' && scanIndex < sensors.length">Connecting to {{sensors[scanIndex].name}} sensor</h5>
-        <div *ngIf="status === 'SCANNING' && scanIndex < sensors.length" class="progress" role="progressbar">
-            <div class="progress-meter" style="width: {{((scanIndex + 1) / (sensors.length + 1)) * 100}}%"></div>
+        <div *ngIf="status === 'SCANNING' && scanIndex < sensors.length">
+            <h5>Connecting to {{sensors[scanIndex].name}} sensor</h5>
+            <div class="progress" role="progressbar">
+                <div class="progress-meter" style="width: {{((scanIndex + 1) / (sensors.length + 1)) * 100}}%"></div>
+            </div>
         </div>
 
-        <h5 *ngIf="status === 'DONE_CONNECTING'">Connection Complete!</h5>
+        <div *ngIf="status === 'NO_SENSORS'">
+            <h5>Could not find any sensors</h5>
+            <p>Make sure you have the sensor tags turned on. Check if LED light is blinking on the devices.</p>
 
-        <button *ngIf="status === 'DONE_CONNECTING'" class="button expanded" data-close>Ok</button>
+            <button class="button expanded" (click)="scanForSensors()">Try Again</button>
+            <button class="button expanded secondary hollow" data-close>Cancel</button>
+        </div>
 
-        <button class="button secondary hollow expanded" data-close>Close</button>
+        <div *ngIf="status === 'DONE_CONNECTING'">
+            <h5>Connection Complete!</h5>
+            <button class="button expanded" data-close>Ok</button>
+        </div>
 
     </div>
 </div>

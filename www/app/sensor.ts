@@ -125,7 +125,7 @@ export class Sensor {
         setTimeout(() => { 
             this.sensortag.stopScanningForDevices();
             if (foundAddresses.length === 0 && self.onDeviceConnectFail) {
-                self.onDeviceConnectFail(self.status);
+                self.onDeviceConnectFail("NO_SENSORS");
             }
         }, 1000);
     }

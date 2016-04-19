@@ -115,7 +115,11 @@ export class AccountDetailsComponent implements OnInit {
 
     clearConnectCallbacks(sensor) {
         var self = this;
-        sensor.setOnDeviceConnected(null);
+        sensor.setOnDeviceConnected((device) => {
+            if (self.connectedAddresses.indexOf(device.address) === -1) {
+                self.connectedAddresses.push(device.address);
+            }
+        });
         sensor.setOnDeviceConnectFail(null);
     }
 
@@ -138,16 +142,20 @@ export class AccountDetailsComponent implements OnInit {
 
     onDeviceConnectFail (status) {
         console.log('on device connect fail', status);
-        if ((this.scanIndex + 1) < this.sensors.length) {
+        if ((this.scanIndex + 1) < this.sensors.length && status !== "NO_SENSORS") {
             this.clearConnectCallbacks(this.sensors[this.scanIndex]);
             this.scanIndex++;
 
             this.setConnectCallbacks(this.sensors[this.scanIndex]);
             this.sensors[this.scanIndex].scanForSensor();
         } else {
-            this.clearConnectCallbacks(this.sensors[this.scanIndex]);
-            this.scanIndex++;
-            this.status = "DONE_CONNECTING";
+            if (status === "NO_SENSORS" && this.connectedAddresses.length === 0) {
+                this.status = status;
+            } else {
+                this.clearConnectCallbacks(this.sensors[this.scanIndex]);
+                this.scanIndex++;
+                this.status = "DONE_CONNECTING";
+            }
         }
     }
 
