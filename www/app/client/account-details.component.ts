@@ -75,12 +75,6 @@ export class AccountDetailsComponent implements OnInit {
         for (let savedSensor of savedSensors) {
             var sensor = this._sensorFactory.sensor(this.job.policyNumber);
             sensor.setName(savedSensor.name);
-            sensor.setOnDeviceConnected((device) => {
-                self.onDeviceConnected(device);
-            });
-            sensor.setOnDeviceConnectFail((device) => {
-                self.onDeviceConnectFail(device);
-            })
 
             sensor.setSystemId(savedSensor.systemId);
             this.sensors.push(sensor);
@@ -94,6 +88,7 @@ export class AccountDetailsComponent implements OnInit {
     }
 
     scanForSensors() {
+        var self = this;
         this.modalElement.foundation('open');
 
         this.connectedAddresses = [];
@@ -103,7 +98,25 @@ export class AccountDetailsComponent implements OnInit {
         this.status = "SCANNING";
 
         this.scanIndex = 0;
+
+        this.setConnectCallbacks(this.sensors[this.scanIndex]);
         this.sensors[this.scanIndex].scanForSensor();
+    }
+
+    setConnectCallbacks(sensor) {
+        var self = this;
+        sensor.setOnDeviceConnected((device) => {
+            self.onDeviceConnected(device);
+        });
+        sensor.setOnDeviceConnectFail((device) => {
+            self.onDeviceConnectFail(device);
+        });
+    }
+
+    clearConnectCallbacks(sensor) {
+        var self = this;
+        sensor.setOnDeviceConnected(null);
+        sensor.setOnDeviceConnectFail(null);
     }
 
     onDeviceConnected (device) {
@@ -112,9 +125,13 @@ export class AccountDetailsComponent implements OnInit {
             this.connectedAddresses.push(device.address);
         }
         if ((this.scanIndex + 1) < this.sensors.length) {
+            this.clearConnectCallbacks(this.sensors[this.scanIndex]);
             this.scanIndex++;
+
+            this.setConnectCallbacks(this.sensors[this.scanIndex]);
             this.sensors[this.scanIndex].scanForSensor();
         } else {
+            this.clearConnectCallbacks(this.sensors[this.scanIndex]);
             this.status = "DONE_CONNECTING";
         }
     }
@@ -122,9 +139,13 @@ export class AccountDetailsComponent implements OnInit {
     onDeviceConnectFail (status) {
         console.log('on device connect fail', status);
         if ((this.scanIndex + 1) < this.sensors.length) {
+            this.clearConnectCallbacks(this.sensors[this.scanIndex]);
             this.scanIndex++;
+
+            this.setConnectCallbacks(this.sensors[this.scanIndex]);
             this.sensors[this.scanIndex].scanForSensor();
         } else {
+            this.clearConnectCallbacks(this.sensors[this.scanIndex]);
             this.scanIndex++;
             this.status = "DONE_CONNECTING";
         }
