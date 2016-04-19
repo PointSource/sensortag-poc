@@ -108,7 +108,7 @@ export class Sensor {
                             console.log("LAST ITEM");
                             console.log("foundMatch?", foundMatch);
                             if (!foundMatch) {
-                                self.onDeviceConnectFail(device);
+                                self.onDeviceConnectFail('NO_MATCH');
                             }
                         }
                         console.log("success -- " +numCompleted +" completed out of "+foundAddresses.length)
@@ -124,6 +124,9 @@ export class Sensor {
 
         setTimeout(() => { 
             this.sensortag.stopScanningForDevices();
+            if (foundAddresses.length === 0) {
+                self.onDeviceConnectFail(self.status);
+            }
         }, 1000);
     }
 

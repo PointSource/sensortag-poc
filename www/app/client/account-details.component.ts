@@ -94,6 +94,7 @@ export class AccountDetailsComponent implements OnInit {
     }
 
     scanForSensors() {
+        this.modalElement.foundation('open');
 
         this.connectedAddresses = [];
 
@@ -118,11 +119,14 @@ export class AccountDetailsComponent implements OnInit {
         }
     }
 
-    onDeviceConnectFail (device) {
-        console.log('on device connect fail');
+    onDeviceConnectFail (status) {
+        console.log('on device connect fail', status);
         if ((this.scanIndex + 1) < this.sensors.length) {
             this.scanIndex++;
             this.sensors[this.scanIndex].scanForSensor();
+        } else {
+            this.scanIndex++;
+            this.status = "DONE_CONNECTING";
         }
     }
 
