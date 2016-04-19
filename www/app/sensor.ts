@@ -85,33 +85,52 @@ export class Sensor {
     scanForSensor() {
         var self = this;
         var foundAddresses = [];
-        var numCompleted = 0;
-        var foundMatch = false;
+        var nonMatchingDevices = [];
+        var matchingDevice = null;
 
-        console.log('Sensor.scanForSensor()');
-        this.sensortag.startScanningForDevices((device) => {
-            console.log('Sensor.scanForSensor() found device');
+        var numCompleted = 0;
+
+        console.log('Sensor.scanForSensor() '+this.name.toUpperCase());
+        this._evothings.easyble.startScan((device) => {
             if (self._bleService.deviceIsSensorTag(device) && foundAddresses.indexOf(device.address) === -1) {
                 foundAddresses.push(device.address);
                 self._bleService.getSystemIdFromDevice(device,
                     (systemId, device) => {
-                        console.log("Sensor.scanForSensor() gotSystemId success");
-
-                        self._ngZone.run(() => {
-                            self.gotSystemId(systemId, device);
-                        });
                         numCompleted++;
+
+                        console.log("Sensor.scanForSensor() " + self.name.toUpperCase() + " success -- " + numCompleted + " completed out of " + foundAddresses.length)
                         if (self.systemId === systemId) {
-                            foundMatch = true;
+                            matchingDevice = device;
+                        } else {
+                            nonMatchingDevices.push({
+                                device: device,
+                                systemId: systemId
+                            });
                         }
+
+                        // self.gotSystemId(systemId, device);
                         if (numCompleted === foundAddresses.length) {
                             console.log("LAST ITEM");
-                            console.log("foundMatch?", foundMatch);
-                            if (!foundMatch && self.onDeviceConnectFail) {
+                            console.log("foundMatch?", (matchingDevice !== null));
+
+                            // Disconnect from all of the non matching devices
+                            for (let nonMatchingDevice of nonMatchingDevices) {
+                                console.log('Sensor.scanForSensor() disconnecting');
+                                nonMatchingDevice.device.close();
+                                nonMatchingDevice.device = null;
+                            }
+
+                            if (matchingDevice !== null) {
+                                console.log('Sensor.scanForSensor() matches!!');
+                                self._ngZone.run(() => {
+                                    self.connectToDevice(matchingDevice);
+                                });
+                            }
+
+                            if (matchingDevice === null && self.onDeviceConnectFail) {
                                 self.onDeviceConnectFail('NO_MATCH');
                             }
                         }
-                        console.log("success -- " +numCompleted +" completed out of "+foundAddresses.length)
 
                     }, () => {
                         console.log("Sensor.scanForSensor() system id fail");
@@ -123,24 +142,28 @@ export class Sensor {
         });
 
         setTimeout(() => { 
-            this.sensortag.stopScanningForDevices();
+            console.log("Stop Scanning " + self.name.toUpperCase() + " --- " + numCompleted + " completed out of " + foundAddresses.length);
+            this._evothings.easyble.stopScan();
             if (foundAddresses.length === 0 && self.onDeviceConnectFail) {
-                self.onDeviceConnectFail("NO_SENSORS");
+                self._ngZone.run(() => {
+                    self.onDeviceConnectFail("NO_SENSORS");
+                });
             }
+
         }, 1000);
     }
 
-    gotSystemId(systemId, device) {
-        console.log("Sensor.gotSystemId()", systemId);
-        if (this.systemId === systemId) {
-            console.log('Sensor.gotSystemId() matches!!');
-            device.close();
-            this.connectToDevice(device);
-        } else {
-            console.log('Sensor.gotSystemId() disconnecting');
-            device.close();
-        }
-    }
+    // gotSystemId(systemId, device) {
+    //     console.log("Sensor.gotSystemId()", systemId);
+    //     if (this.systemId === systemId) {
+    //         console.log('Sensor.gotSystemId() matches!!');
+    //         device.close();
+    //         this.connectToDevice(device);
+    //     } else {
+    //         console.log('Sensor.gotSystemId() disconnecting');
+    //         device.close();
+    //     }
+    // }
 
     connectToNearestDevice(statusCallback) {
         var self = this;
@@ -162,6 +185,7 @@ export class Sensor {
     }
 
 	initialStatusHandler(status) {
+        console.log(this.name.toUpperCase() + " initial status = " + status);
 
 		if ('DEVICE_INFO_AVAILABLE' == status) {
             this.deviceConnectedHandler();
@@ -200,6 +224,7 @@ export class Sensor {
     }
 
 	statusHandler(status) {
+        console.log(this.name.toUpperCase() + " status = " + status);
         this.status = status;
     }
 
