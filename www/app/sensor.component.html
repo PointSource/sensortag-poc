@@ -36,9 +36,9 @@
                     Delete
                 </button>
 
-                <button *ngIf="isConnected" (click)="isNamed = false" class="button secondary hollow">Edit</button>
-
                 <button *ngIf="isConnected" (click)="goToSensorDetails()" class="button secondary hollow">Details</button>
+
+                <button *ngIf="isConnected" (click)="isNamed = false" class="button secondary hollow">Rename</button>
             </div>
 
 

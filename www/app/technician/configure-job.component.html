@@ -25,12 +25,14 @@
     </div>
 
     <div *ngIf="status === 'DEVICE_INFO_AVAILABLE'">
+        <!-- 
         <label>
-            <input type="text" placeholder="Sensor name" #sensorName />
-        </label>
+            <input type="text" placeholder="Sensor name" [(ngModel)]="newSensor.name" />
+        </label> 
         <p class="help-text" id="passwordHelpText">Enter a name to identify this sensor. You can use the location of the sensor, etc</p>
+        -->
 
-        <button class="button expanded" (click)="nameSensor(sensorName.value)">Ok</button>
+        <button class="button expanded" (click)="nameSensor()">Ok</button>
     </div>
 </div>
 

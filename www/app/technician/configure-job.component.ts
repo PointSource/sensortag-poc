@@ -95,7 +95,7 @@ export class ConfigureJobComponent implements OnInit {
 
     nameSensor(sensorName) {
         this.modalElement.foundation('close');
-        this.sensors[this.sensors.length - 1].name = sensorName;
+        this.sensors[this.sensors.length - 1].name = "Sensor "+(this.sensors.length);
         this.status = ""
     }
 
