@@ -43,6 +43,7 @@ export class AppComponent implements OnInit {
 
     ngOnInit() {
         this._navService.titleChanged$.subscribe(title => this.title = title);
+        this._navService.backChanged$.subscribe(back => this.goBack = back);
     }
 
     goBack() {

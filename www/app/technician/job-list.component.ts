@@ -25,6 +25,9 @@ export class JobListComponent implements OnInit {
 
     ngOnInit() {
         this._navService.setTitle("My Jobs");
+        this._navService.setBack(() => {
+            this._router.navigate(['Landing', {}]);
+        });
 
         this.newJob = {
             name: "",

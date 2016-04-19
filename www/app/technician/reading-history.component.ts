@@ -2,6 +2,7 @@ import {Component, OnInit} from 'angular2/core';
 import {RouteParams} from 'angular2/router';
 import {Router} from 'angular2/router';
 
+import {NavService} from '../nav.service';
 import {ReadingService} from './reading.service';
 import {SensorService} from '../sensor.service';
 import {Reading} from './reading'
@@ -18,14 +19,20 @@ export class ReadingHistoryComponent implements OnInit {
     title: string;
 
     constructor(
+        private _router: Router,
         private _routeParams: RouteParams,
         private _readingService: ReadingService,
+        private _navService: NavService,
         private _sensorService: SensorService
     ) { }
 
     ngOnInit() {
         var policyNumber = this._routeParams.get('policyNumber');
         this.type = this._routeParams.get('type');
+
+        this._navService.setBack(() => {
+            this._router.navigate(['JobDetails', { policyNumber: policyNumber }]);
+        });
 
         this.readings = this._readingService.getReadingsForPolicy(policyNumber);
 

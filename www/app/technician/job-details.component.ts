@@ -36,13 +36,18 @@ export class JobDetailsComponent implements OnInit {
             window.history.back();
         }
         this._navService.setTitle(this.job.name);
+        this._navService.setBack(() => {
+            this._router.navigate(['JobList', { }]);
+        });
 
         this.readings = [];
         this.sensors = [];
 
         this.sensors = this._sensorService.getSensorsForPolicy(this.job.policyNumber);
 
-        this.readings = this._readingService.getReadingsForPolicy(this.job.policyNumber);
+        this._readingService.fetch().add(() => {
+            this.readings = this._readingService.getReadingsForPolicy(this.job.policyNumber);
+        });
     }
 
     goToConfigureJob(policyNumber: string) {
