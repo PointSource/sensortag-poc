@@ -35,6 +35,7 @@ export class AccountDetailsComponent implements OnInit {
         @Inject('Evothings') private _evothings,
         @Inject('jQuery') private _jquery,
         @Inject('Foundation') private _foundation,
+        @Inject('CordovaDevice') private _cordovaDevice,
         private _ngZone: NgZone,
         private _sensorFactory: SensorFactory
     ) { }
@@ -124,6 +125,7 @@ export class AccountDetailsComponent implements OnInit {
     }
 
     onDeviceConnected (device) {
+        var self = this;
         // Connect to the next device if this device is not already connected... ?
         if (this.connectedAddresses.indexOf(device.address) === -1) {
             this.connectedAddresses.push(device.address);
@@ -133,7 +135,17 @@ export class AccountDetailsComponent implements OnInit {
             this.scanIndex++;
 
             this.setConnectCallbacks(this.sensors[this.scanIndex]);
-            this.sensors[this.scanIndex].scanForSensor();
+
+            // Have to timeout on iOS to wait for devices to disconnect
+            if (this._cordovaDevice.platform === "iOS") {
+                console.log('CONNECT set timeout', this._cordovaDevice.platform);
+                setTimeout(() => {
+                    console.log('CONNECT resolve timeout');
+                    this.sensors[this.scanIndex].scanForSensor();
+                }, 10000)
+            } else {
+                this.sensors[this.scanIndex].scanForSensor();
+            }
         } else {
             this.clearConnectCallbacks(this.sensors[this.scanIndex]);
             this.status = "DONE_CONNECTING";
@@ -141,13 +153,24 @@ export class AccountDetailsComponent implements OnInit {
     }
 
     onDeviceConnectFail (status) {
+        var self = this;
         console.log('on device connect fail', status);
         if ((this.scanIndex + 1) < this.sensors.length && status !== "NO_SENSORS") {
             this.clearConnectCallbacks(this.sensors[this.scanIndex]);
             this.scanIndex++;
-
             this.setConnectCallbacks(this.sensors[this.scanIndex]);
-            this.sensors[this.scanIndex].scanForSensor();
+
+            // Have to timeout on iOS to wait for devices to disconnect
+            if (this._cordovaDevice.platform === "iOS") {
+                console.log('FAIL set timeout', this._cordovaDevice.platform);
+                setTimeout(() => {
+                    console.log('FAIL resolve timeout');
+                    this.sensors[this.scanIndex].scanForSensor();
+                }, 10000)
+            } else {
+                this.sensors[this.scanIndex].scanForSensor();
+            }
+
         } else {
             if (status === "NO_SENSORS" && this.connectedAddresses.length === 0) {
                 this.status = status;

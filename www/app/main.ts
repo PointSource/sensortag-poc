@@ -15,6 +15,7 @@ declare var IoTFoundationLib: any;
 declare var Chart: any;
 declare var Foundation: any;
 declare var jQuery: any;
+declare var device: any;
 
 bootstrap(AppComponent, [
 	ROUTER_PROVIDERS,
@@ -30,5 +31,6 @@ bootstrap(AppComponent, [
 	provide('ChartJS', { useValue: Chart }),
 	provide('Foundation', { useValue: Foundation }),
 	provide('jQuery', { useValue: jQuery }),
+	provide('CordovaDevice', { useValue: device }),
 	provide(LocationStrategy, { useClass: HashLocationStrategy })
 ]);

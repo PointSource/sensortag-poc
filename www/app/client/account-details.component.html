@@ -48,6 +48,10 @@
 	<i class="fa fa-tachometer"></i>Take a Reading
 </button>
 
+<div class="callout" *ngIf="sensors && sensors.length > 0 && connectedAddresses.length < sensors.length">
+    Not all of the sensors are connected. Connect to sensors in order to take a reading.
+</div>
+
 <button *ngIf="sensors && sensors.length > 0 && connectedAddresses.length < sensors.length" class="button large expanded" (click)="scanForSensors()">
     <i class="fa fa-bluetooth-b"></i>Scan for Sensors
 </button>

@@ -122,9 +122,8 @@ export class Sensor {
 
                             if (matchingDevice !== null) {
                                 console.log('Sensor.scanForSensor() matches!!');
-                                self._ngZone.run(() => {
-                                    self.connectToDevice(matchingDevice);
-                                });
+                                matchingDevice.close();
+                                self.connectToDevice(matchingDevice);
                             }
 
                             if (matchingDevice === null && self.onDeviceConnectFail) {
