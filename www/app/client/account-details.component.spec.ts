@@ -14,7 +14,7 @@ import {Http} from 'angular2/http';
 class MockJobService extends JobService {
 	getJob() {
 		return {
-			policyNumber: "Job1",
+			policyNumber: "01929",
 			name: "Andrew Mortensen",
 			numSensors: 0
 		}
@@ -25,12 +25,18 @@ var sensor = {
 	initialize: () => { },
 	sensortag: {},
 	connectToDevice: () => { },
-	setName: () => {}
+	setName: () => {},
+	setSystemId: () => {},
+	setOnDeviceConnected: () => { },
+	setOnDeviceConnectFail: () => { },
+	scanForSensor: () => { }
 };
 
 var _evothings = {
 		ble: jasmine.createSpyObj("ble", ['connect']),
-		easyble: jasmine.createSpyObj("easyble", ['startScan', 'stopScan']),
+		easyble: jasmine.createSpyObj("easyble", [
+			'startScan', 'stopScan', 'closeConnectedDevices'
+		]),
 		tisensortag: {
 			createInstance: function() {
 				return {}
@@ -84,6 +90,7 @@ beforeEachProviders(() => {
 		provide('Evothings', {
 			useValue: _evothings
 		}),
+		provide('CordovaDevice', {useValue: {}})
 	];
 });
 
@@ -103,7 +110,7 @@ describe('Account Details', () => {
 			_sensorFactory = sensorFactory;
 
 			spyOn(_sensorService, "getSensorsForPolicy").and.returnValue([{
-				policyNumber: "Job1",
+				policyNumber: "01929",
 				systemId: "MATCHES",
 				sensortag: {}
 			}]);
@@ -123,6 +130,7 @@ describe('Account Details', () => {
 				sensorService = _sensorService;
 				spyOn(_accountDetails, "scanForSensors");
 				_accountDetails.ngOnInit();
+				_accountDetails.findAccount('01929');
 				_accountDetails.loadSensors();
 			}
 		))
@@ -142,14 +150,9 @@ describe('Account Details', () => {
 
 		beforeEach(() => {
 			_accountDetails.ngOnInit();
+			_accountDetails.findAccount('01929');
 			_accountDetails.scanForSensors();
 		})
-
-		it('calls easyble.scan', () => {
-			console.log(_evothings);
-			expect(_evothings.easyble.startScan).toHaveBeenCalled();
-		});
-
 
 		it('sets status to scanning', () => {
 			expect(_accountDetails.status).toEqual("SCANNING");
@@ -157,68 +160,57 @@ describe('Account Details', () => {
 
 	});
 
+	// Move this to sensor spec
 
-	describe('on stop scan', () => {
+	// describe('when device is connected', () => {
 
-		it('calls easyble.stopScan', () => {
-			_accountDetails.ngOnInit();
-			_accountDetails.stopScanning();
-			expect(_evothings.easyble.stopScan).toHaveBeenCalled();
-		});
+	// 	beforeEach(() => {
+	// 		_accountDetails.ngOnInit();
+	// 		_accountDetails.loadSensors();
+	// 	})
 
-	});
+	// 	describe("if the system id matches,", () => {
 
+	// 		it('adds the device to the list of matches', () => {
+	// 			_accountDetails.gotSystemId("MATCHES", device);
+	// 			expect(_accountDetails.sensors.length).toBeGreaterThan(0);
+	// 		});
 
-
-	describe('when device is connected', () => {
-
-		beforeEach(() => {
-			_accountDetails.ngOnInit();
-			_accountDetails.loadSensors();
-		})
-
-		describe("if the system id matches,", () => {
-
-			it('adds the device to the list of matches', () => {
-				_accountDetails.gotSystemId("MATCHES", device);
-				expect(_accountDetails.sensors.length).toBeGreaterThan(0);
-			});
-
-			it('connects to the device using the sensor that matches', () => {
-				spyOn(sensor, "connectToDevice");
-				_accountDetails.gotSystemId("MATCHES", device);
-				expect(sensor.connectToDevice).toHaveBeenCalled();
-			});
-		})
+	// 		it('connects to the device using the sensor that matches', () => {
+	// 			spyOn(sensor, "connectToDevice");
+	// 			_accountDetails.gotSystemId("MATCHES", device);
+	// 			expect(sensor.connectToDevice).toHaveBeenCalled();
+	// 		});
+	// 	})
 
 
-		describe('if system id does not match', () => {
+	// 	describe('if system id does not match', () => {
 
-			beforeEach(() => {
-				_accountDetails.gotSystemId("NOT A MATCH", device);
-			});
+	// 		beforeEach(() => {
+	// 			_accountDetails.gotSystemId("NOT A MATCH", device);
+	// 		});
 
-			it('does not add it to the list', () => {
-				expect(_accountDetails.sensors.length).toEqual(0);
-			});
+	// 		it('does not add it to the list', () => {
+	// 			expect(_accountDetails.sensors.length).toEqual(0);
+	// 		});
 
-			it('disconnects from device', () => {
-				expect(device.close).toHaveBeenCalled();
-			});
-		})
+	// 		it('disconnects from device', () => {
+	// 			expect(device.close).toHaveBeenCalled();
+	// 		});
+	// 	})
 
 
 
-	});
+	// });
 
-	describe('on scan fail', () => {
+	// describe('on scan fail', () => {
 
-		it('sets status to SCAN_FAIL', () => {
-			_accountDetails.ngOnInit();
-			_accountDetails.scanFail();
-			expect(_accountDetails.status).toEqual("SCAN_FAIL");
-		});
+	// 	it('sets status to SCAN_FAIL', () => {
+	// 		_accountDetails.ngOnInit();
+	// 		_accountDetails.scanFail();
+	// 		expect(_accountDetails.status).toEqual("SCAN_FAIL");
+	// 	});
 
-	});
+	// });
 	
 });

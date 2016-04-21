@@ -162,15 +162,16 @@ describe('Configure Job Component', () => {
 
 	});
 
+	// Move this to sensor component spec
 
-	describe('when device is named', () => {
-		it('sets device name to new name', () => {
-			_configureJob.ngOnInit();
-			_configureJob.deviceConnectedHandler(sensor);
-			_configureJob.nameSensor("new name");
-			expect(_configureJob.sensors[0].name).toBe("new name");
-		});
+	// xdescribe('when device is named', () => {
+	// 	it('sets device name to new name', () => {
+	// 		_configureJob.ngOnInit();
+	// 		_configureJob.deviceConnectedHandler(sensor);
+	// 		_configureJob.nameSensor("new name");
+	// 		expect(_configureJob.sensors[0].name).toBe("new name");
+	// 	});
 
-	});
+	// });
 
 });
