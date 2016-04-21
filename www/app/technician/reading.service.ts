@@ -13,7 +13,7 @@ export class ReadingService {
 	) { }
 
 	fetch() {
-		return this._http.get('http://10.128.64.62:1337/readings')
+		return this._http.get('http://tisensortag-node.mybluemix.net/readings')
 			.map(res => res.json())
 			.subscribe((res) => {
 				this.readings = res;
@@ -29,7 +29,7 @@ export class ReadingService {
 
 		var headers = new Headers();
         headers.append('Content-Type', 'application/json');
-		this._http.post('http://10.128.64.62:1337/readings/add', JSON.stringify(reading), {
+		this._http.post('http://tisensortag-node.mybluemix.net/readings/add', JSON.stringify(reading), {
 			headers: headers
 		}).subscribe((res) => console.log(res));
 	}
@@ -72,6 +72,14 @@ export class ReadingService {
             this.addReading(reading);
             return this.getReadingsForPolicy(policyNumber);
         }
+	}
+
+	reset() {
+		var headers = new Headers();
+		headers.append('Content-Type', 'application/json');
+		return this._http.post('http://tisensortag-node.mybluemix.net/readings/reset', null, {
+			headers: headers
+		}).subscribe((res) => console.log(res));
 	}
 
 }

@@ -43,4 +43,17 @@ export class LandingComponent implements OnInit {
         this._sensorService.setClientSensors([]);
     }
 
+    reset() {
+        this.loadingComplete = false;
+        this._sensorService.reset().add(() => {
+            this._readingService.reset().add(() => {
+                this._sensorService.fetch().add(() => {
+                    this._readingService.fetch().add(() => {
+                        this.loadingComplete = true;
+                    });
+                });
+            })
+        });
+    }
+
 }

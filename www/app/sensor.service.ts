@@ -13,7 +13,7 @@ export class SensorService {
 	) {}
 
 	fetch() {
-		return this._http.get('http://10.128.64.62:1337/devices')
+		return this._http.get('http://tisensortag-node.mybluemix.net/devices')
 			.map(res => res.json())
 			.subscribe((res) => {
 				this.sensors = res;
@@ -34,7 +34,7 @@ export class SensorService {
 
 		var headers = new Headers();
         headers.append('Content-Type', 'application/json');
-		this._http.post('http://10.128.64.62:1337/devices/sync', JSON.stringify(sensorsCopy), {
+		this._http.post('http://tisensortag-node.mybluemix.net/devices/sync', JSON.stringify(sensorsCopy), {
 			headers: headers
 		}).subscribe((res) => console.log(res));
 
@@ -87,6 +87,16 @@ export class SensorService {
 
 	getClientSensors(): Sensor[] {
 		return this.clientSensors;
+	}
+
+
+	reset() {
+		var headers = new Headers();
+		headers.append('Content-Type', 'application/json');
+		return this._http.post('http://tisensortag-node.mybluemix.net/devices/reset', null, {
+			headers: headers
+		}).subscribe((res) => console.log(res));
+
 	}
 
 }
