@@ -53,8 +53,15 @@ export class AccountDetailsComponent implements OnInit {
             this.modalElement.foundation('open');
         } else {
             this.sensors = this._sensorService.getClientSensors();
-            for (let sensor of this.sensors) {
-                this.connectedAddresses.push(sensor.systemId);
+            var job = this._jobService.getJob(this.sensors[0].policyNumber);
+
+            if (job === undefined) {
+                this.status = "ERROR";
+            } else {
+                this.job = job;
+                for (let sensor of this.sensors) {
+                    this.connectedAddresses.push(sensor.systemId);
+                }
             }
         }
     }
