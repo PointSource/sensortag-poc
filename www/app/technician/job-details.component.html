@@ -1,3 +1,7 @@
+<div class="callout" *ngIf="sensors && sensors.length > 0 && connectedAddresses.length < sensors.length">
+    Not all of the sensors are connected. Connect to sensors in order to take a reading.
+</div>
+
 <div class="callout" *ngIf="readings.length > 0">
 	<div>{{readings.length}} Reading{{readings.length === 1 ? "" : "s"}}</div>
 	<div>Last Reading: {{readings[readings.length - 1].date | date:"MMM d yyyy h:mm"}}</div>
@@ -13,7 +17,7 @@
 	No sensors added to this job yet. Please configure the sensors for this job in order to take readings.
 </div>
 
-<button *ngIf="sensors.length > 0" class="button large expanded" (click)="takeReading()"><i class="fa fa-tachometer"></i>Take a Reading</button>
+<button *ngIf="sensors.length > 0 && connectedAddresses.length === sensors.length" class="button large expanded" (click)="takeReading()"><i class="fa fa-tachometer"></i>Take a Reading</button>
 
 <div class="callout" *ngIf="readings.length > 0">
 	<h3>Humidity</h3>

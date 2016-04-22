@@ -96,7 +96,6 @@ export class AccountDetailsComponent implements OnInit {
     }
 
     scanForSensors() {
-        var self = this;
         this.modalElement.foundation('open');
 
         this.connectedAddresses = [];
