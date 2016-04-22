@@ -31,22 +31,24 @@
 
             <h4 *ngIf="sensor.status === 'CONNECTING' || sensor.status === 'CONNECTED' || sensor.status === 'READING_DEVICE_INFO'">CONNECTING</h4>
             
-            <div  *ngIf="mode!=='client' && !(sensor.status === 'CONNECTING' || sensor.status === 'CONNECTED' || sensor.status === 'READING_DEVICE_INFO')" class="text-right">
-                <button (click)="disconnect()" class="button alert hollow">
-                    Delete
-                </button>
-
-                <button *ngIf="isConnected" (click)="goToSensorDetails()" class="button secondary hollow">Details</button>
-
-                <button *ngIf="isConnected" (click)="isNamed = false" class="button secondary hollow">Rename</button>
-            </div>
-
-
-            <div  *ngIf="mode==='client' && sensor.status === 'DISCONNECTED' || sensor.status === 'SENSORTAG_NOT_FOUND'" class="text-right">
-                <button (click)="scanForSensor()" class="button secondary hollow">
+            <div *ngIf="!(sensor.status === 'CONNECTING' || sensor.status === 'CONNECTED' || sensor.status === 'READING_DEVICE_INFO')" class="text-right">
+                <button *ngIf="sensor.status === 'DISCONNECTED' || sensor.status === 'SENSORTAG_NOT_FOUND'" (click)="scanForSensor()" class="button secondary hollow">
                     Connect
                 </button>
+
+                <div *ngIf="mode!=='client' && !(sensor.status === 'DISCONNECTED' || sensor.status === 'SENSORTAG_NOT_FOUND')" >
+                    
+                    <button (click)="disconnect()" class="button alert hollow">
+                        Delete
+                    </button>
+
+                    <button (click)="goToSensorDetails()" class="button secondary hollow">Details</button>
+
+                    <button (click)="isNamed = false" class="button secondary hollow">Rename</button>
+                </div>
             </div>
+
+
 
         </div>
     </div>
