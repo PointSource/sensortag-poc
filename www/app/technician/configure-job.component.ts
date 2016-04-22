@@ -52,7 +52,7 @@ export class ConfigureJobComponent implements OnInit {
 
         this.sensors = [];
         var savedSensors = this._sensorService.getSensorsForPolicy(policyNumber);
-        if (savedSensors[0].status === "DISCONNECTED") {
+        if (savedSensors.length > 0 && savedSensors[0].status === "DISCONNECTED") {
             for (let savedSensor of savedSensors) {
                 var sensor = this._sensorFactory.sensor(this.job.policyNumber);
                 sensor.setName(savedSensor.name);
