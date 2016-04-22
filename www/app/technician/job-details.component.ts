@@ -1,4 +1,4 @@
-import {Component, OnInit, Inject} from 'angular2/core';
+import {Component, OnInit, Inject, ElementRef} from 'angular2/core';
 import {RouteParams} from 'angular2/router';
 import {Router} from 'angular2/router';
 
@@ -23,6 +23,7 @@ export class JobDetailsComponent implements OnInit {
     private status: string;
     private connectedAddresses: any[];
     private scanIndex: number;
+    private modalElement: any;
 
     constructor(
         private _router: Router,
@@ -33,10 +34,16 @@ export class JobDetailsComponent implements OnInit {
         private _sensorFactory: SensorFactory,
         private _readingService: ReadingService,
         @Inject('CordovaDevice') private _cordovaDevice,
-        private _navService: NavService
+        private _navService: NavService,
+        private _elementRef: ElementRef,
+        @Inject('jQuery') private _jquery,
+        @Inject('Foundation') private _foundation,
     ) { }
 
     ngOnInit() {
+        this.modalElement = this._jquery(this._elementRef.nativeElement.children[0]);
+        new this._foundation.Reveal(this.modalElement, { closeOnClick: false });
+
         var policyNumber = this._routeParams.get('policyNumber');
 
         this.job = this._jobService.getJob(policyNumber);
@@ -66,9 +73,6 @@ export class JobDetailsComponent implements OnInit {
                 this._sensorService.replaceSensor(sensor);
             }
 
-            if (this.sensors.length > 0) {
-                this.scanForSensors();
-            }
         } else {
             this.sensors = savedSensors;
             for (let sensor of this.sensors) {
@@ -102,7 +106,7 @@ export class JobDetailsComponent implements OnInit {
 
 
     scanForSensors() {
-        // this.modalElement.foundation('open');
+        this.modalElement.foundation('open');
 
         this.connectedAddresses = [];
 

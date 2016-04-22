@@ -1,10 +1,46 @@
-<div class="callout" *ngIf="sensors && sensors.length > 0 && connectedAddresses.length < sensors.length">
-    Not all of the sensors are connected. Connect to sensors in order to take a reading.
+<div class="reveal">
+
+    <h5 *ngIf="status !== 'NO_SENSORS' && sensors.length > 0 && scanIndex > 0">{{sensors[scanIndex - 1].name}} sensor is {{sensors[scanIndex - 1].status}}</h5>
+
+    <div *ngIf="status === 'SCANNING' && scanIndex < sensors.length">
+        <h5>Connecting to {{sensors[scanIndex].name}} sensor</h5>
+        <div class="progress" role="progressbar">
+            <div class="progress-meter" [ngStyle]="{'width': (((scanIndex + 1) / (sensors.length + 1)) * 100) + '%'}"></div>
+        </div>
+    </div>
+
+    <div *ngIf="status === 'NO_SENSORS'">
+        <h5>Could not find any sensors</h5>
+        <p>Make sure you have the sensor tags turned on. Check if LED light is blinking on the devices.</p>
+
+        <button class="button expanded" (click)="scanForSensors()">Try Again</button>
+        <button class="button expanded secondary hollow" data-close>Cancel</button>
+    </div>
+
+    <div *ngIf="status === 'DONE_CONNECTING'">
+        <h5>Connection Complete!</h5>
+        <button class="button expanded" data-close>Ok</button>
+    </div>
+    
+</div>
+
+
+
+<div *ngIf="sensors && sensors.length > 0 && connectedAddresses.length < sensors.length">
+	<div class="callout">
+	    Not all of the sensors are connected. Connect to sensors in order to take a reading.
+	</div>
+
+	<button class="button large expanded" (click)="scanForSensors()">
+	    <i class="fa fa-bluetooth-b"></i>Scan for Sensors
+	</button>
 </div>
 
 <div class="callout" *ngIf="readings.length > 0">
-	<div>{{readings.length}} Reading{{readings.length === 1 ? "" : "s"}}</div>
-	<div>Last Reading: {{readings[readings.length - 1].date | date:"MMM d yyyy h:mm"}}</div>
+	{{readings.length}} Reading{{readings.length === 1 ? "" : "s"}}
+	<div class="reading-value">
+		{{readings[readings.length - 1].date | date:"h:mm MMM d"}}
+	</div>
 
 	<a class="chart-link" (click)="loadReadings()"><i class="fa fa-refresh"></i></a>
 </div>

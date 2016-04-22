@@ -23,11 +23,15 @@ export class LandingComponent implements OnInit {
     ngOnInit() {
         this.loadingComplete = false;
         this._navService.setTitle("Sensor Demo");
-        this._sensorService.fetch().add(() => {
-            this._readingService.fetch().add(() => {
-                this.loadingComplete = true;
+        if (this._sensorService.sensors.length === 0) {
+            this._sensorService.fetch().add(() => {
+                this._readingService.fetch().add(() => {
+                    this.loadingComplete = true;
+                });
             });
-        });
+        } else {
+            this.loadingComplete = true;
+        }
     }
 
     goToTechnician() {

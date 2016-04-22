@@ -1,4 +1,4 @@
-import {Component, OnInit, Inject, NgZone, ElementRef} from 'angular2/core';
+import {Component, OnInit, Inject, ElementRef} from 'angular2/core';
 // import {RouteParams} from 'angular2/router';
 
 import {SensorService} from '../sensor.service';
@@ -31,12 +31,11 @@ export class AccountDetailsComponent implements OnInit {
         private _bleService: BLEService,
         private _navService: NavService,
         private _readingService: ReadingService,
-        private _elementRef: ElementRef,
         @Inject('Evothings') private _evothings,
+        private _elementRef: ElementRef,
         @Inject('jQuery') private _jquery,
         @Inject('Foundation') private _foundation,
         @Inject('CordovaDevice') private _cordovaDevice,
-        private _ngZone: NgZone,
         private _sensorFactory: SensorFactory
     ) { }
 
