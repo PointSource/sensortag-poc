@@ -15,6 +15,6 @@ In your browser:
 * `npm start`
   * This will compile the TypeScript files to Javascript, then launch your browser using the dev-index.html file. dev-index.html has been configured to simulate the sensors so you can test the app behavior.
  
-On your desktop:
+On your phone:
 * `cordova run android` or `cordova build ios`
-  * This will let you build and run the app for your phone. In the case of ios you'll need to go into platforms/ and open the xcode project in order to deploy on your phone.
+  * This will let you build and run the app for your phone. You still need to run npm start at least once before deploying it to your phone though. In the case of ios you'll need to go into platforms/ and open the xcode project in order to deploy on your phone.
