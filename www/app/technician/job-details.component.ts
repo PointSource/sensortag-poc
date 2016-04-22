@@ -50,6 +50,7 @@ export class JobDetailsComponent implements OnInit {
 
         this.readings = [];
         this.sensors = [];
+        this.connectedAddresses = [];
 
         // this.sensors = this._sensorService.getSensorsForPolicy(this.job.policyNumber);
         var savedSensors = this._sensorService.getSensorsForPolicy(policyNumber);
@@ -62,6 +63,7 @@ export class JobDetailsComponent implements OnInit {
 
                 sensor.setSystemId(savedSensor.systemId);
                 this.sensors.push(sensor);
+                this._sensorService.replaceSensor(sensor);
             }
 
             if (this.sensors.length > 0) {
@@ -69,6 +71,9 @@ export class JobDetailsComponent implements OnInit {
             }
         } else {
             this.sensors = savedSensors;
+            for (let sensor of this.sensors) {
+                this.connectedAddresses.push(sensor.systemId);
+            }
         }
 
         this.loadReadings();

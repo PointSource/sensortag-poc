@@ -81,6 +81,19 @@ export class SensorService {
 		this.sensors.splice(index, 1);
 	}
 
+	replaceSensor(newSensor: Sensor): boolean {
+
+		var index = this.sensors.findIndex(
+			(sensor) => sensor.systemId === newSensor.systemId
+		);
+		if (index != -1) {
+			this.sensors[index] = newSensor;
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	setClientSensors(clientSensors: Sensor[]) {
 		this.clientSensors = clientSensors;
 	}
