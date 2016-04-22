@@ -21,7 +21,7 @@
     </div>
 
     <div *ngIf="status !== 'SENSORTAG_NOT_FOUND' && status !== 'DEVICE_INFO_AVAILABLE' && status !== 'ERROR'" class="progress" role="progressbar">
-        <div class="progress-meter" style="width: {{statusPercentage}}%"></div>
+        <div class="progress-meter" [ngStyle]="{'width': statusPercentage + '%'}"></div>
     </div>
 
     <div *ngIf="status === 'DEVICE_INFO_AVAILABLE'">

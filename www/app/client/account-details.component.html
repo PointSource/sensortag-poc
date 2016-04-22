@@ -1,7 +1,5 @@
 <div class="reveal">
 
-    <!-- <div>{{status}}</div> -->
-
     <div *ngIf="!job">
         <p *ngIf="status !== 'ERROR'">Help us to find your account by entering your policy number below</p>
 
@@ -24,7 +22,7 @@
         <div *ngIf="status === 'SCANNING' && scanIndex < sensors.length">
             <h5>Connecting to {{sensors[scanIndex].name}} sensor</h5>
             <div class="progress" role="progressbar">
-                <div class="progress-meter" style="width: {{((scanIndex + 1) / (sensors.length + 1)) * 100}}%"></div>
+                <div class="progress-meter" [ngStyle]="{'width': (((scanIndex + 1) / (sensors.length + 1)) * 100) + '%'}"></div>
             </div>
         </div>
 
