@@ -45,6 +45,10 @@ export class JobDetailsComponent implements OnInit {
 
         this.sensors = this._sensorService.getSensorsForPolicy(this.job.policyNumber);
 
+        this.loadReadings();
+    }
+
+    loadReadings() {
         this._readingService.fetch().add(() => {
             this.readings = this._readingService.getReadingsForPolicy(this.job.policyNumber);
         });

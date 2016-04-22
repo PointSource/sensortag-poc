@@ -1,6 +1,8 @@
 <div class="callout" *ngIf="readings.length > 0">
 	<div>{{readings.length}} Reading{{readings.length === 1 ? "" : "s"}}</div>
 	<div>Last Reading: {{readings[readings.length - 1].date | date:"MMM d yyyy h:mm"}}</div>
+
+	<a class="chart-link" (click)="loadReadings()"><i class="fa fa-refresh"></i></a>
 </div>
 
 <div class="callout" *ngIf="sensors.length > 0 && readings.length === 0">
