@@ -33,3 +33,8 @@
         <i class="fa fa-bluetooth-b"></i>Scan for Sensors
     </button>
 </div>
+
+
+<button *ngIf="sensors && sensors.length > 0 && connectedAddresses.length === sensors.length" class="button large expanded" (click)="takeReading()">
+    <i class="fa fa-tachometer"></i>Take a Reading
+</button>

@@ -79,10 +79,6 @@ export class JobDetailsComponent implements OnInit {
         this._router.navigate(['ConfigureJob', { policyNumber: this.job.policyNumber }]);
     }
 
-    takeReading() {
-        this.readings = this._readingService.takeReading(this.sensors, this.job.policyNumber, false);
-    }
-
     goToReadingDetails(type) {
         this._router.navigate(['ReadingHistory', { policyNumber: this.job.policyNumber, type: type }]);
     }

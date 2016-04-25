@@ -1,19 +1,23 @@
 import {Component, Inject, ElementRef, OnInit, Output, EventEmitter} from 'angular2/core';
 import {BLEService} from './ble.service';
+import {ReadingService} from './technician/reading.service';
 import {Sensor} from './sensor';
+import {Job} from './technician/job';
 
 @Component({
     selector: 'scanner-component',
     templateUrl: 'app/scan.component.html',
-    inputs: ['sensors']
+    inputs: ['sensors', 'job', 'isClient']
 })
 export class ScanComponent implements OnInit {
 
     sensors: Sensor[];
     private status: string;
+    private job: Job;
     private connectedAddresses: any[];
     private scanIndex: number;
     private modalElement: any;
+    private isClient: boolean;
 
     @Output() onConnectionComplete = new EventEmitter();
 
@@ -21,6 +25,7 @@ export class ScanComponent implements OnInit {
     constructor(
         private myElement: ElementRef,
         private _bleService: BLEService,
+        private _readingService: ReadingService,
         @Inject('CordovaDevice') private _cordovaDevice,
         private _elementRef: ElementRef,
         @Inject('jQuery') private _jquery,
@@ -142,5 +147,8 @@ export class ScanComponent implements OnInit {
         }
     }
 
+    takeReading() {
+        this._readingService.takeReading(this.sensors, this.job.policyNumber, this.isClient);
+    }
 
 }

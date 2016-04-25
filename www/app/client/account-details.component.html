@@ -17,12 +17,7 @@
 
 </div>
 
-<scanner-component [sensors]="sensors" (onConnectionComplete)="connectionCompleteHandler($event)"></scanner-component>
-
-
-<button *ngIf="sensors && sensors.length > 0 && allSensorsConnected" class="button large expanded" (click)="takeReading()">
-	<i class="fa fa-tachometer"></i>Take a Reading
-</button>
+<scanner-component [sensors]="sensors" [job]="job" [isClient]="true" (onConnectionComplete)="connectionCompleteHandler($event)"></scanner-component>
 
 
 <div *ngFor="#device of sensors">

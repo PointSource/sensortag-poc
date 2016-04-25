@@ -1,4 +1,12 @@
-<scanner-component [sensors]="sensors" (onConnectionComplete)="connectionCompleteHandler($event)"></scanner-component>
+<div class="callout" *ngIf="sensors.length === 0">
+	No sensors added to this job yet. Please configure the sensors for this job in order to take readings.
+</div>
+
+<div class="callout" *ngIf="sensors.length > 0 && readings.length === 0 && allSensorsConnected">
+	No readings yet. Please click "Take a Reading" in order to get your first reading.
+</div>
+
+<scanner-component [sensors]="sensors" [job]="job" [isClient]="false"  (onConnectionComplete)="connectionCompleteHandler($event)"></scanner-component>
 
 <div class="callout" *ngIf="readings.length > 0">
 	{{readings.length}} Reading{{readings.length === 1 ? "" : "s"}}
@@ -8,16 +16,6 @@
 
 	<a class="chart-link" (click)="loadReadings()"><i class="fa fa-refresh"></i></a>
 </div>
-
-<div class="callout" *ngIf="sensors.length > 0 && readings.length === 0 && allSensorsConnected">
-	No readings yet. Please click "Take a Reading" in order to get your first reading.
-</div>
-
-<div class="callout" *ngIf="sensors.length === 0">
-	No sensors added to this job yet. Please configure the sensors for this job in order to take readings.
-</div>
-
-<button *ngIf="sensors.length > 0 && allSensorsConnected" class="button large expanded" (click)="takeReading()"><i class="fa fa-tachometer"></i>Take a Reading</button>
 
 <div class="callout" *ngIf="readings.length > 0">
 	<h3>Humidity</h3>

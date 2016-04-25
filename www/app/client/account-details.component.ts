@@ -4,7 +4,6 @@ import {SensorService} from '../sensor.service';
 import {JobService} from '../technician/job.service';
 import {ReadingService} from '../technician/reading.service';
 import {NavService} from '../nav.service';
-import {BLEService} from '../ble.service';
 
 import {Sensor} from '../sensor';
 import {SensorFactory} from '../sensor.factory';
@@ -21,23 +20,18 @@ export class AccountDetailsComponent implements OnInit {
     sensors: Sensor[];
     job: Job;
     status: string;
-    scanIndex: number;
-    sensortag: any;
     private modalElement: any;
     private allSensorsConnected: boolean;
 
     constructor(
         private _sensorService: SensorService,
         private _jobService: JobService,
-        private _bleService: BLEService,
         private _navService: NavService,
         private _readingService: ReadingService,
-        @Inject('Evothings') private _evothings,
         private _elementRef: ElementRef,
-        @Inject('jQuery') private _jquery,
-        @Inject('Foundation') private _foundation,
-        @Inject('CordovaDevice') private _cordovaDevice,
         private _sensorFactory: SensorFactory
+        @Inject('jQuery') private _jquery,
+        @Inject('Foundation') private _foundation
     ) { }
 
     ngOnInit() {
@@ -95,15 +89,13 @@ export class AccountDetailsComponent implements OnInit {
     }
 
 
-
     connectionCompleteHandler($event) {
         this.allSensorsConnected = $event.allSensorsConnected;
+        if (this.allSensorsConnected) {
+            this._sensorService.setClientSensors(this.sensors);
+        }
     }
 
-    takeReading() {
-        this._sensorService.setClientSensors(this.sensors);
-        this._readingService.takeReading(this.sensors, this.job.policyNumber, true);
-    }
 
     cancel() {
         this.modalElement.foundation('close');
