@@ -1,0 +1,15 @@
+<div class="top-bar">
+    <div class="top-bar-left">
+        <ul class="menu">
+            <li><a (click)="goBack()" class="back-arrow"><i class="fa fa-chevron-left"></i></a></li>
+            <li class="menu-text">{{title}}</li>
+        </ul>
+    </div>
+</div>
+
+<div class="row columns app-content">
+
+    <router-outlet></router-outlet>
+  
+</div>
+

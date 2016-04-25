@@ -1,0 +1,179 @@
+
+<!DOCTYPE html>
+<!--
+    Demonstration of the TI SensorTag JavaScript library.
+-->
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="viewport" content="width=device-width, user-scalable=no,
+        shrink-to-fit=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+
+    <title>SensorTag Demo</title>
+
+    <script>
+    // Redirect console.log to Evothings Workbench.
+    if (window.hyper && window.hyper.log) { console.log = hyper.log }
+    </script>
+
+    <link rel="stylesheet" href="libs/font-awesome-4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="libs/foundation-sites/foundation.min.css">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/platform-overrides.css">
+    
+
+    <script>
+        var cordova = {
+            require: () => {}
+        }
+        var device = {}
+    </script>
+    
+    <!-- <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Intl.~locale.en"></script> -->
+    <!-- <script src="cordova.js"></script> -->
+    <script src="libs/iotFoundation-lib.js"></script>
+    <script src="libs/mqttws31.js"></script>
+    <script src="libs/evothings/evothings.js"></script>
+    <script src="libs/evothings/tisensortag/tisensortag.js"></script>
+
+    <script src="libs/jquery/jquery.min.js"></script>
+    <script src="libs/foundation-sites/foundation.min.js"></script>
+    <script src="libs/chart/Chart.js"></script>
+    <script src="libs/chart-scatter/Chart.Scatter.min.js"></script>
+
+    <script src="libs/angular2/es6-shim.min.js"></script>
+    <script src="libs/angular2/system-polyfills.js"></script>
+    <script src="libs/angular2/angular2-polyfills.js"></script>
+    <script src="libs/angular2/system.src.js"></script>
+    <script src="libs/angular2/Rx.js"></script>
+    <script src="libs/angular2/angular2.dev.js"></script>
+    <script src="libs/angular2/router.dev.js"></script>
+    <script src="libs/angular2/http.dev.js"></script>
+</head>
+
+
+<body>
+
+    <my-app>Loading...</my-app>
+
+
+    <script>
+        // document.addEventListener(
+        //     'deviceready',
+        //     function() { 
+
+                // evothings.scriptsLoaded(function() {
+             
+
+                //   System.config({
+                //     packages: {        
+                //       app: {
+                //         format: 'register',
+                //         defaultExtension: 'js'
+                //       }
+                //     },
+                //       map: {
+                //         'evothings': 'libs/evothings/evothings.js'
+                //       }
+                //   });
+                //   System.import('app/main')
+                //         .then(null, console.error.bind(console));
+                // }) 
+
+
+        // document.addEventListener(
+        //     'deviceready',
+        //     function() { 
+
+
+                evothings.scriptsLoaded(function() {
+                    evothings.ble = {
+                        stopScan: function () {},
+                        startScan: function () {},
+                        fromUtf8: function () {return "1.2.3"}
+                    }
+
+                    var device = {
+                        systemId: "0000000000000000",
+                        readServices: function(services, callback) {
+                            callback(device);
+                        },
+                        readServiceCharacteristic: function(service, characteristic, callback) {
+                            callback(new ArrayBuffer(8));
+                        },
+                        close: function() {},
+                        connect: function (callback) {
+                            callback(device);
+                        },
+                        writeServiceCharacteristic: function () {},
+                        writeServiceDescriptor: function () {},
+                        enableServiceNotification: function (service, data, callback, errorFun)  {
+                            setInterval(function ()  {
+                                callback([
+                                    Math.floor(Math.random() * 12) + 12, 
+                                    Math.floor(Math.random() * 12) + 84, 
+                                    Math.floor(Math.random() * 12) + 20, 
+                                    Math.floor(Math.random() * 12) + 55
+                                ]);
+                            }, 1000);
+                        }
+                    }
+
+                    evothings.easyble.startScan = function (success, fail) {
+                        success({
+                                device: 123,
+                                advertisementData: {
+                                    kCBAdvDataLocalName: 'CC2650 SensorTag'
+                                },
+                                close: function () {
+                                    console.log('device.close');
+                                },
+                                rssi: 1000,
+                                connect: function (callback) {
+                                    callback(device);
+                                },
+                                readServices: function (something, callback, errorFun) {
+                                    callback();
+                                },
+                                readServiceCharacteristic: function (param1, param2, callback, errorFun) {
+                                    callback(new ArrayBuffer(8));
+                                },
+                                writeServiceCharacteristic: function () {},
+                                writeServiceDescriptor: function () {},
+                                enableServiceNotification: function (service, data, callback, errorFun)  {
+                                    setInterval(function ()  {
+                                        callback([
+                                            Math.floor(Math.random() * 12) + 12, 
+                                            Math.floor(Math.random() * 12) + 84, 
+                                            Math.floor(Math.random() * 12) + 20, 
+                                            Math.floor(Math.random() * 12) + 55
+                                        ]);
+                                    }, 1000);
+                                }
+                            });
+                    }
+
+                  System.config({
+                    packages: {        
+                      app: {
+                        format: 'register',
+                        defaultExtension: 'js'
+                      }
+                    },
+                      map: {
+                        'evothings': 'libs/evothings/evothings.js'
+                      }
+                  });
+                  System.import('app/main')
+                        .then(null, console.error.bind(console));
+                }) 
+        //     },
+        // false)
+
+    </script>
+
+</body>
+
+</html>
