@@ -64,27 +64,24 @@ export class ScanComponent implements OnInit {
     }
 
     setConnectCallbacks(sensor) {
-        var self = this;
         sensor.setOnDeviceConnected((device) => {
-            self.onDeviceConnected(device);
+            this.onDeviceConnected(device);
         });
         sensor.setOnDeviceConnectFail((device) => {
-            self.onDeviceConnectFail(device);
+            this.onDeviceConnectFail(device);
         });
     }
 
     clearConnectCallbacks(sensor) {
-        var self = this;
         sensor.setOnDeviceConnected((device) => {
-            if (self.connectedAddresses.indexOf(device.address) === -1) {
-                self.connectedAddresses.push(device.address);
+            if (this.connectedAddresses.indexOf(device.address) === -1) {
+                this.connectedAddresses.push(device.address);
             }
         });
         sensor.setOnDeviceConnectFail(null);
     }
 
     onDeviceConnected(device) {
-        var self = this;
         // Connect to the next device if this device is not already connected... ?
         if (this.connectedAddresses.indexOf(device.address) === -1) {
             this.connectedAddresses.push(device.address);
@@ -115,7 +112,6 @@ export class ScanComponent implements OnInit {
     }
 
     onDeviceConnectFail(status) {
-        var self = this;
         console.log('on device connect fail', status);
         if ((this.scanIndex + 1) < this.sensors.length && status !== "NO_SENSORS") {
             this.clearConnectCallbacks(this.sensors[this.scanIndex]);
