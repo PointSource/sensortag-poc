@@ -15,10 +15,10 @@
 		3047A5121AB8059700498E2A /* build-debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 3047A50F1AB8059700498E2A /* build-debug.xcconfig */; };
 		3047A5131AB8059700498E2A /* build-release.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 3047A5101AB8059700498E2A /* build-release.xcconfig */; };
 		3047A5141AB8059700498E2A /* build.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 3047A5111AB8059700498E2A /* build.xcconfig */; };
-		AC19C2474E5F4E3BA515B53F /* EVOBLE.m in Sources */ = {isa = PBXBuildFile; fileRef = 850F896440914167826DF1C9 /* EVOBLE.m */; };
 		3B903F6A67A24E41A576012C /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D295D80CF4C647448BB3CB4F /* CoreBluetooth.framework */; };
 		5AE3FA9B592D4EE59886E152 /* CDVLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A9968DB2774138962F33EB /* CDVLogger.m */; };
-		168D3A618B2B421B9D374A10 /* CDVDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = D1CCEFB2D5D346549A80B9BC /* CDVDevice.m */; };
+		3083DB4D415948B4A8CC528E /* EVOBLE.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EE5F6688F6848D4B20F9421 /* EVOBLE.m */; };
+		41E7D45BB0264382B62A4BF9 /* CDVDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 651B0B8B6235411DB35C87C5 /* CDVDevice.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,13 +58,13 @@
 		EB87FDF41871DAF40020F90C /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = config.xml; path = ../../config.xml; sourceTree = "<group>"; };
 		F840E1F0165FE0F500CFE078 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = config.xml; path = "IotPOC/config.xml"; sourceTree = "<group>"; };
 		ED33DF2A687741AEAF9F8254 /* Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Bridging-Header.h"; path = "Bridging-Header.h"; sourceTree = "<group>"; };
-		850F896440914167826DF1C9 /* EVOBLE.m */ = {isa = PBXFileReference; name = "EVOBLE.m"; path = "cordova-plugin-ble/EVOBLE.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
-		A10ED8D3EBBB40B0910815E7 /* EVOBLE.h */ = {isa = PBXFileReference; name = "EVOBLE.h"; path = "cordova-plugin-ble/EVOBLE.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
 		D295D80CF4C647448BB3CB4F /* CoreBluetooth.framework */ = {isa = PBXFileReference; name = "CoreBluetooth.framework"; path = "System/Library/Frameworks/CoreBluetooth.framework"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = wrapper.framework; explicitFileType = undefined; includeInIndex = 0; };
 		96A9968DB2774138962F33EB /* CDVLogger.m */ = {isa = PBXFileReference; name = "CDVLogger.m"; path = "cordova-plugin-console/CDVLogger.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
 		065E214445DB4748989E86A0 /* CDVLogger.h */ = {isa = PBXFileReference; name = "CDVLogger.h"; path = "cordova-plugin-console/CDVLogger.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
-		D1CCEFB2D5D346549A80B9BC /* CDVDevice.m */ = {isa = PBXFileReference; name = "CDVDevice.m"; path = "cordova-plugin-device/CDVDevice.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
-		B12D74FF113146C990C2F9F4 /* CDVDevice.h */ = {isa = PBXFileReference; name = "CDVDevice.h"; path = "cordova-plugin-device/CDVDevice.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
+		4EE5F6688F6848D4B20F9421 /* EVOBLE.m */ = {isa = PBXFileReference; name = "EVOBLE.m"; path = "cordova-plugin-ble/EVOBLE.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
+		D0CDEAAF18CF4F808676DC39 /* EVOBLE.h */ = {isa = PBXFileReference; name = "EVOBLE.h"; path = "cordova-plugin-ble/EVOBLE.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
+		651B0B8B6235411DB35C87C5 /* CDVDevice.m */ = {isa = PBXFileReference; name = "CDVDevice.m"; path = "cordova-plugin-device/CDVDevice.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
+		1C1360203AC84DDAA95472D6 /* CDVDevice.h */ = {isa = PBXFileReference; name = "CDVDevice.h"; path = "cordova-plugin-device/CDVDevice.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -169,12 +169,12 @@
 		307C750510C5A3420062BCA9 /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
-				850F896440914167826DF1C9 /* EVOBLE.m */,
-				A10ED8D3EBBB40B0910815E7 /* EVOBLE.h */,
 				96A9968DB2774138962F33EB /* CDVLogger.m */,
 				065E214445DB4748989E86A0 /* CDVLogger.h */,
-				D1CCEFB2D5D346549A80B9BC /* CDVDevice.m */,
-				B12D74FF113146C990C2F9F4 /* CDVDevice.h */,
+				4EE5F6688F6848D4B20F9421 /* EVOBLE.m */,
+				D0CDEAAF18CF4F808676DC39 /* EVOBLE.h */,
+				651B0B8B6235411DB35C87C5 /* CDVDevice.m */,
+				1C1360203AC84DDAA95472D6 /* CDVDevice.h */,
 			);
 			name = Plugins;
 			path = "IotPOC/Plugins";
@@ -289,9 +289,9 @@
 				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
 				1D3623260D0F684500981E51 /* AppDelegate.m in Sources */,
 				302D95F114D2391D003F00A1 /* MainViewController.m in Sources */,
-				AC19C2474E5F4E3BA515B53F /* EVOBLE.m in Sources */,
 				5AE3FA9B592D4EE59886E152 /* CDVLogger.m in Sources */,
-				168D3A618B2B421B9D374A10 /* CDVDevice.m in Sources */,
+				3083DB4D415948B4A8CC528E /* EVOBLE.m in Sources */,
+				41E7D45BB0264382B62A4BF9 /* CDVDevice.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
