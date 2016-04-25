@@ -59,10 +59,10 @@
 	<h3>Humidity</h3>
 
 	<div *ngFor="#sensorData of readings[readings.length - 1].sensorData" class="row reading-row">
-		<div class="columns small-4 reading-label">
+		<div class="columns small-5 reading-label">
 			{{sensorData.name}} 
 		</div>
-	 	<div class="columns small-8 reading-value">
+	 	<div class="columns small-7 reading-value">
 			{{sensorData.data.humidityData.relativeHumidity}}% rH
 		</div>
 	</div>
@@ -75,10 +75,10 @@
 	<h3>Target Temperature</h3>
 
 	<div *ngFor="#sensorData of readings[readings.length - 1].sensorData" class="row reading-row">
-		<div class="columns small-4 reading-label">
+		<div class="columns small-5 reading-label">
 			{{sensorData.name}}
 		</div>
-	 	<div class="columns small-8 reading-value">
+	 	<div class="columns small-7 reading-value">
 			 {{sensorData.data.temperatureData.targetTemperature}}&#x000B0; F
 		 </div>
 	</div>
@@ -91,10 +91,10 @@
 	<h3>Ambient Temperature</h3>
 
 	<div *ngFor="#sensorData of readings[readings.length - 1].sensorData" class="row reading-row">
-		<div class="columns small-4 reading-label">
+		<div class="columns small-5 reading-label">
 			{{sensorData.name}}
 		</div>
-	 	<div class="columns small-8 reading-value">
+	 	<div class="columns small-7 reading-value">
 	 		{{sensorData.data.temperatureData.ambientTemperature}}&#x000B0; F
 	 	</div>
 	</div>
