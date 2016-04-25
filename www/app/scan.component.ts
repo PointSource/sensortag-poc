@@ -5,7 +5,7 @@ import {Sensor} from './sensor';
 @Component({
     selector: 'scanner-component',
     templateUrl: 'app/scan.component.html',
-    inputs: ['sensors', 'connectedAddresses']
+    inputs: ['sensors']
 })
 export class ScanComponent implements OnInit {
 
@@ -28,11 +28,16 @@ export class ScanComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        console.log('inside scan component', this.sensors);
         this.modalElement = this._jquery(this._elementRef.nativeElement.children[0]);
         new this._foundation.Reveal(this.modalElement, { closeOnClick: false });
 
-        // this.connectedAddresses = [];
+        this.connectedAddresses = [];
+
+        if (this.sensors.length > 0 && this.sensors[0].status !== "DISCONNECTED") {
+            for (let sensor of this.sensors) {
+                this.connectedAddresses.push(sensor.systemId);
+            }
+        }
     }
 
     // SCAN FOR SENSORS
@@ -99,7 +104,7 @@ export class ScanComponent implements OnInit {
             this.clearConnectCallbacks(this.sensors[this.scanIndex]);
             this.status = "DONE_CONNECTING";
             console.log("success emit")
-            this.onConnectionComplete.emit({ connectedAddresses: this.connectedAddresses });
+            this.onConnectionComplete.emit({ allSensorsConnected: this.connectedAddresses.length === this.sensors.length });
 
         }
     }
@@ -131,7 +136,7 @@ export class ScanComponent implements OnInit {
                 this.scanIndex++;
                 this.status = "DONE_CONNECTING";
                 console.log("FAIL emit")
-                this.onConnectionComplete.emit({ connectedAddresses: this.connectedAddresses });
+                this.onConnectionComplete.emit({ allSensorsConnected: this.connectedAddresses.length === this.sensors.length });
             }
 
         }

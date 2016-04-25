@@ -23,7 +23,7 @@ export class JobDetailsComponent implements OnInit {
     private job: Job;
     private sensors: Sensor[];
     private readings: Reading[] = [];
-    private connectedAddresses: any[];
+    private allSensorsConnected: boolean;
 
     constructor(
         private _router: Router,
@@ -49,11 +49,9 @@ export class JobDetailsComponent implements OnInit {
 
         this.readings = [];
         this.sensors = [];
-        this.connectedAddresses = [];
 
-        // this.sensors = this._sensorService.getSensorsForPolicy(this.job.policyNumber);
         var savedSensors = this._sensorService.getSensorsForPolicy(policyNumber);
-        if (savedSensors.length > 0 && savedSensors[0].data === undefined) {
+        if (savedSensors.length > 0 && savedSensors[0].status === "DISCONNECTED") {
             for (let savedSensor of savedSensors) {
                 var sensor = this._sensorFactory.sensor(this.job.policyNumber);
                 sensor.setName(savedSensor.name);
@@ -65,9 +63,7 @@ export class JobDetailsComponent implements OnInit {
 
         } else {
             this.sensors = savedSensors;
-            for (let sensor of this.sensors) {
-                this.connectedAddresses.push(sensor.systemId);
-            }
+            this.allSensorsConnected = true;
         }
 
         this.loadReadings();
@@ -93,7 +89,7 @@ export class JobDetailsComponent implements OnInit {
 
 
     connectionCompleteHandler($event) {
-        this.connectedAddresses = $event.connectedAddresses;
+        this.allSensorsConnected = $event.allSensorsConnected;
     }
 
 }
