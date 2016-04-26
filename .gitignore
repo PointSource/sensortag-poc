@@ -1,5 +1,5 @@
-platforms/android/cordova/node_modules
 platforms/android/CordovaLib/
+platforms/android/.gradle/
 platforms/android/assets/www
 platforms/ios/www
 
@@ -14,3 +14,6 @@ www/app/*.js
 typings
 www/app/technician/*.js
 www/app/client/*.js
+
+!platforms/android/cordova/node_modules
+!platforms/ios/cordova/node_modules
