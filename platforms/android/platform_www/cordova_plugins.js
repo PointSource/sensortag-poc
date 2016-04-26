@@ -24,9 +24,9 @@ module.exports.metadata =
 // TOP OF METADATA
 {
     "cordova-plugin-whitelist": "1.2.1",
-    "cordova-plugin-ble": "1.1.2",
-    "cordova-plugin-console": "1.0.4-dev",
-    "cordova-plugin-device": "1.1.1"
+    "cordova-plugin-console": "1.0.3",
+    "cordova-plugin-ble": "1.2.0",
+    "cordova-plugin-device": "1.1.2"
 };
 // BOTTOM OF METADATA
 });

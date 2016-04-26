@@ -43,10 +43,10 @@
         "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "com.pointsource.iotpoc"
         },
-        "cordova-plugin-ble": {
+        "cordova-plugin-console": {
             "PACKAGE_NAME": "com.pointsource.iotpoc"
         },
-        "cordova-plugin-console": {
+        "cordova-plugin-ble": {
             "PACKAGE_NAME": "com.pointsource.iotpoc"
         },
         "cordova-plugin-device": {
@@ -77,8 +77,8 @@
     ],
     "plugin_metadata": {
         "cordova-plugin-whitelist": "1.2.1",
-        "cordova-plugin-ble": "1.1.2",
-        "cordova-plugin-console": "1.0.4-dev",
-        "cordova-plugin-device": "1.1.1"
+        "cordova-plugin-console": "1.0.3",
+        "cordova-plugin-ble": "1.2.0",
+        "cordova-plugin-device": "1.1.2"
     }
 }
