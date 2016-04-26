@@ -1,0 +1,24 @@
+{
+    "prepare_queue": {
+        "installed": [],
+        "uninstalled": []
+    },
+    "config_munge": {
+        "files": {}
+    },
+    "installed_plugins": {
+        "cordova-plugin-ble": {
+            "PACKAGE_NAME": "com.pointsource.iotpoc"
+        },
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "com.pointsource.iotpoc"
+        },
+        "cordova-plugin-console": {
+            "PACKAGE_NAME": "com.pointsource.iotpoc"
+        },
+        "cordova-plugin-device": {
+            "PACKAGE_NAME": "com.pointsource.iotpoc"
+        }
+    },
+    "dependent_plugins": {}
+}
