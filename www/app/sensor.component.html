@@ -1,6 +1,6 @@
 <div>
     <div class="callout" [ngClass]="{
-        disconnected: sensor.status === 'DISCONNECTED' || sensor.status === 'CONNECTING' || sensor.status === 'CONNECTED' || sensor.status === 'READING_DEVICE_INFO',
+        disconnected: sensor.status !== 'SENSORTAG_ONLINE',
         highlight: sensor.data && sensor.data.keypressData !== 0
     }">
         <div *ngIf="isNamed === false">
@@ -29,9 +29,11 @@
                 </div>
             </div>
 
+            <h4 *ngIf="sensor.status === 'SCANNING'">SCANNING</h4>
+
             <h4 *ngIf="sensor.status === 'CONNECTING' || sensor.status === 'CONNECTED' || sensor.status === 'READING_DEVICE_INFO'">CONNECTING</h4>
             
-            <div *ngIf="!(sensor.status === 'CONNECTING' || sensor.status === 'CONNECTED' || sensor.status === 'READING_DEVICE_INFO')" class="text-right">
+            <div *ngIf="!(sensor.status === 'SCANNING' || sensor.status === 'CONNECTING' || sensor.status === 'CONNECTED' || sensor.status === 'READING_DEVICE_INFO')" class="text-right">
                 <button *ngIf="sensor.status === 'DISCONNECTED' || sensor.status === 'SENSORTAG_NOT_FOUND'" (click)="scanForSensor()" class="button secondary hollow">
                     Connect
                 </button>

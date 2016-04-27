@@ -90,6 +90,8 @@ export class Sensor {
 
         var numCompleted = 0;
 
+        this.status = "SCANNING";
+
         console.log('Sensor.scanForSensor() '+this.name.toUpperCase());
         this._evothings.easyble.startScan((device) => {
             if (self._bleService.deviceIsSensorTag(device) && foundAddresses.indexOf(device.address) === -1) {
@@ -126,8 +128,11 @@ export class Sensor {
                                 self.connectToDevice(matchingDevice);
                             }
 
-                            if (matchingDevice === null && self.onDeviceConnectFail) {
-                                self.onDeviceConnectFail('NO_MATCH');
+                            if (matchingDevice === null) {
+                                self.status = 'DISCONNECTED';
+                                if (self.onDeviceConnectFail) {
+                                    self.onDeviceConnectFail('NO_MATCH');
+                                }
                             }
                         }
 
@@ -143,10 +148,13 @@ export class Sensor {
         setTimeout(() => { 
             console.log("Stop Scanning " + self.name.toUpperCase() + " --- " + numCompleted + " completed out of " + foundAddresses.length);
             this._evothings.easyble.stopScan();
-            if (foundAddresses.length === 0 && self.onDeviceConnectFail) {
-                self._ngZone.run(() => {
-                    self.onDeviceConnectFail("NO_SENSORS");
-                });
+            if (foundAddresses.length === 0) {
+                self.status = 'DISCONNECTED';
+                if (self.onDeviceConnectFail) {
+                    self._ngZone.run(() => {
+                        self.onDeviceConnectFail("NO_SENSORS");
+                    });
+                }
             }
 
         }, 1000);
