@@ -17,3 +17,4 @@ www/app/client/*.js
 
 !platforms/android/cordova/node_modules
 !platforms/ios/cordova/node_modules
+UserInterfaceState.xcuserstate
