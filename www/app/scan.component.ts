@@ -20,6 +20,7 @@ export class ScanComponent implements OnInit {
     private isClient: boolean;
 
     @Output() onConnectionComplete = new EventEmitter();
+    @Output() onTakeReading = new EventEmitter();
 
 
     constructor(
@@ -76,6 +77,7 @@ export class ScanComponent implements OnInit {
         sensor.setOnDeviceConnected((device) => {
             if (this.connectedAddresses.indexOf(device.address) === -1) {
                 this.connectedAddresses.push(device.address);
+                this.onConnectionComplete.emit({ allSensorsConnected: this.connectedAddresses.length === this.sensors.length });
             }
         });
         sensor.setOnDeviceConnectFail(null);
@@ -145,6 +147,7 @@ export class ScanComponent implements OnInit {
 
     takeReading() {
         this._readingService.takeReading(this.sensors, this.job.policyNumber, this.isClient);
+        this.onTakeReading.emit({});
     }
 
 }

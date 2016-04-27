@@ -6,7 +6,7 @@
 	No readings yet. Please click "Take a Reading" in order to get your first reading.
 </div>
 
-<scanner-component [sensors]="sensors" [job]="job" [isClient]="false"  (onConnectionComplete)="connectionCompleteHandler($event)"></scanner-component>
+<scanner-component [sensors]="sensors" [job]="job" [isClient]="false"  (onConnectionComplete)="connectionCompleteHandler($event)" (onTakeReading)="loadReadings()"></scanner-component>
 
 <div class="callout" *ngIf="readings.length > 0">
 	{{readings.length}} Reading{{readings.length === 1 ? "" : "s"}}

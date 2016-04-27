@@ -5,6 +5,7 @@ import {JobService} from '../technician/job.service';
 import {ReadingService} from '../technician/reading.service';
 import {NavService} from '../nav.service';
 
+import {Reading} from '../technician/reading'
 import {Sensor} from '../sensor';
 import {SensorFactory} from '../sensor.factory';
 import {Job} from '../technician/job';
@@ -18,6 +19,7 @@ import {ScanComponent} from '../scan.component';
 export class AccountDetailsComponent implements OnInit {
     connectedAddresses: any[];
     sensors: Sensor[];
+    private readings: Reading[];
     job: Job;
     status: string;
     private modalElement: any;
@@ -39,6 +41,7 @@ export class AccountDetailsComponent implements OnInit {
         new this._foundation.Reveal(this.modalElement, { closeOnClick: false });
         this.connectedAddresses = [];
         this.sensors = [];
+        this.readings = [];
         this._navService.setTitle("My Sensors");
 
         // If client sensors have not been loaded, ask the user for their policy
@@ -56,8 +59,14 @@ export class AccountDetailsComponent implements OnInit {
                 for (let sensor of this.sensors) {
                     this.connectedAddresses.push(sensor.systemId);
                 }
+                this.loadReadings();
             }
         }
+
+    }
+
+    loadReadings() {
+        this.readings = this._readingService.getReadingsForPolicy(this.job.policyNumber);
     }
 
     findAccount(policyNumber: string) {
@@ -68,6 +77,7 @@ export class AccountDetailsComponent implements OnInit {
         } else {
             this.job = job;
             this.loadSensors();
+            this.loadReadings();
         }
     }
 

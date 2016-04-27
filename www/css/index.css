@@ -54,3 +54,16 @@ ul.scatter-legend {
 .error {
     color: #ee3c50;
 }
+
+.chart-link {
+    font-size: 2.5rem;
+    position: absolute;
+    right: 1.5rem;
+    top: 50%;
+    margin-top: -30px
+}
+
+.reading-value {
+    font-size: 1.5rem;
+    font-weight: 600;
+}

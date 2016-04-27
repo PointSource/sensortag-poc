@@ -17,8 +17,16 @@
 
 </div>
 
-<scanner-component [sensors]="sensors" [job]="job" [isClient]="true" (onConnectionComplete)="connectionCompleteHandler($event)"></scanner-component>
+<scanner-component [sensors]="sensors" [job]="job" [isClient]="true" (onConnectionComplete)="connectionCompleteHandler($event)" (onTakeReading)="loadReadings()"></scanner-component>
 
+<div class="callout" *ngIf="readings.length > 0">
+    {{readings.length}} Reading{{readings.length === 1 ? "" : "s"}}
+    <div class="reading-value">
+        {{readings[readings.length - 1].date | date:"h:mm MMM d"}}
+    </div>
+
+    <a class="chart-link" (click)="loadReadings()"><i class="fa fa-refresh"></i></a>
+</div>
 
 <div *ngFor="#device of sensors">
     <sensor [sensor]="device" [mode]="'client'"></sensor>
