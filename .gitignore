@@ -1,9 +1,11 @@
-platforms/android/cordova/node_modules
-platforms/android/CordovaLib/
-platforms
-plugins
-bower_components
 node_modules
+
+platforms/android/CordovaLib/build
+platforms/android/.gradle/
+platforms/android/assets/www
+platforms/ios/www
+
+bower_components
 
 npm-debug.log
 *.map
@@ -12,3 +14,7 @@ www/app/*.js
 typings
 www/app/technician/*.js
 www/app/client/*.js
+
+!platforms/android/cordova/node_modules
+!platforms/ios/cordova/node_modules
+UserInterfaceState.xcuserstate
