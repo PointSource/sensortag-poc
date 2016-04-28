@@ -1,4 +1,4 @@
-import {Component, Inject, ElementRef, OnInit, Output, EventEmitter} from 'angular2/core';
+import {Component, Inject, ElementRef, OnInit, OnChanges, SimpleChange, Output, EventEmitter} from 'angular2/core';
 import {BLEService} from './ble.service';
 import {ReadingService} from './technician/reading.service';
 import {Sensor} from './sensor';
@@ -9,7 +9,7 @@ import {Job} from './technician/job';
     templateUrl: 'app/scan.component.html',
     inputs: ['sensors', 'job', 'isClient']
 })
-export class ScanComponent implements OnInit {
+export class ScanComponent implements OnInit, OnChanges {
 
     sensors: Sensor[];
     private status: string;
@@ -42,6 +42,14 @@ export class ScanComponent implements OnInit {
         if (this.sensors.length > 0 && this.sensors[0].status !== "DISCONNECTED") {
             for (let sensor of this.sensors) {
                 this.connectedAddresses.push(sensor.systemId);
+            }
+        }
+    }
+
+    ngOnChanges(changes: { [propName: string]: SimpleChange }) {
+        if (changes['job']) {
+            for (let sensor of this.sensors) {
+                this.clearConnectCallbacks(sensor);
             }
         }
     }
