@@ -1,6 +1,7 @@
 import {NgZone, Inject} from 'angular2/core';
 import {SensorData} from './sensor-data';
 import {BLEService} from './ble.service';
+import {EVO_THINGS} from './app.token';
 
 export class Sensor {
 	systemId: string;
@@ -16,7 +17,7 @@ export class Sensor {
     constructor(
 		private _ngZone: NgZone,
         // private _bleService: BLEService,
-        @Inject('Evothings') private _evothings
+        @Inject(EVO_THINGS) private _evothings
 	) { }
 
     initialize(policyNumber: string) {

@@ -25,6 +25,7 @@ import {BLEService} from "../ble.service"
 import {NavService} from "../nav.service"
 
 import {JobDetailsComponent} from "./job-details.component"
+import {EVO_THINGS} from '../app.token';
 
 beforeEachProviders(() => {
 
@@ -67,7 +68,7 @@ beforeEachProviders(() => {
 		SensorFactory,
 		JobDetailsComponent,
 		provide(RouteParams, { useValue: new RouteParams({ policyNumber: '01929' }) }),
-		provide('Evothings', {
+		provide(EVO_THINGS, {
 			useValue: _evothings
 		}),
 		provide(NgZone, { useValue: {} }),

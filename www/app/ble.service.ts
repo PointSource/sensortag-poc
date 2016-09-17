@@ -1,4 +1,5 @@
 import {Injectable, Inject} from 'angular2/core';
+import {EVO_THINGS} from './app.token';
 
 @Injectable()
 export class BLEService {
@@ -7,7 +8,7 @@ export class BLEService {
     private sensortag: any;
 
 	constructor(
-        @Inject('Evothings') private _evothings
+        @Inject(EVO_THINGS) private _evothings
 	) {
 		this.DEVICEINFO_SERVICE = '0000180a-0000-1000-8000-00805f9b34fb';
         this.SYSTEM_ID = '00002a23-0000-1000-8000-00805f9b34fb';

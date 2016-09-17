@@ -62,6 +62,7 @@ import {JobService} from "../technician/job.service"
 import {ReadingService} from "../technician/reading.service"
 
 import {AccountDetailsComponent} from "./account-details.component"
+import {CORDOVA_DEVICE, EVO_THINGS} from "../app.token";
 
 
 beforeEachProviders(() => {
@@ -87,10 +88,10 @@ beforeEachProviders(() => {
 		provide(JobService, { useClass: MockJobService }),
 		SensorService,
 		AccountDetailsComponent,
-		provide('Evothings', {
+		provide(EVO_THINGS, {
 			useValue: _evothings
 		}),
-		provide('CordovaDevice', {useValue: {}})
+		provide(CORDOVA_DEVICE, {useValue: {}})
 	];
 });
 

@@ -1,13 +1,14 @@
 import {NgZone, Inject, Injectable} from 'angular2/core';
 import {Sensor} from './sensor';
 import {SensorData} from './sensor-data';
+import {EVO_THINGS} from './app.token';
 
 @Injectable()
 export class SensorFactory {
 
     constructor (
     	private _ngZone: NgZone,
-        @Inject('Evothings') private _evothings
+        @Inject(EVO_THINGS) private _evothings
 	) {}
 
     sensor(policyNumber: string) {

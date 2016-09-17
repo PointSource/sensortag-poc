@@ -1,5 +1,5 @@
 import {Component, Inject, OnInit, OnChanges, Input, SimpleChange, ElementRef} from 'angular2/core';
-
+import {CHARTJS} from './app.token';
 
 @Component({
     selector: 'chart-component',
@@ -14,7 +14,7 @@ export class ChartComponent implements OnInit, OnChanges {
     legendHtml: string;
 
     constructor(
-        @Inject('ChartJS') private _chartJS,
+        @Inject(CHARTJS) private _chartJS,
         private myElement: ElementRef
     ) { }
 

@@ -11,6 +11,7 @@ import {SensorFactory} from '../sensor.factory';
 import {Job} from '../technician/job';
 import {SensorComponent} from '../sensor.component';
 import {ScanComponent} from '../scan.component';
+import {FOUNDATION, JQUERY} from '../app.token';
 
 @Component({
     templateUrl: 'app/client/account-details.component.html',
@@ -31,9 +32,9 @@ export class AccountDetailsComponent implements OnInit {
         private _navService: NavService,
         private _readingService: ReadingService,
         private _elementRef: ElementRef,
-        private _sensorFactory: SensorFactory
-        @Inject('jQuery') private _jquery,
-        @Inject('Foundation') private _foundation
+        private _sensorFactory: SensorFactory,
+        @Inject(JQUERY) private _jquery,
+        @Inject(FOUNDATION) private _foundation
     ) { }
 
     ngOnInit() {

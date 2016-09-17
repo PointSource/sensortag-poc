@@ -14,10 +14,11 @@ import {
 	it,
 	inject,
 	injectAsync } from 'angular2/testing';
-import {provide} from "angular2/core"
-import {BLEService} from "./ble.service"
-import {NavService} from "./nav.service"
-import {LandingComponent} from "./landing.component"
+import {provide} from "angular2/core";
+import {BLEService} from "./ble.service";
+import {NavService} from "./nav.service";
+import {LandingComponent} from "./landing.component";
+import {EVO_THINGS} from './app.token';
 
 beforeEachProviders(() => {
 	return [
@@ -31,7 +32,7 @@ beforeEachProviders(() => {
 		BLEService,
 		NavService,
 		LandingComponent,
-		provide('Evothings', {
+		provide(EVO_THINGS, {
 			useValue: {
 				tisensortag: {
 					createInstance: function() {

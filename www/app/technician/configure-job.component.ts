@@ -9,6 +9,7 @@ import {Sensor} from '../sensor';
 import {SensorFactory} from '../sensor.factory';
 import {Job} from './job';
 import {SensorComponent} from '../sensor.component';
+import {FOUNDATION, JQUERY} from '../app.token';
 
 @Component({
     templateUrl: 'app/technician/configure-job.component.html',
@@ -31,8 +32,8 @@ export class ConfigureJobComponent implements OnInit {
         private _navService: NavService,
         private _routeParams: RouteParams,
         private _elementRef: ElementRef,
-        @Inject('jQuery') private _jquery,
-        @Inject('Foundation') private _foundation,
+        @Inject(JQUERY) private _jquery,
+        @Inject(FOUNDATION) private _foundation,
         private _sensorFactory: SensorFactory
 	) { }
 

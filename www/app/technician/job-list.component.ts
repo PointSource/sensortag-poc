@@ -4,6 +4,7 @@ import {JobService} from './job.service';
 import {SensorService} from '../sensor.service';
 import {Job} from './job';
 import {Router} from 'angular2/router';
+import {FOUNDATION, JQUERY} from '../app.token';
 
 @Component({
     templateUrl: 'app/technician/job-list.component.html'
@@ -19,8 +20,8 @@ export class JobListComponent implements OnInit {
         private _jobService: JobService,
         private _sensorService: SensorService,
         private myElement: ElementRef,
-        @Inject('Foundation') private _foundation,
-        @Inject('jQuery') private _jquery
+        @Inject(FOUNDATION) private _foundation,
+        @Inject(JQUERY) private _jquery
     ) { }
 
     ngOnInit() {

@@ -3,6 +3,7 @@ import {BLEService} from './ble.service';
 import {ReadingService} from './technician/reading.service';
 import {Sensor} from './sensor';
 import {Job} from './technician/job';
+import {CORDOVA_DEVICE, FOUNDATION, JQUERY} from './app.token';
 
 @Component({
     selector: 'scanner-component',
@@ -27,10 +28,10 @@ export class ScanComponent implements OnInit, OnChanges {
         private myElement: ElementRef,
         private _bleService: BLEService,
         private _readingService: ReadingService,
-        @Inject('CordovaDevice') private _cordovaDevice,
+        @Inject(CORDOVA_DEVICE) private _cordovaDevice,
         private _elementRef: ElementRef,
-        @Inject('jQuery') private _jquery,
-        @Inject('Foundation') private _foundation
+        @Inject(JQUERY) private _jquery,
+        @Inject(FOUNDATION) private _foundation
     ) { }
 
     ngOnInit() {

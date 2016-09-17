@@ -11,6 +11,7 @@ import {ConfigureJobComponent} from "./configure-job.component"
 import {JobService} from "./job.service"
 import {RouteParams} from 'angular2/router';
 import {ElementRef} from 'angular2/core';
+import {FOUNDATION, JQUERY} from '../app.token';
 
 var MockElementRef = {
 	nativeElement: {
@@ -63,10 +64,10 @@ beforeEachProviders(() => {
 	return [
 		JobService,
 		provide(RouteParams, { useClass: MockRouteParams }),
-		provide('Foundation', {useValue: foundation}),
+		provide(FOUNDATION, {useValue: foundation}),
 		provide(ElementRef, { useValue: MockElementRef }),
 		ConfigureJobComponent,
-		provide('jQuery', {
+		provide(JQUERY, {
 			useValue: () => {
 				return {
 					foundation: () => { }
